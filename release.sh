@@ -37,8 +37,10 @@ cp -r resources/pr2_description ${install_path}/moveit_no_ros/resources
 cp -r resources/pr2_config ${install_path}/moveit_no_ros/resources
 cp resources/pr2.urdf ${install_path}/moveit_no_ros/resources
 
-rm -f ${install_path}/moveit_no_ros*.tar.gz
-tar -cf ${install_path}/moveit_no_ros.${ver}tar.gz ${install_path}/moveit_no_ros
+cd ${install_path}
+rm -f moveit_no_ros*.tar.gz
+tar -czf moveit_no_ros.${ver}tar.gz moveit_no_ros
+cd ..
 
 cd extern/lib
 bash mklink.sh
