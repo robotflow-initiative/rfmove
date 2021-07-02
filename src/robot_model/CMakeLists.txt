@@ -1,0 +1,31 @@
+include_directories(
+        include
+        ${KINETIC_INCLUDE_DIR}
+        ../util
+        ../../extern/kdl_kinematics_plugin/include
+        ${EIGEN3_INCLUDE_DIR}
+        ${YAML_CPP_INCLUDE_DIR}
+)
+
+add_library(robot_model_noros SHARED
+        src/RobotModelLoader.cpp
+        src/ExampleClass.cpp
+        src/KinematicsLoader.cpp
+        ../util/path_util.cpp)
+target_link_libraries(robot_model_noros
+        ${rdf_loader_lib}
+        ${robot_model_lib}
+        #${YAML_CPP_LIBRARIES}
+        ${kinematics_base_lib}
+        ${collision_detection_lib}
+        ${planning_scene_lib}
+        yaml-cpp
+        kdl_kinematics_noros)
+
+install(TARGETS robot_model_noros
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(DIRECTORY include/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        FILES_MATCHING PATTERN "*.h")

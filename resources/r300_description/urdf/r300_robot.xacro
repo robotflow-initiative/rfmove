@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<robot name="r300" xmlns:xacro="https://www.ros.org/wiki/xacro">
+  <xacro:property name="M_PI" value="3.1415926" />
+  <xacro:property name="Joint_ZERO" value="0" />
+  <xacro:property name="Joint_ONE" value="1" />
+  <xacro:arg name="use_nominal_extrinsics" default="false" />
+  <xacro:property name="Joint_Fixed" value="fixed"/>
+  <xacro:include filename="$(find r300_description)/urdf/r300.xacro" />
+  <xacro:include filename="$(find lifting_description)/urdf/lifting_driver.xacro" />
+  <joint name="joint_electric_cylinder_base" type="fixed">
+    <origin xyz="-0.028716 -0.010481 0.038" rpy="0 0 0.39489" />
+    <parent link="driven_gear_link" />
+    <child link="electric_cylinder_base_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+
+  <xacro:include filename="$(find steering_module_description)/urdf/steering_driver.xacro" />
+  <joint name="joint_turn_to" type="${Joint_Fixed}">
+    <origin xyz="0.13943 -0.14822 -0.082469" rpy="${M_PI} ${M_PI/2}  ${Joint_ZERO}" />
+    <parent link="support_plate_link" />
+    <child link="turn_to_link" />
+    <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+  </joint>
+
+  <xacro:include filename="$(find xmate3_description)/urdf/left_xmate3.xacro" />
+  <joint name="joint_left_arm" type="fixed">
+    <origin xyz="0.067988 -0.123 -0.00056548" rpy="-${M_PI/2} 0.019125 -${M_PI/2}" />
+    <parent link="fixed_frame_link" />
+    <child link="left_arm_base" />
+    <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+  </joint>
+
+  <xacro:include filename="$(find xmate3_description)/urdf/right_xmate3.xacro" />
+  <joint name="joint_right_arm" type="fixed">
+    <origin xyz="-0.068 -0.123 -0.00021044" rpy="${M_PI/2} -0.019126 -${M_PI/2}" />
+    <parent link="fixed_frame_link" />
+    <child link="right_arm_base" />
+    <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+  </joint>
+
+  <xacro:include filename="$(find ptz_description)/urdf/ptz_driver.xacro" />
+  <joint name="joint_PTZ_base" type="${Joint_Fixed}">
+      <origin xyz="${Joint_ZERO} -0.289045 -0.0010432" rpy="${M_PI/2} ${M_PI/2} ${Joint_ZERO}" />
+      <parent link="fixed_frame_link" />
+      <child link="PTZ_base_link" />
+      <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+    </joint>
+
+  <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro" />
+  <xacro:sensor_d435 parent="PTZ_link" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
+    <origin xyz="${Joint_ZERO} -0.044316 ${Joint_ZERO}" rpy="0 -${M_PI/2} ${M_PI/2}" />
+  </xacro:sensor_d435>
+
+  <xacro:r300 />
+
+</robot>

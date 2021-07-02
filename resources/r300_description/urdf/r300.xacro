@@ -1,0 +1,437 @@
+<?xml version="1.0"?>
+<robot name="r300" xmlns:xacro="https://www.ros.org/wiki/xacro">
+  <xacro:macro name="r300">
+    <xacro:property name="M_PI" value="3.1415926" />
+    <xacro:property name="Joint_ZERO" value="0" />
+    <xacro:property name="Joint_ONE" value="1" />
+    <xacro:property name="POINT_D" value=".dae" />
+    <xacro:property name="POINT_S" value=".stl" />
+    <xacro:property name="File_Path_DAE" value="package://r300_description/meshes/dae" />
+    <xacro:property name="File_Path_STL" value="package://r300_description/meshes/stl" />
+    <xacro:property name="SET_F" value="fixed" />
+    <xacro:property name="SET_R" value="revolute" />
+
+    <material name="OffWhite">
+      <color rgba="0.8 0.8 0.8 1.0" />
+    </material>
+    <link name="base_link">
+      <inertial>
+        <mass value="0.0001" />
+        <origin xyz=" ${Joint_ZERO}  ${Joint_ZERO}  ${Joint_ZERO}" />
+        <inertia ixx="0.0001" ixy="0.0" ixz="0.0" 
+                 iyy="0.0001" iyz="0.0" izz="0.0001" />
+      </inertial>
+      <visual>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_DAE}/base_link${POINT_D}" />
+        </geometry>
+      </visual>
+      <!--<collision>
+      <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}.017" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+      <geometry>
+       <box size="0.001 0.001 0.001" />
+      </geometry>
+    </collision>-->
+    </link>
+
+    <link name="left_wheel_link">
+      <visual>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_STL}/wheel${POINT_S}" />
+        </geometry>
+        <material name="black" />
+      </visual>
+    </link>
+    <joint name="left_wheel_joint" type="continuous">
+      <origin xyz="0 0.2565 0.03" rpy="-${M_PI/2} 0.343792057554545 ${M_PI}" />
+      <parent link="base_link" />
+      <child link="left_wheel_link" />
+      <axis xyz="${Joint_ZERO} ${Joint_ZERO} -${Joint_ONE}" />
+    </joint>
+    <link name="right_wheel_link">
+      <visual>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_STL}/wheel${POINT_S}" />
+        </geometry>
+        <material name="black" />
+      </visual>
+    </link>
+    <joint name="right_wheel_joint" type="continuous">
+      <origin xyz="${Joint_ZERO} -0.2565 0.03" rpy="${M_PI/2} 1.11682274353561 ${M_PI}" />
+      <parent link="base_link" />
+      <child link="right_wheel_link" />
+      <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ONE}" />
+    </joint>
+
+    <link name="imu_link"></link>
+    <joint name="imu_joint" type="${SET_F}">
+      <origin xyz="0.3512 0.1309 0.205" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+      <parent link="base_link" />
+      <child link="imu_link" />
+    </joint>
+
+    <link name="sonar_link1"></link>
+    <joint name="sonar1_joint" type="${SET_F}">
+      <origin xyz="0.3575 0.3277 0.23735" rpy="${Joint_ZERO} ${Joint_ZERO}  ${M_PI/2}" />
+      <parent link="base_link" />
+      <child link="sonar_link1" />
+    </joint>
+
+    <link name="sonar_link2"></link>
+    <joint name="sonar2_joint" type="${SET_F}">
+      <origin xyz="0.5053 0.2265 0.23735" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+      <parent link="base_link" />
+      <child link="sonar_link2" />
+    </joint>
+
+    <link name="sonar_link3"></link>
+    <joint name="sonar3_joint" type="${SET_F}">
+      <origin xyz="0.5053 -0.2265 0.23735" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+      <parent link="base_link" />
+      <child link="sonar_link3" />
+    </joint>
+
+    <link name="sonar_link4"></link>
+    <joint name="sonar4_joint" type="${SET_F}">
+      <origin xyz="0.3575 -0.3277 0.23735" rpy="${Joint_ZERO} ${Joint_ZERO} -${M_PI/2}" />
+      <parent link="base_link" />
+      <child link="sonar_link4" />
+    </joint>
+
+    <link name="camera_link"></link>
+    <joint name="camera_joint" type="${SET_F}">
+      <origin xyz="0.49757 0 0.10785" rpy="${Joint_ZERO} 0.2618 ${Joint_ZERO}" />
+      <parent link="base_link" />
+      <child link="camera_link" />
+    </joint>
+    <link name="front_laser">
+      <!--inertial>
+      <mass value="0.0001" />
+      <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+               iyy="0.0001" iyz="0.0"
+               izz="0.0001" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 -0.10383" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+      <geometry>
+        <mesh filename="package://ir100_description/meshes/laser${POINT_S}" />
+      </geometry>
+      <material name="OffWhite" />
+    </visual-->
+      <!--<collision>
+      <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}.017" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+      <geometry>
+       <box size="0.001 0.001 0.001" />
+      </geometry>
+    </collision>-->
+    </link>
+    <joint name="front_laser_joint" type="${SET_F}">
+      <origin xyz="0.44576 0.27076 0.17794" rpy="${Joint_ZERO} ${Joint_ZERO} 0.7854" />
+      <parent link="base_link" />
+      <child link="front_laser" />
+    </joint>
+
+    <link name="rear_laser">
+      <!--inertial>
+      <mass value="0.0001" />
+      <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+               iyy="0.0001" iyz="0.0"
+               izz="0.0001" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 -0.10383" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+      <geometry>
+        <mesh filename="package://ir100_description/meshes/laser${POINT_S}" />
+      </geometry>
+      <material name="OffWhite" />
+    </visual-->
+      <!--<collision>
+      <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}.017" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+      <geometry>
+       <box size="0.001 0.001 0.001" />
+      </geometry>
+    </collision>-->
+    </link>
+    <joint name="rear_laser_joint" type="${SET_F}">
+      <origin xyz="-0.44576 -0.27076 0.17794" rpy="${Joint_ZERO} ${Joint_ZERO}  -2.3562" />
+      <parent link="base_link" />
+      <child link="rear_laser" />
+    </joint>
+    
+    <link name="support_plate_link">
+      <inertial>
+        <origin xyz="-0.00769879818929481 0.00591943920213681 0.000775754892935535" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <mass value="0.0150075223078031" />
+        <inertia ixx="0.000401244716356583" ixy="1.96406862826253E-07" ixz="-1.97369161903718E-06" iyy="0.0013476472579277" iyz="-3.58558233759945E-08" izz="0.000946762375531491" />
+      </inertial>
+      <visual>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_DAE}/support_plate_link${POINT_D}" />
+        </geometry>
+        <material name="">
+          <color rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_STL}/support_plate_link${POINT_S}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="joint_support_plate" type="${SET_F}">
+      <origin xyz="${Joint_ZERO} ${Joint_ZERO}  0.27122" rpy="${M_PI/2}  ${Joint_ZERO} ${Joint_ZERO}" />
+      <parent link="base_link" />
+      <child link="support_plate_link" />
+      <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+    </joint>
+
+    <link name="sound_link">
+      <inertial>
+        <origin xyz="7.064E-08 1.9887E-05 0.0054783" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <mass value="0.082264" />
+        <inertia ixx="8.8836E-05" ixy="9.9348E-11" ixz="-5.4065E-11" 
+                 iyy="0.0001422" iyz="3.242E-06" izz="5.839E-05" />
+      </inertial>
+      <visual>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_DAE}/sound_link${POINT_D}" />
+        </geometry>
+        <material name="">
+          <color rgba="0.75294 0.75294 0.75294 ${Joint_ONE}" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_STL}/sound_link${POINT_S}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="joint_sound" type="${SET_F}">
+      <origin xyz="0.441 0.091 ${Joint_ZERO}" rpy="${M_PI/2} ${M_PI/2} ${Joint_ZERO}" />
+      <parent link="support_plate_link" />
+      <child link="sound_link" />
+      <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+    </joint>
+
+    <link name="power_link">
+      <inertial>
+        <origin xyz="-0.16763 -0.24089 0.0093517" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <mass value="80.118" />
+        <inertia ixx="1.9178" ixy="-0.099825" ixz="0.0026768" 
+                 iyy="4.1251" iyz="0.0035351" izz="5.2847" />
+      </inertial>
+      <visual>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_DAE}/power_link${POINT_D}" />
+        </geometry>
+        <material name="">
+          <color rgba="0.75294 0.75294 0.75294 ${Joint_ONE}" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_STL}/power_link${POINT_S}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="joint_power" type="${SET_F}">
+      <origin xyz="-0.2305 0.2025 -0.2325" rpy="-${M_PI/2} ${Joint_ZERO} -${M_PI/2}" />
+      <parent link="support_plate_link" />
+      <child link="power_link" />
+      <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+    </joint>
+
+    <link name="rear_lower_body_link">
+      <inertial>
+        <origin xyz="-0.15248 0.00011192 0.23921" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <mass value="2.0145" />
+        <inertia ixx="0.10489" ixy="1.7756E-05" ixz="-0.0053272" 
+                 iyy="0.051964" iyz="2.3902E-05" izz="0.075459" />
+      </inertial>
+      <visual>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_DAE}/rear_lower_body_link${POINT_D}" />
+        </geometry>
+        <material name="">
+          <color rgba="0.69804 0.69804 0.69804 ${Joint_ONE}" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_STL}/rear_lower_body_link${POINT_S}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="joint_rear_lower_body_link" type="${SET_F}">
+      <origin xyz="0.22 ${Joint_ZERO} ${Joint_ZERO}" rpy="-${M_PI/2} ${Joint_ZERO} ${Joint_ZERO}" />
+      <parent link="support_plate_link" />
+      <child link="rear_lower_body_link" />
+      <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+    </joint>
+
+    <link name="front_low_body_link">
+      <inertial>
+        <origin xyz="0.15746 -2.7173E-05 0.23455" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <mass value="2.1587" />
+        <inertia ixx="0.11236" ixy="6.5356E-06" ixz="0.0063318" 
+                 iyy="0.058122" iyz="8.799E-06" izz="0.078686" />
+      </inertial>
+      <visual>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_DAE}/front_low_body _link${POINT_D}" />
+        </geometry>
+        <material name="">
+          <color rgba="0.69804 0.69804 0.69804 ${Joint_ONE}" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_STL}/front_low_body _link${POINT_S}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="joint_front_low_body" type="${SET_F}">
+      <origin xyz="0.219572 ${Joint_ZERO} ${Joint_ZERO}" rpy="-${M_PI/2} ${Joint_ZERO} ${Joint_ZERO}" />
+      <parent link="support_plate_link" />
+      <child link="front_low_body_link" />
+      <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+    </joint>
+
+    <link name="battery_cover_link">
+      <inertial>
+        <origin xyz="0.0006734 0.42928 -3.1718E-05" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <mass value="7.5589" />
+        <inertia ixx="0.62329" ixy="-0.0023787" ixz="-7.1765E-05" 
+                 iyy="0.50548" iyz="-9.1039E-05" izz="0.84513" />
+      </inertial>
+      <visual>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_DAE}/battery_cover_link${POINT_D}" />
+        </geometry>
+        <material name="">
+          <color rgba="0.75294 0.75294 0.75294 ${Joint_ONE}" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_STL}/battery_cover_link${POINT_S}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="joint_battery_cover" type="${SET_F}">
+      <origin xyz="-0.22143 0.012242 ${Joint_ZERO}" rpy="${Joint_ZERO} -${M_PI/2} ${Joint_ZERO}" />
+      <parent link="support_plate_link" />
+      <child link="battery_cover_link" />
+      <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+    </joint>
+
+    <link name="${SET_F}_frame_link">
+      <inertial>
+        <origin xyz="0.0415891906441214 -0.11965106670571 9.51748813968201E-07" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <mass value="4.28692965567898" />
+        <inertia ixx="0.031165640285231" ixy="0.000599137513617035" ixz="-2.54061506448287E-08" 
+                 iyy="0.02365275729269" iyz="6.20699851504226E-07" izz="0.0226263403429132" />
+      </inertial>
+      <visual>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_DAE}/${SET_F}_frame_link${POINT_D}" />
+        </geometry>
+        <material name="">
+          <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_STL}/${SET_F}_frame_link${POINT_S}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="joint_${SET_F}_frame" type="${SET_F}">
+      <origin xyz="${Joint_ZERO} ${Joint_ZERO} 0.35" rpy="-${M_PI/2} ${Joint_ZERO} ${M_PI}" />
+      <parent link="lifting_rod_link" />
+      <child link="${SET_F}_frame_link" />
+      <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+    </joint>
+
+    <link name="rear_upper_body_link">
+      <inertial>
+        <origin xyz="0.10517 -0.16914 0.00019511" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <mass value="1.3101" />
+        <inertia ixx="0.076077" ixy="-0.0030685" ixz="1.7592E-05" 
+                 iyy="0.020111" iyz="6.197E-05" izz="0.063754" />
+      </inertial>
+      <visual>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_DAE}/rear_upper_body_link${POINT_D}" />
+        </geometry>
+        <material name="">
+          <color rgba="0.69804 0.69804 0.69804 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_STL}/rear_upper_body_link${POINT_S}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="joint_rear_upper_body" type="${SET_F}">
+      <origin xyz="${Joint_ZERO} -0.119469 ${Joint_ZERO}" rpy="0 -${M_PI/2} ${M_PI}" />
+      <parent link="${SET_F}_frame_link" />
+      <child link="rear_upper_body_link" />
+      <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+    </joint>
+
+    <link name="front_upper_body_link">
+      <inertial>
+        <origin xyz="0.10517 -0.16914 0.00019511" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <mass value="1.3101" />
+        <inertia ixx="0.076077" ixy="-0.0030685" ixz="1.7592E-05" 
+                 iyy="0.020111" iyz="6.197E-05" izz="0.063754" />
+      </inertial>
+      <visual>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_DAE}/front_upper_body_link${POINT_D}" />
+        </geometry>
+        <material name="">
+          <color rgba="0.69804 0.69804 0.69804 ${Joint_ONE}" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" rpy="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+        <geometry>
+          <mesh filename="${File_Path_STL}/front_upper_body_link${POINT_S}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="joint_front_upper_body" type="${SET_F}">
+      <origin xyz="${Joint_ZERO} -0.119469 ${Joint_ZERO}" rpy="${Joint_ZERO} ${M_PI/2} ${M_PI}" />
+      <parent link="${SET_F}_frame_link" />
+      <child link="front_upper_body_link" />
+      <axis xyz="${Joint_ZERO} ${Joint_ZERO} ${Joint_ZERO}" />
+    </joint>
+
+
+  </xacro:macro>
+</robot>
