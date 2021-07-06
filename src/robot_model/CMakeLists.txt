@@ -11,6 +11,7 @@ add_library(robot_model_noros SHARED
         src/RobotModelLoader.cpp
         src/ExampleClass.cpp
         src/KinematicsLoader.cpp
+        src/JointLimitsLoader.cpp
         ../util/path_util.cpp)
 target_link_libraries(robot_model_noros
         ${rdf_loader_lib}

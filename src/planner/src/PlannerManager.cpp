@@ -36,12 +36,14 @@ planning_interface::PlanningContextPtr PlannerManager::getPlanningContext(
         const planning_scene::PlanningSceneConstPtr &planning_scene,
         const planning_interface::MotionPlanRequest &req) const {
     moveit_msgs::MoveItErrorCodes err;
+    std::cout << "Call getPlanningContext" << std::endl;
     ompl_interface::ModelBasedPlanningContextPtr res = context_manager->getPlanningContext(planning_scene, req, err);
     if (err.val != err.SUCCESS) {
         ROS_ERROR_STREAM("Error when get planning context with code " << err.val);
     } else {
         // configure context
         // @todo: configure whether to use constraint approximation and simplified solution.
+        std::cout << "Call setConstraintsApproximations" << std::endl;
         res->setConstraintsApproximations(constraints_library);
         res->simplifySolutions(true);
     }

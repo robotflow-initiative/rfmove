@@ -122,8 +122,15 @@ PYBIND11_MODULE(moveit_noros, m) {
         .def("configToString", &KinematicsLoader::configToString);
         //.def("allocKinematicsSolver", &KinematicsLoader::allocKinematicsSolver);
 
+    py::class_<JointLimitsLoader, std::shared_ptr<JointLimitsLoader>> (m, "JointLimitsLoader")
+        .def("__str__", [](){return "";});
+
     m.def("createKinematicsLoaderFromFile", &createKinematicsLoaderFromFile,
           "Create a KinematicsLoader from an yaml configuration file.",
+          py::arg("file_path"));
+
+    m.def("createJointLimitsLoaderFromFile", &createJointLimitsLoaderFromFile,
+          "Create a JointLimitsLoader from an yaml configuration file.",
           py::arg("file_path"));
 
     py::class_<kinematics::KinematicsBase, std::shared_ptr<kinematics::KinematicsBase>>(m, "KinematicsBase")

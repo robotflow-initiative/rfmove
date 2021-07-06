@@ -30,9 +30,16 @@ pose_goal = moveit.constructGoalConstraints("panda_link8", pose, 0.01, 0.01)
 req.addGoal(pose_goal)
 
 print("== Create context ==")
+# An error would occur because we haven't specified request start state
 context = planner.getPlanningContext(planning_scene, req)
 
 print("== Solve ==")
 response = context.solve()
+print("Positions:")
 for waypoint in response.trajectory.waypoints:
     print(waypoint.getJointPosition("panda_joint1"))
+print("Velocity:")
+for waypoint in response.trajectory.waypoints:
+    print(waypoint.getJointVelocity("panda_joint1"))
+print("Durations:")
+print(response.trajectory.durations)

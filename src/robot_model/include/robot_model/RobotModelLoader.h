@@ -11,6 +11,7 @@
 #include "moveit/rdf_loader/rdf_loader.h" // rdf_loader::RDFLoader
 #include "moveit/robot_model/robot_model.h" // robot_model::RobotModel
 #include "robot_model/KinematicsLoader.h"
+#include "robot_model/JointLimitsLoader.h"
 #include "moveit/robot_model/joint_model.h"
 #include "moveit/robot_state/robot_state.h"
 #include "moveit/planning_scene/planning_scene.h"
@@ -45,6 +46,12 @@ public:
      * corresponding joint model group.
      */
     void loadKinematicsSolvers(const KinematicsLoaderPtr& loader);
+
+    /**
+     * Load joint limits.
+     * @param loader JointLimitsLoader which can be created from joint limits yaml configuration file.
+     */
+    void loadJointLimits(const JointLimitsLoaderPtr& loader);
 
     // Create a kinematics solver for specific joint model group.
     // Note that the solver is not bound with joint model group yet.

@@ -20,6 +20,14 @@ void declare_robot_trajectory(py::module& m) {
                 res.push_back(self.getWayPointPtr(i));
             }
             return res;
+        }, nullptr)
+        .def_property("durations", [](robot_trajectory::RobotTrajectory& self) {
+            std::vector<double> res;
+            size_t waypoint_count = self.getWayPointCount();
+            for(size_t i = 0; i < waypoint_count; ++i) {
+                res.push_back(self.getWayPointDurationFromPrevious(i));
+            }
+            return res;
         }, nullptr);
         //.def("getMessage", [](robot_trajectory::RobotTrajectory &self) -> moveit_msgs::RobotTrajectory{
         //    moveit_msgs::RobotTrajectory trajectory;
