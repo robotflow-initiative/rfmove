@@ -18,7 +18,7 @@ planning_interface::MotionPlanRequest createMotionPlanRequest(const std::string&
 void declare_planning_context(py::module& m) {
     //py::class_<planning_interface::RobotTra>
     py::class_<planning_interface::MotionPlanResponse>(m, "MotionPlanResponse")
-        .def_readonly("trajectory", &planning_interface::MotionPlanResponse::trajectozry_)
+        .def_readonly("trajectory", &planning_interface::MotionPlanResponse::trajectory_)
         .def_readonly("planning_time", &planning_interface::MotionPlanResponse::planning_time_);
 
     py::class_<planning_interface::MotionPlanRequest>(m, "MotionPlanRequest")
