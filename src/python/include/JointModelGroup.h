@@ -46,11 +46,33 @@ void declare_joint_model_group(py::module &m){
         .def("getName", &moveit::core::JointModel::getName,
              "Get the name of Joint")
         .def("getJointIndex", &moveit::core::JointModel::getJointIndex,
-             "Get the index of this joint within the robot model.");
+             "Get the index of this joint within the robot model.")
+        .def_property("variables", &moveit::core::JointModel::getVariableNames, nullptr)
+        .def("getVariableBounds", static_cast
+            <const moveit::core::VariableBounds& (moveit::core::JointModel::*)(const std::string& variable) const>
+            (&moveit::core::JointModel::getVariableBounds), py::return_value_policy::reference_internal,
+            "Get variable bound according to the variable name.")
+        .def("getVariableBounds", static_cast
+            <const std::vector<moveit::core::VariableBounds>& (moveit::core::JointModel::*)(void) const>
+            (&moveit::core::JointModel::getVariableBounds), py::return_value_policy::reference_internal,
+            "Get all variable bounds.");
 
     py::class_<moveit::core::LinkModel>(m, "LinkModel")
         .def("getName", &moveit::core::LinkModel::getName,
              "Get the name of Link");
+
+    py::class_<moveit::core::VariableBounds>(m, "VariableBounds")
+        .def("__str__", [](moveit::core::VariableBounds& self){
+            std::ostringstream sstr;
+            sstr << self;
+            return sstr.str();
+        })
+        .def("__repr__", [](moveit::core::VariableBounds& self){
+            std::ostringstream sstr;
+            sstr << "<moveit::core::VariableBounds>" << std::endl;
+            sstr << self;
+            return sstr.str();
+        });
 }
 
 #endif //MOVEIT_NO_ROS_JOINTMODELGROUP_H

@@ -132,6 +132,11 @@ find_library(robot_trajectory_lib moveit_robot_trajectory
         REQUIRED)
 MESSAGE(STATUS "lib moveit_robot_trajectory: ${robot_trajectory_lib}")
 
+find_library(trajectory_processing_lib moveit_trajectory_processing
+        HINTS ${KINETIC_LIB_DIR}
+        REQUIRED)
+MESSAGE(STATUS "lib moveit_trajectory_trajectory_processing: ${trajectory_processing_lib}")
+
 find_package(Python ${PYBIND11_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
 MESSAGE(STATUS "Python_SITELIB: ${Python_SITELIB}")
 

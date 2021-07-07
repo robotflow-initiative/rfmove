@@ -13,8 +13,17 @@
  */
 class SplineTrajectory {
 public:
-    SplineTrajectory(robot_trajectory::RobotTrajectoryPtr trajectory);
+    /// Time stamps parameterization type
+    enum class Parameterization{
+        SPLINE, ///< IterativeSplineParameterization
+        TIME,   ///< IterativeParabolicTimeParameterization
+    };
+    SplineTrajectory(robot_trajectory::RobotTrajectoryPtr trajectory,
+                     bool computeTimeStamps = true,
+                     Parameterization param = Parameterization::SPLINE);
+    static void computeTimeStamps(robot_trajectory::RobotTrajectoryPtr trajectory, Parameterization param = Parameterization::SPLINE);
 private:
+
     std::vector<std::string> joint_names_;
     std::string group_name_;
     std::vector<trajectory_interface::QuinticSplineSegment<double>> segments_;

@@ -33,7 +33,13 @@ void declare_robot_model(py::module &m){
              (&moveit::core::RobotModel::getJointModelGroups),
              py::return_value_policy::reference_internal,
              "Get The list of JointModel Group")
-        .def("getModelFrame", &moveit::core::RobotModel::getModelFrame);
+        .def("getModelFrame", &moveit::core::RobotModel::getModelFrame)
+        .def("getJointModels", static_cast
+             <const std::vector<moveit::core::JointModel*>& (moveit::core::RobotModel::*)(void)>
+            (&moveit::core::RobotModel::getJointModels), py::return_value_policy::reference_internal)
+        .def("getJointModel", static_cast
+            <moveit::core::JointModel* (moveit::core::RobotModel::*)(const std::string&)>
+            (&moveit::core::RobotModel::getJointModel), py::return_value_policy::reference_internal);
 }
 
 #endif //MOVEIT_NO_ROS_ROBOTMODEL_H

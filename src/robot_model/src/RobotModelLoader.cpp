@@ -85,6 +85,33 @@ void RobotModelLoader::loadKinematicsSolvers(const KinematicsLoaderPtr& kinemati
     }
 }
 
+void RobotModelLoader::loadJointLimits(const JointLimitsLoaderConstPtr& loader) {
+    /*
+    for(const auto& limit : *loader) {
+        moveit::core::JointModel* jointModel = robot_model_->getJointModel(limit.first);
+        std::cout << limit.first << ": " << limit.second << std::endl;
+        jointModel->setVariableBounds();
+    }
+     */
+
+    /**
+     * @note If a joint has multi variable, the variable name will be "joint_name/variable1, joint_name/variable2, ...".
+     */
+    std::cout << "Current bounds:" << std::endl;
+    for(auto joint: robot_model_->getJointModels()) {
+        for(const auto& variable : joint->getVariableNames()) {
+            /**
+             * @note Coming joint limits should be appended on the original limits. So we merge the original and comming
+             * limits together.
+             */
+            if (loader->has(variable)) {
+                joint->setVariableBounds(variable,
+                                         loader->mergeBounds(joint->getVariableBounds(variable), loader->getBound(variable)));
+            }
+        }
+    }
+}
+
 robot_model::RobotModelPtr RobotModelLoader::getRobotModel() {
     return robot_model_;
 }

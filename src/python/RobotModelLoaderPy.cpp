@@ -50,6 +50,8 @@ PYBIND11_MODULE(moveit_noros, m) {
         .def("loadKinematicsSolvers", &RobotModelLoader::loadKinematicsSolvers,
              "Load Kinematics Solvers configured within a KinematicsLoader and bind solvers with joint model groups.",
              py::arg("kinematics_loader"))
+        .def("loadJointLimits", &RobotModelLoader::loadJointLimits,
+             "Load Joint Limits configuration from JointLimitsLoader.")
         .def_property("modelInfo", &RobotModelLoader::modelInfoString, nullptr,
                       "Return a string about robot model info.")
         .def("newRobotState", &RobotModelLoader::newRobotState)
@@ -88,9 +90,6 @@ PYBIND11_MODULE(moveit_noros, m) {
           py::arg("urdf_path"),
           py::arg("srdf_path"));
 
-
-
-
     py::class_<ExampleClass, std::shared_ptr<ExampleClass>>(m, "ExampleClass")
         .def(py::init<>())
         .def("AddString", &ExampleClass::AddString)
@@ -123,7 +122,17 @@ PYBIND11_MODULE(moveit_noros, m) {
         //.def("allocKinematicsSolver", &KinematicsLoader::allocKinematicsSolver);
 
     py::class_<JointLimitsLoader, std::shared_ptr<JointLimitsLoader>> (m, "JointLimitsLoader")
-        .def("__str__", [](){return "";});
+        .def("__str__", [](const JointLimitsLoader& self) -> std::string {
+            std::ostringstream sstr;
+            sstr << self;
+            return sstr.str();
+        })
+        .def("__repr__", [](const JointLimitsLoader& self) -> std::string{
+            std::ostringstream sstr;
+            sstr << "<JointLimitsLoader>" << std::endl;
+            sstr << self;
+            return sstr.str();
+        });
 
     m.def("createKinematicsLoaderFromFile", &createKinematicsLoaderFromFile,
           "Create a KinematicsLoader from an yaml configuration file.",

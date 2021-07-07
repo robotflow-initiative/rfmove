@@ -2,6 +2,7 @@ include_directories(
         ${KINETIC_INCLUDE_DIR}
         ../robot_model/include
         ../planner/include
+        ../controller/include
         ../util
         ../../extern/kdl_kinematics_plugin/include
         include
@@ -10,6 +11,7 @@ include_directories(
         ${YAML_CPP_INCLUDE_DIR}
 )
 
+#TODO: Link robot model and planner as shared library
 SET(ROBOT_MODEL_SRC
     ../robot_model/src/ExampleClass.cpp
     ../robot_model/src/JointLimitsLoader.cpp
@@ -42,7 +44,9 @@ target_link_libraries(moveit_noros PRIVATE
         ${ompl_interface_lib}
         ${constraint_samplers_lib}
         ${robot_trajectory_lib}
-        kdl_kinematics_noros)
+        ${trajectory_processing_lib}
+        kdl_kinematics_noros
+        controller_noros)
 
 # Install to python site-packages directory
 install(TARGETS moveit_noros

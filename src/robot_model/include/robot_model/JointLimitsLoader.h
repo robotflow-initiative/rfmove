@@ -7,6 +7,7 @@
 
 #include <moveit/robot_model/joint_model.h>
 #include <moveit/macros/class_forward.h>
+#include <iostream>
 
 // TODO: Load joint limits for joint with multi variable
 
@@ -20,7 +21,13 @@ class JointLimitsLoader {
 public:
     explicit JointLimitsLoader(const std::string& limits_contents_);
     // moveit::core::VariableBounds getBound(const std::string& jointModel, const std::string& variable);
-    moveit::core::VariableBounds& getBound(const std::string& variable_name);
+    const moveit::core::VariableBounds& getBound(const std::string& variable_name) const;
+    std::map<std::string, moveit::core::VariableBounds>::const_iterator begin() const;
+    std::map<std::string, moveit::core::VariableBounds>::const_iterator end() const;
+    bool has(const std::string& variable_name) const;
+    friend std::ostream& operator<< (std:: ostream& out, const JointLimitsLoader &loader);
+    static moveit::core::VariableBounds mergeBounds(const moveit::core::VariableBounds& old_bound,
+                                                    const moveit::core::VariableBounds& new_bound);
 private:
     // limits_
     // variable_name: VariableBounds

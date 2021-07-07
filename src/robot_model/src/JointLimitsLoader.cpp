@@ -29,10 +29,13 @@ JointLimitsLoader::JointLimitsLoader(const std::string &limits_contents_) {
                     limits_[joint_name].velocity_bounded_ = true;
                     if(joint_limit.second["max_velocity"]) {
                         limits_[joint_name].max_velocity_ = joint_limit.second["max_velocity"].as<double>();
+                        if(joint_limit.second["min_velocity"]) {
+                            limits_[joint_name].min_velocity_ = joint_limit.second["min_velocity"].as<double>();
+                        } else {
+                            limits_[joint_name].min_velocity_ = -joint_limit.second["max_velocity"].as<double>();
+                        }
                     }
-                    if(joint_limit.second["min_velocity"]) {
-                        limits_[joint_name].min_velocity_ = joint_limit.second["min_velocity"].as<double>();
-                    }
+
                 }
             }
             if(joint_limit.second["has_acceleration_limits"]) {
@@ -40,9 +43,11 @@ JointLimitsLoader::JointLimitsLoader(const std::string &limits_contents_) {
                     limits_[joint_name].acceleration_bounded_ = true;
                     if(joint_limit.second["max_acceleration"]) {
                         limits_[joint_name].max_acceleration_ = joint_limit.second["max_acceleration"].as<double>();
-                    }
-                    if(joint_limit.second["min_acceleration"]) {
-                        limits_[joint_name].min_acceleration_ = joint_limit.second["min_acceleration"].as<double>();
+                        if(joint_limit.second["min_acceleration"]) {
+                            limits_[joint_name].min_acceleration_ = joint_limit.second["min_acceleration"].as<double>();
+                        } else {
+                            limits_[joint_name].min_acceleration_ = -joint_limit.second["max_acceleration"].as<double>();
+                        }
                     }
                 }
             }
@@ -50,8 +55,21 @@ JointLimitsLoader::JointLimitsLoader(const std::string &limits_contents_) {
     }
 }
 
-moveit::core::VariableBounds& JointLimitsLoader::getBound(const std::string &variable_name) {
-    return limits_[variable_name];
+const moveit::core::VariableBounds& JointLimitsLoader::getBound(const std::string &variable_name) const {
+    //return limits_[variable_name];
+    return limits_.at(variable_name);
+}
+
+std::map<std::string, moveit::core::VariableBounds>::const_iterator JointLimitsLoader::begin() const {
+    return limits_.begin();
+}
+
+std::map<std::string, moveit::core::VariableBounds>::const_iterator JointLimitsLoader::end() const {
+    return limits_.end();
+}
+
+bool JointLimitsLoader::has(const std::string& variable_name) const {
+    return limits_.find(variable_name) != limits_.end();
 }
 
 JointLimitsLoaderPtr createJointLimitsLoaderFromFile(const std::string& file_path){
@@ -60,4 +78,31 @@ JointLimitsLoaderPtr createJointLimitsLoaderFromFile(const std::string& file_pat
     input.close();
     // return std::make_shared<KinematicsLoader>(yaml_content);
     return JointLimitsLoaderPtr(new JointLimitsLoader(yaml_content));
+}
+
+moveit::core::VariableBounds JointLimitsLoader::mergeBounds(const moveit::core::VariableBounds &old_bound,
+                                                            const moveit::core::VariableBounds &new_bound) {
+    moveit::core::VariableBounds res = old_bound;
+    if (new_bound.position_bounded_) {
+        res.position_bounded_ = true;
+        res.max_position_ = new_bound.max_position_;
+        res.min_position_ = new_bound.min_position_;
+    }
+    if (new_bound.velocity_bounded_) {
+        res.velocity_bounded_ = true;
+        res.max_velocity_ = new_bound.max_velocity_;
+        res.min_velocity_ = new_bound.min_velocity_;
+    }
+    if (new_bound.acceleration_bounded_) {
+        res.acceleration_bounded_ = true;
+        res.min_acceleration_ = new_bound.min_acceleration_;
+        res.max_acceleration_ = new_bound.max_acceleration_;
+    }
+    return res;
+}
+
+std::ostream& operator<<(std::ostream& out, const JointLimitsLoader& loader) {
+    for (const auto& limit : loader.limits_) {
+        out << limit.first << ": " << limit.second << std::endl;
+    }
 }

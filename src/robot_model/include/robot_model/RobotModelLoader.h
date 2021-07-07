@@ -51,7 +51,7 @@ public:
      * Load joint limits.
      * @param loader JointLimitsLoader which can be created from joint limits yaml configuration file.
      */
-    void loadJointLimits(const JointLimitsLoaderPtr& loader);
+    void loadJointLimits(const JointLimitsLoaderConstPtr& loader);
 
     // Create a kinematics solver for specific joint model group.
     // Note that the solver is not bound with joint model group yet.

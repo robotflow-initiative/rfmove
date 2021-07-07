@@ -8,7 +8,8 @@ add_library(controller_noros SHARED
         src/trajectory.cpp)
 
 target_link_libraries(controller_noros
-        ${robot_trajectory_lib})
+        ${robot_trajectory_lib}
+        ${trajectory_processing_lib})
 
 install(TARGETS controller_noros
         ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}

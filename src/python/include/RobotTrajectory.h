@@ -7,6 +7,8 @@
 
 #include <pybind11/pybind11.h>
 #include <moveit/robot_trajectory/robot_trajectory.h>
+#include <moveit/trajectory_processing/iterative_spline_parameterization.h>
+#include <controller/trajectory.h>
 
 namespace py = pybind11;
 
@@ -28,7 +30,11 @@ void declare_robot_trajectory(py::module& m) {
                 res.push_back(self.getWayPointDurationFromPrevious(i));
             }
             return res;
-        }, nullptr);
+        }, nullptr)
+        .def("computeTimeStamps", [](robot_trajectory::RobotTrajectory& self) -> void{
+            trajectory_processing::IterativeSplineParameterization parameterization;
+            parameterization.computeTimeStamps(self);
+        });
         //.def("getMessage", [](robot_trajectory::RobotTrajectory &self) -> moveit_msgs::RobotTrajectory{
         //    moveit_msgs::RobotTrajectory trajectory;
         //    ros::serialization::Serializer<moveit_msgs::RobotTrajectory> serializer;

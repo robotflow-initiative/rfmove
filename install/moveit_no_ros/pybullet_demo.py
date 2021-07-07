@@ -69,6 +69,8 @@ print("== Initialize Moveit ==")
 loader = moveit.createRobotModelLoaderFromFile("resources/pr2.urdf", "resources/pr2_config/pr2.srdf")
 kinematic_solver_loader = moveit.createKinematicsLoaderFromFile("resources/pr2_config/kinematics.yaml")
 loader.loadKinematicsSolvers(kinematic_solver_loader)
+joint_limit_loader = moveit.createJointLimitsLoaderFromFile("resources/pr2_config/joint_limits.yaml")
+loader.loadJointLimits(joint_limit_loader)
 
 robot_model = loader.getModel()
 groups = robot_model.JointModelGroups

@@ -35,6 +35,7 @@ context = planner.getPlanningContext(planning_scene, req)
 
 print("== Solve ==")
 response = context.solve()
+response.trajectory.computeTimeStamps()
 print("Positions:")
 for waypoint in response.trajectory.waypoints:
     print(waypoint.getJointPosition("panda_joint1"))
