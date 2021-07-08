@@ -20,6 +20,7 @@
 #include <ConstraintsMessages.h>
 #include <GeometryMessages.h>
 #include <RobotTrajectory.h>
+#include <Controller.h>
 
 namespace py = pybind11;
 
@@ -35,6 +36,7 @@ PYBIND11_MODULE(moveit_noros, m) {
     declare_geometry_msgs(m);
     declare_constraints_msgs(m);
     declare_robot_trajectory(m);
+    declare_controller(m);
 
     m.def("printOutJointInfo", &printOutJointInfo);
 

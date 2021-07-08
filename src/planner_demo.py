@@ -44,3 +44,9 @@ for waypoint in response.trajectory.waypoints:
     print(waypoint.getJointVelocity("panda_joint1"))
 print("Durations:")
 print(response.trajectory.durations)
+print(sum(response.trajectory.durations))
+
+print("== Create spline trajectory ==")
+spline_trajectory = moveit.SplineTrajectory(response.trajectory)
+print("Duration")
+print(spline_trajectory.duration)
