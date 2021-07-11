@@ -1,7 +1,7 @@
 #!/bin/bash
 export KINETIC_LIB_DIR=$(pwd)/extern/lib
 export KINETIC_INCLUDE_DIR=$(pwd)/extern/include
-export LD_LIBRARY_PATH=$KINETIC_LIB_DIR:$(pwd)/install/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$KINETIC_LIB_DIR:$(pwd)/install/lib:/usr/local/lib:$LD_LIBRARY_PATH
 #for f in (ls ${KINETIC_LIB_DIR})
 #do
 # if [ -d ${KINETIC_LIB_DIR}/$f ];then

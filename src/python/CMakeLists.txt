@@ -11,6 +11,13 @@ include_directories(
         ${YAML_CPP_INCLUDE_DIR}
 )
 
+IF(${WITH_BULLET3})
+    include_directories(
+            ${BULLET_INCLUDE_DIR}
+    )
+ENDIF()
+
+
 #TODO: Link robot model and planner as shared library
 SET(ROBOT_MODEL_SRC
     ../robot_model/src/ExampleClass.cpp
@@ -31,6 +38,7 @@ pybind11_add_module(moveit_noros
         ${PLANNER_SRC}
         # src/EigenPy.cpp # head only
         ../util/path_util.cpp
+        hardware_pybullet.cpp
         RobotModelLoaderPy.cpp)
 target_link_libraries(moveit_noros PRIVATE
         ${rdf_loader_lib}
@@ -47,6 +55,15 @@ target_link_libraries(moveit_noros PRIVATE
         ${trajectory_processing_lib}
         kdl_kinematics_noros
         controller_noros)
+
+IF(${WITH_BULLET3})
+    MESSAGE("Build moveit_noros with bullet robotics from ${bullet_robotics_lib}")
+    target_link_libraries(moveit_noros PRIVATE
+        moveit_bullet3
+        #${bullet_robotics_lib} # Already linked through moveit_bullet3
+    )
+    #target_compile_options(moveit_noros PRIVATE -fPIC)
+ENDIF()
 
 # Install to python site-packages directory
 install(TARGETS moveit_noros

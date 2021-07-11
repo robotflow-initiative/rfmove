@@ -22,6 +22,12 @@
 #include <RobotTrajectory.h>
 #include <Controller.h>
 
+#ifdef WITH_BULLET3
+#include "Bullet3.h"
+#endif
+
+#include "Bullet3_controller.h"
+
 namespace py = pybind11;
 
 PYBIND11_MODULE(moveit_noros, m) {
@@ -37,6 +43,11 @@ PYBIND11_MODULE(moveit_noros, m) {
     declare_constraints_msgs(m);
     declare_robot_trajectory(m);
     declare_controller(m);
+    declare_pybullet_controller(m);
+
+#ifdef WITH_BULLET3
+    declare_bullet3(m);
+#endif
 
     m.def("printOutJointInfo", &printOutJointInfo);
 

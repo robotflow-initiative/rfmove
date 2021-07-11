@@ -4,6 +4,19 @@ include(GNUInstallDirs)
 ## Compile as C++11
 add_compile_options(-std=c++11)
 
+OPTION(WITH_BULLET3 "Whether build library or executable program depend on bullet3" OFF)
+IF(${WITH_BULLET3})
+    MESSAGE(STATUS "Build with bullet3")
+    find_package(Bullet REQUIRED)
+    MESSAGE(STATUS "BULLET_INCLUDE_DIR ${BULLET_INCLUDE_DIR}")
+    MESSAGE(STATUS "BULLET_LIBRARIES ${BULLET_LIBRARIES}")
+    ADD_DEFINITIONS(-DWITH_BULLET3)
+    find_library(bullet_robotics_lib BulletRobotics REQUIRED)
+    MESSAGE(STATUS "lib BulletRobotics ${bullet_robotics_lib}")
+ELSE()
+    MESSAGE(STATUS "Do not build with bullet3")
+ENDIF()
+
 ## Build in debug mode
 SET(CMAKE_BUILD_TYPE "Debug")
 

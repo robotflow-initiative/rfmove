@@ -1,7 +1,11 @@
 import sys
+
+import numpy
+
 sys.path.append("../install/lib")
 import moveit_noros as moveit
 import numpy as np
+import matplotlib.pyplot as plt
 
 print("==== Implement Motion Plan Tutorials. ====")
 print("== Load robot model ==")
@@ -36,17 +40,66 @@ context = planner.getPlanningContext(planning_scene, req)
 print("== Solve ==")
 response = context.solve()
 response.trajectory.computeTimeStamps()
-print("Positions:")
-for waypoint in response.trajectory.waypoints:
-    print(waypoint.getJointPosition("panda_joint1"))
-print("Velocity:")
-for waypoint in response.trajectory.waypoints:
-    print(waypoint.getJointVelocity("panda_joint1"))
-print("Durations:")
-print(response.trajectory.durations)
-print(sum(response.trajectory.durations))
+#print("Positions:")
+#for waypoint in response.trajectory.waypoints:
+#    print(waypoint.getJointPosition("panda_joint1"))
+#print("Velocity:")
+#for waypoint in response.trajectory.waypoints:
+#    print(waypoint.getJointVelocity("panda_joint1"))
+#print("Durations:")
+#print(response.trajectory.durations)
+#print(sum(response.trajectory.durations))
 
 print("== Create spline trajectory ==")
 spline_trajectory = moveit.SplineTrajectory(response.trajectory)
-print("Duration")
-print(spline_trajectory.duration)
+#print("Duration")
+#print(spline_trajectory.duration)
+
+print("== Sample spline trajectory ==")
+sample = spline_trajectory.sample("panda_joint1", 0.01)
+#print(sample.position)
+
+fig = plt.figure(num = 1, figsize=(16, 9), dpi = 120)
+origin_position = fig.add_subplot(2, 2, 1)
+sample_position = fig.add_subplot(2, 2, 2)
+origin_velocity = fig.add_subplot(2,2,3)
+sample_velocity = fig.add_subplot(2,2,4)
+origin_position.set_title("Origin Trajectory Position")
+origin_position.set_xlabel("time")
+origin_position.set_ylabel("position")
+sample_position.set_title("Sampled Trajectory Position (1000Hz)")
+sample_position.set_xlabel("time")
+sample_position.set_ylabel("position")
+origin_velocity.set_title("Origin Trajectory Velocity")
+origin_velocity.set_xlabel("time")
+origin_velocity.set_ylabel("velocity")
+sample_velocity.set_title("Sampled Trajectory Velocity (1000Hz)")
+sample_velocity.set_xlabel("time")
+sample_velocity.set_ylabel("velocity")
+
+# plot origin position
+y_origin_position = []
+for waypoint in response.trajectory.waypoints:
+    y_origin_position.append(waypoint.getJointPosition("panda_joint1"))
+time_stamp_origin = []
+current_time_stamp_origin = 0
+for duration in response.trajectory.durations:
+    time_stamp_origin.append(duration + current_time_stamp_origin)
+    current_time_stamp_origin+=duration
+plot1 = origin_position.plot(time_stamp_origin, y_origin_position, linestyle='-', marker='o', markersize = 3)
+
+# plot sampled position
+time_stamp_sample = np.linspace(spline_trajectory.start_time, spline_trajectory.end_time, sample.position.size)
+plot2 = sample_position.plot(time_stamp_sample, sample.position)
+
+# plot origin velocity
+y_origin_velocity = []
+for waypoint in response.trajectory.waypoints:
+    y_origin_velocity.append(waypoint.getJointVelocity("panda_joint1"))
+plot3 = origin_velocity.plot(time_stamp_origin, y_origin_velocity, linestyle='-', marker='o', markersize = 3, color='orange')
+
+# plot sampled velocity
+time_stamp_sample = np.linspace(spline_trajectory.start_time, spline_trajectory.end_time, sample.velocity.size)
+plot4 = sample_velocity.plot(time_stamp_sample, sample.velocity, color = 'orange')
+
+plt.show()

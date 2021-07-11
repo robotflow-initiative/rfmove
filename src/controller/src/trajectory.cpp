@@ -59,23 +59,52 @@ int SplineTrajectory::sample(const std::string& joint_name, trajectory_interface
     double end_time = joint_trajectory.back().endTime();
     //double target_time = start_time;
     int sample_count = 0;
-
+    //std::cout << "sample start" << std::endl;
     for(double target_time = start_time; target_time <= end_time; target_time+=duration) {
         trajectory_interface::sample(joint_trajectory, target_time, sampled_state);
-        sample.position[sample_count] = sampled_state.position[0];
-        sample.velocity[sample_count] = sampled_state.velocity[0];
-        sample.acceleration[sample_count] = sampled_state.acceleration[0];
+        //if(sampled_state.position.size() != 1) {
+        //    std::cout << "sampled state position size " << sampled_state.position.size() << std::endl;
+        //}
+        sample.position.push_back(sampled_state.position[0]);
+        //if(sampled_state.velocity.size() != 1) {
+        //    std::cout << "sampled state velocity size " << sampled_state.velocity.size() << std::endl;
+        //}
+        sample.velocity.push_back(sampled_state.velocity[0]);
+        //if(sampled_state.acceleration.size() != 1) {
+        //    std::cout << "sampled state acceleration size " << sampled_state.acceleration.size() << std::endl;
+        //}
+        sample.acceleration.push_back(sampled_state.acceleration[0]);
         ++sample_count;
     }
+    //std::cout << "sample end" << std::endl;
     return sample_count;
 }
 
 double SplineTrajectory::duration() {
     if(trajectory_.empty()) {
         ROS_WARN("Empty spline trajectory.");
+        return 0;
     }
     TrajectoryPerJoint& any_joint_trajectory = trajectory_.at(0);
     return any_joint_trajectory.back().endTime() - any_joint_trajectory.front().startTime();
+}
+
+double SplineTrajectory::startTime() {
+    if(trajectory_.empty()) {
+        ROS_WARN("Empty spline trajectory.");
+        return 0;
+    }
+    TrajectoryPerJoint& any_joint_trajectory = trajectory_.at(0);
+    return any_joint_trajectory.front().startTime();
+}
+
+double SplineTrajectory::endTime() {
+    if(trajectory_.empty()) {
+        ROS_WARN("Empty spline trajectory.");
+        return 0;
+    }
+    TrajectoryPerJoint& any_joint_trajectory = trajectory_.at(0);
+    return any_joint_trajectory.back().endTime();
 }
 
 int SplineTrajectory::jointIndex(const std::string& joint_name) {

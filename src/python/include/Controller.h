@@ -23,7 +23,10 @@ void declare_controller(py::module &m) {
              py::arg("computeTimeStamp") = true,
              py::arg("param") = SplineTrajectory::Parameterization::SPLINE)
         .def_property("duration", &SplineTrajectory::duration, nullptr)
+        .def_property("start_time", &SplineTrajectory::startTime, nullptr)
+        .def_property("end_time", &SplineTrajectory::endTime, nullptr)
         .def("sample", [](SplineTrajectory& self, const std::string& joint_name, double interval) -> trajectory_interface::PosVelAccState<double>*{
+            //std::cout << "sample " << joint_name << " with interval " << interval << std::endl;
             auto* result = new trajectory_interface::PosVelAccState<double>;
             self.sample(joint_name, *result, interval);
             return result;
@@ -66,7 +69,10 @@ void declare_controller(py::module &m) {
         })
         .def_property("position", [](trajectory_interface::PosVelAccState<double> &self){
             return py::array(self.position.size(), self.position.data(), py::cast<>(self));
-            }, nullptr);
+            }, nullptr)
+        .def_property("velocity", [](trajectory_interface::PosVelAccState<double>& self){
+            return py::array(self.velocity.size(), self.velocity.data(), py::cast<>(self));
+        }, nullptr);
 }
 
 #endif //MOVEIT_NO_ROS_CONTROLLER_H
