@@ -13,7 +13,9 @@ IF(${WITH_BULLET3})
 ENDIF()
 
 add_library(controller_noros SHARED
-        src/trajectory.cpp)
+        src/trajectory.cpp
+        src/controller.cpp
+        src/hardware.cpp)
 
 target_link_libraries(controller_noros
         ${robot_trajectory_lib}

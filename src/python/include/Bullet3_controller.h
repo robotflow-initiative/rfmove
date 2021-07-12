@@ -15,8 +15,10 @@
 
 void declare_pybullet_controller(py::module& m) {
     py::class_<PybulletHardware>(m, "PybulletHardware")
-        .def(py::init<py::handle>())
-        .def("getNumBodies", &PybulletHardware::getNumBodies);
+        .def(py::init<py::handle, int>())
+        .def("getNumBodies", &PybulletHardware::getNumBodies)
+        .def("printJointInfo", &PybulletHardware::printJointInfo)
+        .def("printJointState", &PybulletHardware::printJointState);
 }
 
 #endif //MOVEIT_NO_ROS_BULLET3_CONTROLLER_H

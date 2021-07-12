@@ -24,7 +24,7 @@ public:
         SPLINE, ///< IterativeSplineParameterization
         TIME,   ///< IterativeParabolicTimeParameterization
     };
-    SplineTrajectory(robot_trajectory::RobotTrajectoryPtr robot_trajectory,
+    explicit SplineTrajectory(robot_trajectory::RobotTrajectoryPtr robot_trajectory,
                      bool computeTimeStamps = true,
                      Parameterization param = Parameterization::SPLINE);
     /**
@@ -74,5 +74,7 @@ private:
     moveit_msgs::RobotTrajectory robot_trajectory_msg_;
     Trajectory trajectory_;
 };
+
+typedef std::shared_ptr<SplineTrajectory> SplineTrajectoryPtr;
 
 #endif //MOVEIT_NO_ROS_TRAJECTORY_H

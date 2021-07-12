@@ -51,7 +51,7 @@ response.trajectory.computeTimeStamps()
 #print(sum(response.trajectory.durations))
 
 print("== Create spline trajectory ==")
-spline_trajectory = moveit.SplineTrajectory(response.trajectory)
+spline_trajectory = moveit.computeSpline(response.trajectory)
 #print("Duration")
 #print(spline_trajectory.duration)
 

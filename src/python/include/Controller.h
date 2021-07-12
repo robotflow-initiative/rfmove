@@ -10,18 +10,26 @@
 
 namespace py = pybind11;
 
+SplineTrajectoryPtr computeSpline(robot_trajectory::RobotTrajectoryPtr robot_trajectory,
+                                  bool computeTimeStamps = true,
+                                  SplineTrajectory::Parameterization param = SplineTrajectory::Parameterization::SPLINE) {
+    return std::make_shared<SplineTrajectory>(robot_trajectory, computeTimeStamps, param);
+}
+
 void declare_controller(py::module &m) {
     py::enum_<SplineTrajectory::Parameterization>(m, "TrajectoryParam")
             .value("SPLINE", SplineTrajectory::Parameterization::SPLINE)
             .value("TIME", SplineTrajectory::Parameterization::TIME);
 
-    py::class_<SplineTrajectory>(m, "SplineTrajectory")
-        .def(py::init<robot_trajectory::RobotTrajectoryPtr,
-                     bool,
-                     SplineTrajectory::Parameterization>(),
-             py::arg("trajectory"),
-             py::arg("computeTimeStamp") = true,
-             py::arg("param") = SplineTrajectory::Parameterization::SPLINE)
+    py::class_<SplineTrajectory, std::shared_ptr<SplineTrajectory>>(m, "SplineTrajectory")
+        /// Do not create SplineTrajectory directly as hope to use shared pointer.
+        /// Create it through computeSpline instead.
+        //.def(py::init<robot_trajectory::RobotTrajectoryPtr,
+        //             bool,
+        //             SplineTrajectory::Parameterization>(),
+        //     py::arg("trajectory"),
+        //     py::arg("computeTimeStamp") = true,
+        //     py::arg("param") = SplineTrajectory::Parameterization::SPLINE)
         .def_property("duration", &SplineTrajectory::duration, nullptr)
         .def_property("start_time", &SplineTrajectory::startTime, nullptr)
         .def_property("end_time", &SplineTrajectory::endTime, nullptr)
@@ -73,6 +81,11 @@ void declare_controller(py::module &m) {
         .def_property("velocity", [](trajectory_interface::PosVelAccState<double>& self){
             return py::array(self.velocity.size(), self.velocity.data(), py::cast<>(self));
         }, nullptr);
+
+    m.def("computeSpline", &computeSpline,
+          py::arg("robot_trajectory"),
+          py::arg("computeTimeStamps") = true,
+          py::arg("param") = SplineTrajectory::Parameterization::SPLINE);
 }
 
 #endif //MOVEIT_NO_ROS_CONTROLLER_H

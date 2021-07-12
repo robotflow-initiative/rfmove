@@ -12,6 +12,8 @@
 
 namespace py = pybind11;
 
+
+
 void declare_robot_trajectory(py::module& m) {
     py::class_<robot_trajectory::RobotTrajectory, std::shared_ptr<robot_trajectory::RobotTrajectory>>(m, "RobotTrajectory")
         .def_property("group_name", &robot_trajectory::RobotTrajectory::getGroupName, &robot_trajectory::RobotTrajectory::setGroupName)
@@ -35,11 +37,6 @@ void declare_robot_trajectory(py::module& m) {
             trajectory_processing::IterativeSplineParameterization parameterization;
             parameterization.computeTimeStamps(self);
         });
-        //.def("getMessage", [](robot_trajectory::RobotTrajectory &self) -> moveit_msgs::RobotTrajectory{
-        //    moveit_msgs::RobotTrajectory trajectory;
-        //    ros::serialization::Serializer<moveit_msgs::RobotTrajectory> serializer;
-        //    serializer.
-        //});
 }
 
 #endif //MOVEIT_NO_ROS_ROBOTTRAJECTORY_H
