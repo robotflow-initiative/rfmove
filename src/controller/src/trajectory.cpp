@@ -29,6 +29,7 @@ SplineTrajectory::SplineTrajectory(robot_trajectory::RobotTrajectoryPtr robot_tr
     // }
 
     // Convert RobotTrajectory to trajectory_msgs/JointTrajectory
+    robot_trajectory_ = robot_trajectory;
     robot_trajectory->getRobotTrajectoryMsg(robot_trajectory_msg_);
 
 

@@ -15,24 +15,28 @@
 /**
  * Hardware interface for a single joint.
  * @details It can fetch joint state and send joint command.
+ * @node Do not use pure virtual function as we still need to create JointHandler pointer.
  */
 class JointHandler {
 public:
     /**
      * @details Always mark destructor virtual.
      */
-    virtual ~JointHandler() = 0;
-    virtual double position() = 0;
-    virtual double velocity() = 0;
-    virtual bool setPosVel(const double& position, const double& velocity) = 0;
-    virtual bool setPosition(const double& position) = 0;
-    virtual bool setVelocity(const double& velocity) = 0;
-    virtual const std::string& name() = 0;
+    virtual ~JointHandler() = default;
+    virtual double position() {return 0;};
+    virtual double velocity() {return 0;};
+    virtual bool setPosVel(const double& position, const double& velocity) {return false;};
+    virtual bool setPosition(const double& position) {return false;};
+    virtual bool setVelocity(const double& velocity) {return false;};
+    virtual const std::string& name() {return dummy_name_;} // Warning would occur without dummy_name_
+private:
+    std::string dummy_name_ = "dummy";
 };
 
 /**
  * Hardware interface for a group of joints.
- * @details The easiest way to implement JointGroupHandler is a list of JointHandler.
+ * @details JointGroupHandler can be used as handler for a moveit JointModelGroup.
+ * The easiest way to implement JointGroupHandler is a list of JointHandler.
  * Such JointGroupHandler is implemented by DefaultJointGroupHandler.
  * However, specific hardware may implement its own JointGroupHandler with more efficient methods.
  */
@@ -41,9 +45,9 @@ public:
     /**
      * Always mark the base classes' destructors virtual.
      */
-    virtual ~JointGroupHandler() = 0;
-    virtual void positions(std::vector<double> positions) = 0;
-    virtual void velocities(std::vector<double> velocities) = 0;
+    virtual ~JointGroupHandler() = default;
+    virtual void positions(std::vector<double> positions) {positions.resize(0);}
+    virtual void velocities(std::vector<double> velocities) {velocities.resize(0);}
 };
 
 /**
@@ -62,11 +66,13 @@ private:
 class HardwareInterface {
 public:
     virtual JointHandler* getJointHandler(const std::string& joint_name) = 0;
-    //virtual int getJointHandler(const std::vector<const std::string>& joint_names, std::vector<JointHandler*>& result) = 0;
+
     /**
      * @details Mark this function as 'virtual' so that the inherited class will use their own implementation if exists.
+     * We also provide a default implementation of getJointGroupHandler use DefaultJointGroupHandler, which means that
+     * it is ok that inherited class only implement getJointHandler.
      * @param joint_names
-     * @return
+     * @return JointGroupHandler
      */
     virtual JointGroupHandler* getJointGroupHandler(const std::vector<std::string>& joint_names);
 };

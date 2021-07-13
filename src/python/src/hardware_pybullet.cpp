@@ -6,9 +6,16 @@
 #include <iostream>
 #include <utility>
 
+int PybulletJointHandler::POSITION_CONTROL_; // definition
+int PybulletJointHandler::VELOCITY_CONTROL_; // definition
 
-PybulletJointHandler::PybulletJointHandler(int body_id, int joint_index, const std::string& joint_name,  PyAttr getJointState)
+PybulletJointHandler::PybulletJointHandler(int body_id,
+                                           int joint_index,
+                                           const std::string& joint_name,
+                                           PyAttr getJointState,
+                                           PyAttr setJointMotorControl2)
     : getJointState_(getJointState)
+    , setJointMotorControl2_(setJointMotorControl2)
 {
     joint_index_ = joint_index;
     body_id_ = body_id;
@@ -32,15 +39,21 @@ double PybulletJointHandler::velocity() {
 }
 
 bool PybulletJointHandler::setPosVel(const double &position, const double &velocity) {
-    return false;
+    std::cout << "Set body " << body_id_ << " joint " << joint_index_ << " to " << "P: " << position << " V: " << velocity << std::endl;
+    setJointMotorControl2_(body_id_, joint_index_, POSITION_CONTROL_, position, velocity);
+    return true;
 }
 
 bool PybulletJointHandler::setPosition(const double &position) {
-    return false;
+    std::cout << "Set body " << body_id_ << " joint " << joint_index_ << " to " << "P: " << position << std::endl;
+    setJointMotorControl2_(body_id_, joint_index_, POSITION_CONTROL_, position);
+    return true;
 }
 
 bool PybulletJointHandler::setVelocity(const double &velocity) {
-    return false;
+    std::cout << "Set body " << body_id_ << " joint " << joint_index_ << " to " << "V: " << velocity << std::endl;
+    setJointMotorControl2_(body_id_, joint_index_, VELOCITY_CONTROL_, velocity);
+    return true;
 }
 
 PybulletHardware::PybulletHardware(py::handle pybullet, int bodyUniqueId)
@@ -48,9 +61,12 @@ PybulletHardware::PybulletHardware(py::handle pybullet, int bodyUniqueId)
         , getNumBodies_(pybullet_.attr("getNumBodies"))
         , getJointInfo_(pybullet_.attr("getJointInfo"))
         , getNumJoints_(pybullet_.attr("getNumJoints"))
-        , getJointState_(pybullet_.attr("getJointState")){
+        , getJointState_(pybullet_.attr("getJointState"))
+        , setJointMotorControl2_(pybullet_.attr("setJointMotorControl2")){
     body_id_ = bodyUniqueId;
     joint_num_ = py::cast<int>(getNumJoints_(body_id_));
+    PybulletJointHandler::POSITION_CONTROL_ = pybullet_.attr("POSITION_CONTROL").cast<int>();
+    PybulletJointHandler::VELOCITY_CONTROL_ = pybullet_.attr("VELOCITY_CONTROL").cast<int>();
     std::cout << "Create PybulletHardware for body " << body_id_ << " with " << joint_num_ << " joints." << std::endl;
     for(int i=0; i<joint_num_; ++i) {
         auto info = py::cast<py::tuple>(getJointInfo_(body_id_, i));
@@ -64,7 +80,11 @@ int PybulletHardware::getNumBodies() {
 }
 
 JointHandler * PybulletHardware::getJointHandler(const std::string &joint_name) {
-    return new PybulletJointHandler(body_id_, joint_index_map_[joint_name], joint_name, getJointState_);
+    return new PybulletJointHandler(body_id_,
+                                    joint_index_map_[joint_name],
+                                    joint_name,
+                                    getJointState_,
+                                    setJointMotorControl2_);
 }
 
 void PybulletHardware::printJointInfo() {

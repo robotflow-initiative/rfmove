@@ -5,6 +5,7 @@ include_directories(
         ../controller/include
         ../util
         ../../extern/kdl_kinematics_plugin/include
+        include_python
         include
         ${EIGEN3_INCLUDE_DIR}
         ../../extern
@@ -38,7 +39,8 @@ pybind11_add_module(moveit_noros
         ${PLANNER_SRC}
         # src/EigenPy.cpp # head only
         ../util/path_util.cpp
-        hardware_pybullet.cpp
+        src/hardware_pybullet.cpp
+        src/helper_pybullet.cpp
         RobotModelLoaderPy.cpp)
 target_link_libraries(moveit_noros PRIVATE
         ${rdf_loader_lib}
@@ -73,7 +75,7 @@ install(TARGETS moveit_noros
 install(TARGETS moveit_noros
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-install(DIRECTORY include/
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-        FILES_MATCHING PATTERN "*.h")
+#install(DIRECTORY include_python/
+#        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+#        FILES_MATCHING PATTERN "*.h")
 

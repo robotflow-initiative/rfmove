@@ -21,6 +21,12 @@ target_link_libraries(controller_noros
         ${robot_trajectory_lib}
         ${trajectory_processing_lib})
 
+add_executable(dummy_controller
+        dummy_hardware.cpp)
+
+target_link_libraries(dummy_controller
+        controller_noros)
+
 IF(${WITH_BULLET3})
     MESSAGE("Build moveit_bullet3 with bullet robotics from ${bullet_robotics_lib}")
     add_library(moveit_bullet3
@@ -34,6 +40,11 @@ install(TARGETS controller_noros
         ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+install(TARGETS dummy_controller
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 IF(${WITH_BULLET3})
     install(TARGETS moveit_bullet3

@@ -22,16 +22,20 @@ boxId = p.loadURDF("pr2.urdf", startPos, startOrientation, useFixedBase=1)
 
 print("== Connect throught cpp ==")
 
-bulletController = moveit.PybulletHardware(p, boxId)
+bulletHardware = moveit.PybulletHardware(p, boxId)
 
 print("boxID %d" % boxId)
 print("joint number from python %d" % p.getNumJoints(boxId))
 
 print("body number at end %d" % p.getNumBodies())
-print("body number at end from controller %d" % bulletController.getNumBodies())
+print("body number at end from controller %d" % bulletHardware.getNumBodies())
 
-bulletController.printJointInfo()
-bulletController.printJointState()
+bulletHardware.printJointInfo()
+bulletHardware.printJointState()
+
+testHandler = bulletHardware.getJointHandler("l_shoulder_lift_joint")
+testHandler.setPosVel(-1, 1)
+#p.setJointMotorControl2(boxId, 65, p.POSITION_CONTROL, -1, 1)
 
 #p.setJointMotorControl2(boxId, , p.POSITION_CONTROL, targetPosition = self.kinematic_state.getJointPosition(joint_name), maxVelocity = 3)
 #cppClient.debugGravity()

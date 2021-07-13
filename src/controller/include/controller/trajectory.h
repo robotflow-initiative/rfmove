@@ -57,6 +57,11 @@ public:
      * @return
      */
     double startTime();
+
+    /**
+     * End time of trajectory
+     * @return
+     */
     double endTime();
 
     /**
@@ -67,10 +72,23 @@ public:
      * @param param
      */
     static void computeTimeStamps(robot_trajectory::RobotTrajectoryPtr trajectory, Parameterization param = Parameterization::SPLINE);
+
+    /**
+     *
+     */
+    void getTipTransforms() {
+        robot_trajectory_->getFirstWayPoint().getRobotModel()->getModelFrame();
+        auto joint_model_group = robot_trajectory_->getFirstWayPoint().getRobotModel()->getJointModelGroup(group_name_);
+        joint_model_group->getEndEffectorName();
+        joint_model_group->getEndEffectorTips();
+        auto transform = robot_trajectory_->getFirstWayPoint().getGlobalLinkTransform();
+    };
+
 private:
 
     std::vector<std::string> joint_names_;
     std::string group_name_;
+    robot_trajectory::RobotTrajectoryPtr robot_trajectory_;
     moveit_msgs::RobotTrajectory robot_trajectory_msg_;
     Trajectory trajectory_;
 };

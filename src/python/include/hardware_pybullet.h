@@ -13,7 +13,11 @@ namespace py=pybind11;
 class PybulletJointHandler : public JointHandler {
 public:
     typedef py::detail::accessor<py::detail::accessor_policies::str_attr> PyAttr;
-    PybulletJointHandler(int body_id_, int joint_index, const std::string& joint_name, PyAttr getJointState);
+    PybulletJointHandler(int body_id_,
+                         int joint_index,
+                         const std::string& joint_name,
+                         PyAttr getJointState,
+                         PyAttr setJointMotorControl2);
 
     // implementation of JointHandler's virtual methods.
     ~PybulletJointHandler() override;
@@ -23,8 +27,14 @@ public:
     bool setPosition(const double& position) override;
     bool setVelocity(const double& velocity) override;
     const std::string& name() override;
+
+    static int POSITION_CONTROL_;   // declaration
+    static int VELOCITY_CONTROL_;   // declaration
+                                    // Note that any cpp source file still need to define the static member variable
+                                    // as here are only declarations.
 private:
     PyAttr getJointState_;
+    PyAttr setJointMotorControl2_;
     std::string name_;
     int joint_index_;
     int body_id_;
@@ -35,6 +45,7 @@ public:
     typedef py::detail::accessor<py::detail::accessor_policies::str_attr> PyAttr;
     explicit PybulletHardware(py::handle pybullet, int bodyUniqueId);
     int getNumBodies();
+
     /**
      * printout all joint info
      * @details Used for debugging.
@@ -55,6 +66,7 @@ private:
     PyAttr getJointInfo_;
     PyAttr getNumJoints_;
     PyAttr getJointState_;
+    PyAttr setJointMotorControl2_;
     std::map<std::string, int> joint_index_map_; /// A map between joint name and joint index in bullet.
     int body_id_;
     int joint_num_;
