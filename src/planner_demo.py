@@ -102,4 +102,9 @@ plot3 = origin_velocity.plot(time_stamp_origin, y_origin_velocity, linestyle='-'
 time_stamp_sample = np.linspace(spline_trajectory.start_time, spline_trajectory.end_time, sample.velocity.size)
 plot4 = sample_velocity.plot(time_stamp_sample, sample.velocity, color = 'orange')
 
+# get tip transforms
+tip_transforms = spline_trajectory.tip_transforms
+for tip in tip_transforms:
+    print(tip)
+
 plt.show()

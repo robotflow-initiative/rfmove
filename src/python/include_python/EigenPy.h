@@ -61,6 +61,32 @@ void affine3dReset(Eigen::Affine3d &affine) {
  * @param m
  */
 void declare_eigen(py::module &m) {
+    /*
+    py::class_<Eigen::Quaterniond> (m, "EigenQuaterniond")
+        .def("__str__", [](Eigen::Quaterniond &self){
+            std::ostringstream sstr;
+            sstr << "[ " << self.x()
+                 << ", " << self.y()
+                 << ", " << self.z()
+                 << ", " << self.w()
+                 << ']' << std::endl;
+            return sstr.str();
+        })
+        .def("__repr__", [](Eigen::Quaterniond &self){
+            std::ostringstream sstr;
+            sstr << "<Eigen::Quaterniond>" << std::endl;
+            sstr << "[ " << self.x()
+                 << ", " << self.y()
+                 << ", " << self.z()
+                 << ", " << self.w()
+                 << ']' << std::endl;
+            return sstr.str();
+        })
+        .def("value", [](Eigen::Quaterniond &self) {
+            self.matrix().data();
+        });
+        */
+
     py::class_<Eigen::Affine3d>(m, "EigenAffine3d")
         /// Note that new Affine matrix has random value.
         .def(py::init())
@@ -89,12 +115,15 @@ void declare_eigen(py::module &m) {
             size_t copy_size = trans.size() > 3 ? 3 : trans.size();
             memcpy(self.translation().data(), trans.data(), copy_size*sizeof(double));
         })
-        .def("rotation", &Eigen::Affine3d::rotation)
+        .def_property("rotation", &Eigen::Affine3d::rotation, nullptr)
+        .def_property("quaternion", [](Eigen::Affine3d& self){
+            return Eigen::Quaterniond(self.rotation());
+        }, nullptr)
         .def("rotate", &affine3dRotate)
         //.def("translation", &Eigen::Affine3d::translation)
         /** Return translation as a 3-d numpy array
          *  Note that the data is copyed.*/
-        .def("translation", [](Eigen::Affine3d &self){
+        .def_property("translation", [](Eigen::Affine3d &self){
             Eigen::Affine3d::TranslationPart trans = self.translation();
             //std::cout << "Translation within declaration" << trans << std::endl;
             //return std::vector<double>{trans.x(), trans.y(), trans.z()};
@@ -115,7 +144,7 @@ void declare_eigen(py::module &m) {
                 data,                   //data pointer
                 free_when_done          //handler for free
             );
-        })
+        }, nullptr)
         .def("translate", &affine3dTranslate);
         /*
         .def("rotation", [](Eigen::Affine3d &self){

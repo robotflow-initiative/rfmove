@@ -20,6 +20,7 @@ void declare_joint_model_group(py::module &m){
      *  functions returning JointModelGroup to reference. The default container unique_ptr works fine here.
      */
     py::class_<moveit::core::JointModelGroup>(m, "JointModelGroup")
+        .def_property("name", &moveit::core::JointModelGroup::getName, nullptr)
         .def("getName", &moveit::core::JointModelGroup::getName, "Get the name of grup")
         .def("getJointModelNames", &moveit::core::JointModelGroup::getJointModelNames,
              py::return_value_policy::reference_internal,
@@ -58,6 +59,15 @@ void declare_joint_model_group(py::module &m){
             "Get all variable bounds.");
 
     py::class_<moveit::core::LinkModel>(m, "LinkModel")
+        .def("__str__", [](moveit::core::LinkModel& self) {
+            return self.getName();
+        })
+        .def("__repr__", [](moveit::core::LinkModel& self) {
+            std::ostringstream sstr;
+            sstr << "<moveit::core::LinkModel>" << std::endl;
+            sstr << self.getName() << std::endl;
+            return sstr.str();
+        })
         .def("getName", &moveit::core::LinkModel::getName,
              "Get the name of Link");
 

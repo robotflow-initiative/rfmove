@@ -56,7 +56,15 @@ public:
      * printout all joint state
      * @details Used for debuffing.
      */
-     void printJointState();
+    void printJointState();
+
+    /**
+     * get all joint states
+     * @details This is not a HardwareInterface method. This is mainly used by help methods for pybullet.
+     */
+    void getJointStateAll(std::vector<double>& position, std::vector<double>& velocity);
+
+    const std::vector<std::string>& getJointNames() {return joint_names_;};
 
     // Implementation of HardwareInterface virtual interface.
     JointHandler * getJointHandler(const std::string &joint_name) override;
@@ -66,10 +74,13 @@ private:
     PyAttr getJointInfo_;
     PyAttr getNumJoints_;
     PyAttr getJointState_;
+    PyAttr getJointStates_;
     PyAttr setJointMotorControl2_;
     std::map<std::string, int> joint_index_map_; /// A map between joint name and joint index in bullet.
     int body_id_;
     int joint_num_;
+    std::vector<std::string> joint_names_;
+    std::vector<int> all_index_;
 };
 
 #endif //MOVEIT_NO_ROS_HARDWARE_PYBULLET_H

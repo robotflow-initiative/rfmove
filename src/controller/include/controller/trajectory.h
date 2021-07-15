@@ -9,9 +9,12 @@
 #include <moveit/robot_trajectory/robot_trajectory.h>
 #include <joint_trajectory_controller/joint_trajectory_segment.h>
 #include <trajectory_interface/pos_vel_acc_state.h>
+#include <Eigen/Geometry>
 
 /**
  * Trajectory representation using trajectory_interface::QuinticSplineSegment.
+ * @details SplineTrajectory can be constructed from robot_trajectory::RobotTrajectory which represents the trajectory
+ * for one JointModelGroup.
  */
 class SplineTrajectory {
 public:
@@ -74,20 +77,21 @@ public:
     static void computeTimeStamps(robot_trajectory::RobotTrajectoryPtr trajectory, Parameterization param = Parameterization::SPLINE);
 
     /**
-     *
+     * Get the transform of trajectory tip according to robot base frame.
+     * @details One robot may have multi tip links. However, here we only fetch the first tip link corresponding
+     * to JointModelGroup of this trajectory.
+     * @param result The result affine matrices would be put into result.
+     * @return Number of matrices returned. It should be the same as the number of robot trajectory waypoints.
      */
-    void getTipTransforms() {
-        robot_trajectory_->getFirstWayPoint().getRobotModel()->getModelFrame();
-        auto joint_model_group = robot_trajectory_->getFirstWayPoint().getRobotModel()->getJointModelGroup(group_name_);
-        joint_model_group->getEndEffectorName();
-        joint_model_group->getEndEffectorTips();
-        auto transform = robot_trajectory_->getFirstWayPoint().getGlobalLinkTransform();
-    };
+    int getTipTransforms(std::vector<Eigen::Affine3d>& result);
 
 private:
 
     std::vector<std::string> joint_names_;
     std::string group_name_;
+    std::vector<std::string> tip_names_;    // Name of tip effector
+                                            // Size is 1 in most cases
+    const moveit::core::LinkModel* tip_link_;     // Tip link model
     robot_trajectory::RobotTrajectoryPtr robot_trajectory_;
     moveit_msgs::RobotTrajectory robot_trajectory_msg_;
     Trajectory trajectory_;

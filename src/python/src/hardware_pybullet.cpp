@@ -5,6 +5,7 @@
 #include "hardware_pybullet.h"
 #include <iostream>
 #include <utility>
+#include <pybind11/stl.h>
 
 int PybulletJointHandler::POSITION_CONTROL_; // definition
 int PybulletJointHandler::VELOCITY_CONTROL_; // definition
@@ -57,21 +58,27 @@ bool PybulletJointHandler::setVelocity(const double &velocity) {
 }
 
 PybulletHardware::PybulletHardware(py::handle pybullet, int bodyUniqueId)
-        :pybullet_(py::reinterpret_borrow<py::object>(pybullet))
+        : pybullet_(py::reinterpret_borrow<py::object>(pybullet))
         , getNumBodies_(pybullet_.attr("getNumBodies"))
         , getJointInfo_(pybullet_.attr("getJointInfo"))
         , getNumJoints_(pybullet_.attr("getNumJoints"))
         , getJointState_(pybullet_.attr("getJointState"))
+        , getJointStates_(pybullet_.attr("getJointStates"))
         , setJointMotorControl2_(pybullet_.attr("setJointMotorControl2")){
     body_id_ = bodyUniqueId;
     joint_num_ = py::cast<int>(getNumJoints_(body_id_));
+
     PybulletJointHandler::POSITION_CONTROL_ = pybullet_.attr("POSITION_CONTROL").cast<int>();
     PybulletJointHandler::VELOCITY_CONTROL_ = pybullet_.attr("VELOCITY_CONTROL").cast<int>();
     std::cout << "Create PybulletHardware for body " << body_id_ << " with " << joint_num_ << " joints." << std::endl;
+    all_index_.resize(joint_num_);
+    joint_names_.resize(joint_num_);
     for(int i=0; i<joint_num_; ++i) {
         auto info = py::cast<py::tuple>(getJointInfo_(body_id_, i));
         // std::cout << "[ " << info[0].cast<int>() << ", " << info[1].cast<std::string>() << ']' << std::endl;
+        all_index_[i] = i;
         joint_index_map_[info[1].cast<std::string>()] = i;
+        joint_names_[i] = info[1].cast<std::string>();
     }
 }
 
@@ -99,5 +106,16 @@ void PybulletHardware::printJointState() {
         auto state = py::cast<py::tuple>(getJointState_(body_id_, i));
         auto info = py::cast<py::tuple>(getJointInfo_(body_id_, i));
         std::cout << info[1].cast<std::string>() << ": [ " << state[0].cast<double>() << ", " << state[1].cast<double>() << ']' << std::endl;
+    }
+}
+
+void PybulletHardware::getJointStateAll(std::vector<double>& position, std::vector<double>& velocity) {
+    position.resize(joint_num_);
+    velocity.resize(joint_num_);
+    // py::list tmp = py::cast<>(all_index_);
+    auto all_states = py::cast<py::tuple>(getJointStates_(body_id_, all_index_));
+    for(size_t i=0; i<joint_num_; ++i) {
+        position[i] = all_states[i].cast<py::tuple>()[0].cast<double>();
+        velocity[i] = all_states[i].cast<py::tuple>()[0].cast<double>();
     }
 }

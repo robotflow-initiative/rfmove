@@ -36,6 +36,16 @@ SplineTrajectory::SplineTrajectory(robot_trajectory::RobotTrajectoryPtr robot_tr
     // Convert trajectory_msgs/JointTrajectory to controller trajectory
     trajectory_ = joint_trajectory_controller::initJointTrajectory<Trajectory>(robot_trajectory_msg_.joint_trajectory,
                                                                                ros::Time(0));
+
+    // Get tip link information
+    joint_model_group->getEndEffectorTips(tip_names_);
+    if(!tip_names_.empty()) {
+        tip_link_ = joint_model_group->getLinkModel(tip_names_[0]);
+    } else {
+        std::cerr << "Error when create SplineTrajectory: " << group_name_ << " has no tip link info." << std::endl;
+        return;
+    }
+
     /*
     for(size_t i=0; i<waypoint_count - 1; ++i) {
         const moveit::core::RobotState& start_state = trajectory->getWayPoint(i);
@@ -135,4 +145,12 @@ void SplineTrajectory::computeTimeStamps(robot_trajectory::RobotTrajectoryPtr tr
         default:
             ROS_ERROR_STREAM("Unknown trajectory time stamps parameterization: " << static_cast<int>(param));
     }
+}
+
+int SplineTrajectory::getTipTransforms(std::vector<Eigen::Affine3d>& result) {
+    result.resize(robot_trajectory_->getWayPointCount());
+    for (size_t i=0; i < robot_trajectory_->getWayPointCount(); ++i) {
+        result[i] = robot_trajectory_->getWayPoint(i).getGlobalLinkTransform(tip_link_);
+    }
+    return robot_trajectory_->getWayPointCount();
 }

@@ -38,7 +38,16 @@ void declare_controller(py::module &m) {
             auto* result = new trajectory_interface::PosVelAccState<double>;
             self.sample(joint_name, *result, interval);
             return result;
-        });
+        })
+        .def_property("tip_transforms", [](SplineTrajectory& self) {
+            auto transforms = new std::vector<Eigen::Affine3d>();
+            self.getTipTransforms(*transforms);
+            return transforms;
+            //auto capsule = py::capsule(transforms, [](void *transforms){
+            //   delete reinterpret_cast<std::vector<Eigen::Affine3d>*>(transforms);
+            //});
+            //return py::array(transforms->size(), transforms->data(), capsule);
+        }, nullptr);
 
     py::class_<trajectory_interface::PosVelAccState<double>,
             std::unique_ptr<trajectory_interface::PosVelAccState<double>>>(m, "SegmentState")
