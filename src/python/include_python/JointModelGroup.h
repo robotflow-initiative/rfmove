@@ -20,6 +20,15 @@ void declare_joint_model_group(py::module &m){
      *  functions returning JointModelGroup to reference. The default container unique_ptr works fine here.
      */
     py::class_<moveit::core::JointModelGroup>(m, "JointModelGroup")
+        .def("__str__", [](moveit::core::JointModelGroup& self){
+            return self.getName();
+        })
+        .def("__repr__", [](moveit::core::JointModelGroup& self){
+            std::ostringstream sstr;
+            sstr << "<moveit::core::JointModelGroup at " << &self << '>' << std::endl;
+            sstr << self.getName();
+            return sstr.str();
+        })
         .def_property("name", &moveit::core::JointModelGroup::getName, nullptr)
         .def("getName", &moveit::core::JointModelGroup::getName, "Get the name of grup")
         .def("getJointModelNames", &moveit::core::JointModelGroup::getJointModelNames,
@@ -41,7 +50,18 @@ void declare_joint_model_group(py::module &m){
             std::vector<std::string> res;
             self.getEndEffectorTips(res);
             return res;
-        });
+        }, "Get all tip links.")
+        .def_property("tip_link", [](moveit::core::JointModelGroup& self) -> std::string {
+            std::vector<std::string> res;
+            self.getEndEffectorTips(res);
+            return res[0];
+        }, nullptr, "The first tip link. To get all tip links please use getEndEffectorTips")
+        .def_property("base_frame", [](moveit::core::JointModelGroup& self) -> std::string {
+            return self.getSolverInstance()->getBaseFrame();
+        }, nullptr)
+        .def_property("tip_frame", [](moveit::core::JointModelGroup& self) {
+            return self.getSolverInstance()->getTipFrame();
+        }, nullptr);
 
     py::class_<moveit::core::JointModel>(m, "JointModel")
         .def("getName", &moveit::core::JointModel::getName,

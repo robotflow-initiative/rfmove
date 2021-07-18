@@ -24,6 +24,10 @@ void declare_pybullet_controller(py::module& m) {
         .def("velocity", &JointHandler::velocity)
         .def("setPosVel", &JointHandler::setPosVel);
 
+    /**
+     * @warning It is not a good idea to use PybulletHardware methods directly as they are only accessors to pybullet.
+     * Use helper classes and controller instead.
+     */
     py::class_<PybulletHardware>(m, "PybulletHardware")
         .def(py::init<py::handle, int>())
         .def("getNumBodies", &PybulletHardware::getNumBodies)

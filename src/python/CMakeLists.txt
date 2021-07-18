@@ -40,7 +40,7 @@ pybind11_add_module(moveit_noros
         # src/EigenPy.cpp # head only
         ../util/path_util.cpp
         src/hardware_pybullet.cpp
-        #src/helper_pybullet.cpp
+        src/helper_pybullet.cpp
         RobotModelLoaderPy.cpp)
 target_link_libraries(moveit_noros PRIVATE
         ${rdf_loader_lib}

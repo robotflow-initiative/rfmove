@@ -9,6 +9,7 @@
 #include <pybind11/eigen.h>
 #include <Eigen/Geometry>
 #include <pybind11/numpy.h>
+#include <pybind11/operators.h>
 #include <sstream>
 
 namespace py = pybind11;
@@ -61,7 +62,6 @@ void affine3dReset(Eigen::Affine3d &affine) {
  * @param m
  */
 void declare_eigen(py::module &m) {
-    /*
     py::class_<Eigen::Quaterniond> (m, "EigenQuaterniond")
         .def("__str__", [](Eigen::Quaterniond &self){
             std::ostringstream sstr;
@@ -69,23 +69,41 @@ void declare_eigen(py::module &m) {
                  << ", " << self.y()
                  << ", " << self.z()
                  << ", " << self.w()
-                 << ']' << std::endl;
+                 << ']';
             return sstr.str();
         })
         .def("__repr__", [](Eigen::Quaterniond &self){
             std::ostringstream sstr;
-            sstr << "<Eigen::Quaterniond>" << std::endl;
+            sstr << "<Eigen::Quaterniond at " << &self << '>'<< std::endl;
             sstr << "[ " << self.x()
                  << ", " << self.y()
                  << ", " << self.z()
                  << ", " << self.w()
-                 << ']' << std::endl;
+                 << ']';
             return sstr.str();
         })
-        .def("value", [](Eigen::Quaterniond &self) {
-            self.matrix().data();
-        });
-        */
+        .def_property("value", [](Eigen::Quaterniond &self){
+            auto data = new double[4];
+            data[0] = self.x();
+            data[1] = self.y();
+            data[2] = self.z();
+            data[3] = self.w();
+
+            py::capsule free_when_done(data, [](void *f) {
+                auto data = reinterpret_cast<double*>(f);
+                //std::cerr << "Free underlining numpy array memory @" << f << '\n';
+                delete [] data;
+            });
+            return py::array_t<double>(
+                    {4},    //shape
+                    {sizeof(double)}, //strides
+                    data,                   //data pointer
+                    free_when_done          //handler for free
+            );
+        }, nullptr)
+        .def_property("matrix", [](Eigen::Quaterniond &self) {
+            return self.matrix();
+        }, nullptr);
 
     py::class_<Eigen::Affine3d>(m, "EigenAffine3d")
         /// Note that new Affine matrix has random value.
@@ -145,7 +163,11 @@ void declare_eigen(py::module &m) {
                 free_when_done          //handler for free
             );
         }, nullptr)
-        .def("translate", &affine3dTranslate);
+        .def("translate", &affine3dTranslate)
+        .def_property("inverse", [](Eigen::Affine3d &self){
+            return self.inverse(Eigen::TransformTraits::Affine);
+        }, nullptr)
+        .def(py::self * py::self); // Binding for operator *
         /*
         .def("rotation", [](Eigen::Affine3d &self){
             auto rota = self.rotation();

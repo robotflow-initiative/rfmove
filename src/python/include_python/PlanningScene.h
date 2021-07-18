@@ -24,6 +24,7 @@ void declare_planning_scene(py::module &m) {
          * So we have to set the return policy to reference_internal
          */
         .def("getCurrentStateNonConst", &planning_scene::PlanningScene::getCurrentStateNonConst, py::return_value_policy::reference_internal);
+        //.def_property("state", &planning_scene::PlanningScene::getCurrentStateNonConst, py::return_value_policy);
 
     py::class_<collision_detection::CollisionRequest>(m, "CollisionRequest") // We do not use smart pointer of CollisionRequest
         .def(py::init<>())

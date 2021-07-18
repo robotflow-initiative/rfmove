@@ -19,6 +19,15 @@ void declare_robot_state(py::module &m) {
         //    <void(moveit::core::RobotState::*)(const moveit::core::JointModelGroup* group, std::vector<double>&) const>
         //    (&moveit::core::RobotState::copyJointGroupPositions),
         //    "Get a copy of joint model group positions")
+        .def("__str__", [](moveit::core::RobotState& self){
+            return self.getRobotModel()->getName();
+        })
+        .def("__repr__", [](moveit::core::RobotState& self) {
+            std::ostringstream sstr;
+            sstr << "<moveit::core::RobotState at " << &self <<'>' << std::endl;
+            sstr << self.getRobotModel()->getName();
+            return sstr.str();
+        })
         .def("copyJointGroupPositions", [](moveit::core::RobotState& self, const moveit::core::JointModelGroup* group) {
                  std::vector<double> result;
                  self.copyJointGroupPositions(group, result);
