@@ -181,7 +181,7 @@ LD_LIBRARY_PATH=<repo>/install/lib:$LD_LIBRARY_PATH ./moveit_not_ros_demo
 - **resources/**: Resource file copyed from `panda_moveit_config` package.
 
 ## TODO
-- [ ] Support Motion Plan.
-- [ ] Support IK-Fast kinematics solver.
+- [x] Support Motion Plan.
+- [x] Support IK-Fast kinematics solver.
 - [ ] Make it pip installable.
-- [ ] Support ros controller.
+- [x] Support ros controller.
