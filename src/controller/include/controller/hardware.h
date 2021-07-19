@@ -48,6 +48,9 @@ public:
     virtual ~JointGroupHandler() = default;
     virtual void positions(std::vector<double> positions) {positions.resize(0);}
     virtual void velocities(std::vector<double> velocities) {velocities.resize(0);}
+    virtual bool setPosVels(const std::vector<double>& positions, const std::vector<double>& velocities) = 0;
+    virtual bool setPositions(const std::vector<double>& positions) = 0;
+    virtual bool setVelocities(const std::vector<double>& velocities) = 0;
 };
 
 /**
@@ -59,12 +62,19 @@ public:
     ~DefaultJointGroupHandler() override;
     void positions(std::vector<double> _positions) override;
     void velocities(std::vector<double> _velocities) override;
+    bool setPosVels(const std::vector<double>& positions, const std::vector<double>& velocities) override;
+    bool setPositions(const std::vector<double>& positions) override;
+    bool setVelocities(const std::vector<double>& velocities) override;
 private:
     std::vector<JointHandler*> handlers_;
 };
 
 class HardwareInterface {
 public:
+    /**
+     * Always mark the destructor of base class as virtual.
+     */
+    virtual ~HardwareInterface() = default;
     virtual JointHandler* getJointHandler(const std::string& joint_name) = 0;
 
     /**

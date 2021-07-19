@@ -91,6 +91,21 @@ int SplineTrajectory::sample(const std::string& joint_name, trajectory_interface
     return sample_count;
 }
 
+int SplineTrajectory::sample_at_time(trajectory_interface::PosVelAccState<double> &result, double time_point) {
+    result.position.resize(trajectory_.size());
+    result.velocity.resize(trajectory_.size());
+    Segment::State sampled_state;
+    size_t i = 0;
+    for(auto joint_trajectory : trajectory_) {
+        trajectory_interface::sample(joint_trajectory, time_point, sampled_state);
+        result.position[i] = sampled_state.position[0];
+        result.velocity[i] = sampled_state.velocity[0];
+        result.acceleration[i] = sampled_state.acceleration[0];
+        ++i;
+    }
+    return trajectory_.size();
+}
+
 double SplineTrajectory::duration() {
     if(trajectory_.empty()) {
         ROS_WARN("Empty spline trajectory.");
@@ -153,4 +168,12 @@ int SplineTrajectory::getTipTransforms(std::vector<Eigen::Affine3d>& result) {
         result[i] = robot_trajectory_->getWayPoint(i).getGlobalLinkTransform(tip_link_);
     }
     return robot_trajectory_->getWayPointCount();
+}
+
+const std::string& SplineTrajectory::getGroupName() {
+    return group_name_;
+}
+
+const std::vector<std::string> & SplineTrajectory::getJointNames() {
+    return joint_names_;
 }

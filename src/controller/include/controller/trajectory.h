@@ -39,6 +39,8 @@ public:
      */
     int sample(const std::string& joint_name, trajectory_interface::PosVelAccState<double>& sample, double interval = 1e-3);
 
+    int sample_at_time(trajectory_interface::PosVelAccState<double>& result, double time_point);
+
     /**
      * The intex of specific joint.
      * @details This is also the order of sample result.
@@ -84,6 +86,13 @@ public:
      * @return Number of matrices returned. It should be the same as the number of robot trajectory waypoints.
      */
     int getTipTransforms(std::vector<Eigen::Affine3d>& result);
+
+    /**
+     * @return Name of joint model group for this trajectory.
+     */
+    const std::string& getGroupName();
+
+    const std::vector<std::string>& getJointNames();
 
 private:
 
