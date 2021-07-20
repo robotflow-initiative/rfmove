@@ -2,8 +2,8 @@
 // Created by yongxi on 2021/7/11.
 //
 
-#ifndef MOVEIT_NO_ROS_CONTROLLER_H
-#define MOVEIT_NO_ROS_CONTROLLER_H
+#ifndef MOVEIT_NO_ROS_TRAJECTORY_CONTROLLER_H
+#define MOVEIT_NO_ROS_TRAJECTORY_CONTROLLER_H
 
 #include "controller/hardware.h"
 #include "controller/trajectory.h"
@@ -36,9 +36,10 @@ private:
     std::map<const std::string, JointGroupHandler*> group_handlers_;
     HardwareInterface* hardware_;
     double interval_;
-    double half_interval_;
-    std::chrono::duration<double> interval_chrono_;
-    std::chrono::duration<double> half_interval_chrono_;
+    std::chrono::high_resolution_clock::duration interval_chrono_;
+
+    /// @todo Use mutex and lock to maintain synchronization.
+    bool isRunning_;
 };
 
-#endif //MOVEIT_NO_ROS_CONTROLLER_H
+#endif //MOVEIT_NO_ROS_TRAJECTORY_CONTROLLER_H

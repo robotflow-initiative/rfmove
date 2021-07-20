@@ -2,17 +2,17 @@
 // Created by yongxi on 2021/7/11.
 //
 
-#include "controller/controller.h"
+#include "controller/trajectory_controller.h"
 #include <chrono>
 #include <thread>
 
-Controller::Controller(HardwareInterface *hardware, double interval)
-    : interval_chrono_(interval)
-    , half_interval_chrono_(interval/2)
-{
+Controller::Controller(HardwareInterface *hardware, double interval) {
     hardware_ = hardware;
     interval_ = interval;
-    half_interval_ = interval/2;
+    interval_chrono_ = std::chrono::duration_cast
+            <std::chrono::high_resolution_clock::duration>
+            (std::chrono::duration<double>(interval));
+    isRunning_ = false;
 }
 
 Controller::~Controller() {
@@ -77,9 +77,48 @@ bool Controller::executeTrajectory(SplineTrajectoryPtr spline_trajectory) {
         // Sample
         std::this_thread::sleep_until(update_time);
         spline_trajectory->sample_at_time(sampled, sample_time);
-        sample_time += interval_;
-        //update_time += interval_chrono_;
 
+        // Send command
+        /// @todo There should be timeout functionality for handler.
+        if(!group_handler->setPosVels(sampled.position, sampled.velocity)){
+            ROS_ERROR_STREAM("Can not send command to group " << spline_trajectory->getGroupName());
+            return false;
+        }
+
+        /// @todo Add call back during the execution of trajectory.
+
+
+        // Update sample time
+        sample_time += interval_;
+        update_time += interval_chrono_;
     }
-    // Compute chrono duration from SplineTrajectory
+    return true;
+}
+
+bool Controller::isRunning() {
+    return isRunning_;
+}
+
+bool Controller::canExecute(const std::string &joint_name) {
+    if(handlers_.find(joint_name) == handlers_.end()) {
+        return loadJointHandler(joint_name);
+    } else {
+        return true;
+    }
+}
+
+bool Controller::canExecute(const std::vector<std::string> &joint_names) {
+    bool result = true;
+    for(const auto& joint_name : joint_names) {
+        result  = (result && canExecute(joint_name));
+    }
+    return result;
+}
+
+bool Controller::canExecute(SplineTrajectoryPtr spline_trajectory) {
+    if(group_handlers_.find(spline_trajectory->getGroupName()) == group_handlers_.end()) {
+        return loadJointGroupHandler(spline_trajectory->getGroupName(), spline_trajectory->getJointNames());
+    } else {
+        return true;
+    }
 }
