@@ -100,7 +100,10 @@ void declare_robot_state(py::module &m) {
         })
         .def("toMsg", [](moveit::core::RobotState &self) {
 
-        });
+        })
+        .def("dirty", &moveit::core::RobotState::dirty)
+        .def("update", &moveit::core::RobotState::update,
+         py::arg("force") = false);
 
 }
 

@@ -10,6 +10,8 @@
 
 namespace py=pybind11;
 
+
+/// @todo Make HardwareInterface and JointHandler extendable in python.
 class PybulletJointHandler : public JointHandler {
 public:
     typedef py::detail::accessor<py::detail::accessor_policies::str_attr> PyAttr;
@@ -30,6 +32,7 @@ public:
 
     static int POSITION_CONTROL_;   // declaration
     static int VELOCITY_CONTROL_;   // declaration
+    static int TORQUE_CONTROL_;
                                     // Note that any cpp source file still need to define the static member variable
                                     // as here are only declarations.
 private:
@@ -65,6 +68,16 @@ public:
     void getJointStateAll(std::vector<double>& position, std::vector<double>& velocity);
 
     const std::vector<std::string>& getJointNames() {return joint_names_;};
+
+    /**
+     * Make the pybullet hardware stay in current position.
+     */
+    void stayCurrent();
+
+    /**
+     *
+     */
+    void free();
 
     // Implementation of HardwareInterface virtual interface.
     JointHandler * getJointHandler(const std::string &joint_name) override;

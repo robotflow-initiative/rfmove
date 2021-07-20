@@ -36,7 +36,7 @@ bool DefaultJointGroupHandler::setPosVels(const std::vector<double> &positions,
     count = std::min<size_t>(count, velocities.size());
     bool result = false;
     for(size_t i = 0; i < count ; ++i) {
-        result = result || handlers_[i]->setPosVel(positions[i], velocities[i]);
+        result = (result || handlers_[i]->setPosVel(positions[i], velocities[i]));
     }
     return result;
 }
@@ -45,7 +45,7 @@ bool DefaultJointGroupHandler::setPositions(const std::vector<double> &positions
     size_t count = std::min<size_t>(handlers_.size(), positions.size());
     bool result = false;
     for(size_t i = 0; i < count ; ++i) {
-        result = result || handlers_[i]->setPosition(positions[i]);
+        result = (result || handlers_[i]->setPosition(positions[i]));
     }
     return result;
 }
@@ -54,7 +54,7 @@ bool DefaultJointGroupHandler::setVelocities(const std::vector<double> &velociti
     size_t count = std::min<size_t>(handlers_.size(), velocities.size());
     bool result = false;
     for(size_t i = 0; i < count ; ++i) {
-        result = result || handlers_[i]->setVelocity(velocities[i]);
+        result = (result || handlers_[i]->setVelocity(velocities[i]));
     }
     return result;
 }

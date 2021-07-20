@@ -26,6 +26,16 @@ void PlanningSceneHelper::sync() {
     }
 }
 
+void PlanningSceneHelper::resync() {
+    moveit::core::RobotState& robot_state = planning_scene_->getCurrentStateNonConst();
+    double position;
+    for(const auto& name: pybullet_.getJointNames()) {
+        /// @todo may raise error if the joint is a multi-dof joint
+        position = robot_state.getJointPositions(name)[0];
+        pybullet_.getJointHandler(name)->setPosition(position);
+    }
+}
+
 Eigen::Affine3d PlanningSceneHelper::linkTransform(const std::string &link_name, bool _sync) {
     if(_sync) {
         sync();

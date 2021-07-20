@@ -16,11 +16,18 @@ public:
     PlanningSceneHelper(PybulletHardware pybullet, planning_scene::PlanningScenePtr);
 
     /**
-     * Synchronize robot state between moveit and pybullet.
+     * Synchronize robot state in moveit the same as pybullet.
      * @details Walk through all joints from pybullet hardware and set the joint position in robot state the same
      * as pybullet.
      */
     void sync();
+
+    /**
+     * Reverse version of sync. Synchronize robot state in pybullet the same as moveit.
+     * @details Walk through all joints from pybullet hardware and change their position in pybullet according to
+     * the joint position read from robot state.
+     */
+    void resync();
 
     /**
      * Get specific link transformation according to robot model frame.

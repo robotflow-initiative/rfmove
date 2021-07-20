@@ -39,14 +39,26 @@ bulletHardware = moveit.PybulletHardware(p, boxId)
 
 planning_scene = robot_loader.newPlanningScene()
 PLANNING_GROUP = "left_arm"
+scene_helper = moveit.PlanningSceneHelper(bulletHardware, planning_scene)
+
 joint_model_group = robot_model.getJointModelGroup(PLANNING_GROUP)
-tip_link = joint_model_group.getEndEffectorTips()[0]
-base_frame = robot_model.getModelFrame()
-end_transform = getTransform(bulletHardware, planning_scene, tip_link)
+
+
+
+scene_helper.sync()
+
+planning_scene.getCurrentStateNonConst().enforceBounds()
+planning_scene.getCurrentStateNonConst().update()
+
+base_frame = joint_model_group.base_frame
+tip_frame = joint_model_group.tip_frame
+link_transform = scene_helper.linkTransform(tip_frame)
+base_transform = scene_helper.linkTransform(base_frame, False)
+relative_transform = scene_helper.linkRelativeTransform(tip_frame, base_frame, False)
 
 req = moveit.MotionPlanRequest(PLANNING_GROUP)
-pose = moveit.PoseStamped(base_frame, end_transform.translation, end_transform.quaternion.value)
-pose_goal = moveit.constructGoalConstraints(tip_link, pose, 0.01, 0.01)
+pose = moveit.PoseStamped(base_frame, relative_transform.translation, relative_transform.quaternion.value)
+pose_goal = moveit.constructGoalConstraints(tip_frame, pose, 0.01, 0.01)
 req.addGoal(pose_goal)
 context = planner.getPlanningContext(planning_scene, req)
 response = context.solve()

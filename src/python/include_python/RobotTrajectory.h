@@ -12,8 +12,6 @@
 
 namespace py = pybind11;
 
-
-
 void declare_robot_trajectory(py::module& m) {
     py::class_<robot_trajectory::RobotTrajectory, std::shared_ptr<robot_trajectory::RobotTrajectory>>(m, "RobotTrajectory")
         .def_property("group_name", &robot_trajectory::RobotTrajectory::getGroupName, &robot_trajectory::RobotTrajectory::setGroupName)

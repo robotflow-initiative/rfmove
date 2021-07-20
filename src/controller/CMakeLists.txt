@@ -14,7 +14,7 @@ ENDIF()
 
 add_library(controller_noros SHARED
         src/trajectory.cpp
-        src/controller.cpp
+        src/trajectory_controller.cpp
         src/hardware.cpp)
 
 target_link_libraries(controller_noros

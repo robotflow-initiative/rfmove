@@ -38,13 +38,15 @@ void declare_pybullet_controller(py::module& m) {
         .def(py::init<py::handle, int>())
         .def("getNumBodies", &PybulletHardware::getNumBodies)
         .def("printJointInfo", &PybulletHardware::printJointInfo)
-        .def("printJointState", &PybulletHardware::printJointState);
+        .def("printJointState", &PybulletHardware::printJointState)
+        .def("stayCurrent", &PybulletHardware::stayCurrent)
+        .def("free", &PybulletHardware::free);
         //.def("getJointHandler", &PybulletHardware::getJointHandler,
         //     py::arg("joint_name"));
 
-    m.def("BulletHardware", [](py::module bullet, int bodyId) -> HardwareInterface*{
-       return  new PybulletHardware(std::move(bullet), bodyId);
-    });
+    //m.def("BulletHardware", [](py::module bullet, int bodyId) -> HardwareInterface*{
+    //   return  new PybulletHardware(std::move(bullet), bodyId);
+    //});
 }
 
 #endif //MOVEIT_NO_ROS_BULLET3_HARDWARE_H

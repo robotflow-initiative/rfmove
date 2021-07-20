@@ -9,6 +9,7 @@
 
 int PybulletJointHandler::POSITION_CONTROL_; // definition
 int PybulletJointHandler::VELOCITY_CONTROL_; // definition
+int PybulletJointHandler::TORQUE_CONTROL_; // definition
 
 PybulletJointHandler::PybulletJointHandler(int body_id,
                                            int joint_index,
@@ -79,6 +80,22 @@ PybulletHardware::PybulletHardware(py::handle pybullet, int bodyUniqueId)
         all_index_[i] = i;
         joint_index_map_[info[1].cast<std::string>()] = i;
         joint_names_[i] = info[1].cast<std::string>();
+    }
+
+    // Make the robot stay in current position
+    stayCurrent();
+}
+
+void PybulletHardware::stayCurrent() {
+    for(size_t i = 0; i < joint_num_; ++i) {
+        double position = py::cast<py::tuple>(getJointState_(body_id_, i))[0].cast<double>();
+        setJointMotorControl2_(body_id_, i, PybulletJointHandler::VELOCITY_CONTROL_, position, 0);
+    }
+}
+
+void PybulletHardware::free() {
+    for(size_t i = 0; i < joint_num_; ++i) {
+        setJointMotorControl2_(body_id_, i, PybulletJointHandler::TORQUE_CONTROL_, 0, 0, 200);
     }
 }
 

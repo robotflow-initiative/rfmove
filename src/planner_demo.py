@@ -25,7 +25,7 @@ planner = moveit.PlannerManager(kinematic_model, pconfig)
 print("== Create planning scene ==")
 PLANNING_GROUP = "panda_arm"
 planning_scene = robot_loader.newPlanningScene()
-planning_scene.getCurrentStateNonConst().setToDefaultValues()
+#planning_scene.getCurrentStateNonConst().setToDefaultValues()
 
 print("== Create pose goal ==")
 req = moveit.MotionPlanRequest(PLANNING_GROUP)
@@ -104,7 +104,7 @@ plot4 = sample_velocity.plot(time_stamp_sample, sample.velocity, color = 'orange
 
 # get tip transforms
 tip_transforms = spline_trajectory.tip_transforms
-for tip in tip_transforms:
-    print(tip)
+#for tip in tip_transforms:
+    #print(tip)
 
 plt.show()

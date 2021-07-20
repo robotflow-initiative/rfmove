@@ -2,11 +2,12 @@
 // Created by yongxi on 2021/7/8.
 //
 
-#ifndef MOVEIT_NO_ROS_CONTROLLER_H
+#ifndef MOVEIT_NO_ROS_TRAJECTORY_CONTROLLER_H
 #define MOVEIT_NO_ROS_CONTROLLER_H
 
 #include <pybind11/pybind11.h>
 #include "controller/trajectory.h"
+#include "controller/trajectory_controller.h"
 
 namespace py = pybind11;
 
@@ -95,6 +96,23 @@ void declare_controller(py::module &m) {
           py::arg("robot_trajectory"),
           py::arg("computeTimeStamps") = true,
           py::arg("param") = SplineTrajectory::Parameterization::SPLINE);
+
+    py::class_<Controller>(m, "Controller")
+        .def(py::init<HardwareInterface*, double>(),
+            py::arg("hardware"),
+            py::arg("interval") = 0.01)
+        .def("__repr__", [](Controller& self){
+            std::ostringstream sstr;
+            sstr << "<Controller at " << &self << '>';
+            return sstr.str();
+        })
+        .def("execute", static_cast<bool(Controller::*)(SplineTrajectoryPtr)>
+            (&Controller::executeTrajectory),
+            "Execute spline trajectory",
+            py::arg("spline_trajectory"))
+        .def("execute", static_cast<bool(Controller::*)
+            (robot_trajectory::RobotTrajectoryPtr, bool, SplineTrajectory::Parameterization)>
+            (&Controller::executeTrajectory));
 }
 
-#endif //MOVEIT_NO_ROS_CONTROLLER_H
+#endif //MOVEIT_NO_ROS_TRAJECTORY_CONTROLLER_H

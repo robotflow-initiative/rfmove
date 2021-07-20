@@ -27,7 +27,7 @@
 #include "Bullet3.h"
 #endif
 
-#include "Bullet3_controller.h"
+#include "Bullet3_hardware.h"
 
 namespace py = pybind11;
 

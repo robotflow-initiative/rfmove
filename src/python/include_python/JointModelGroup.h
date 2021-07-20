@@ -59,6 +59,10 @@ void declare_joint_model_group(py::module &m){
         .def_property("base_frame", [](moveit::core::JointModelGroup& self) -> std::string {
             return self.getSolverInstance()->getBaseFrame();
         }, nullptr)
+        .def_property("base_link", [](moveit::core::JointModelGroup& self) -> std::string {
+            //return self.getSolverInstance()->getBaseFrame();
+            return self.getLinkModelNames()[0];
+        }, nullptr)
         .def_property("tip_frame", [](moveit::core::JointModelGroup& self) {
             return self.getSolverInstance()->getTipFrame();
         }, nullptr);
