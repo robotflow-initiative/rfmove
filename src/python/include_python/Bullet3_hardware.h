@@ -40,7 +40,10 @@ void declare_pybullet_controller(py::module& m) {
         .def("printJointInfo", &PybulletHardware::printJointInfo)
         .def("printJointState", &PybulletHardware::printJointState)
         .def("stayCurrent", &PybulletHardware::stayCurrent)
-        .def("free", &PybulletHardware::free);
+        .def("free", &PybulletHardware::free,
+             py::arg("force") = 200)
+        .def("getJointIndex", &PybulletHardware::getJointIndex,
+            py::arg("joint_name"));
         //.def("getJointHandler", &PybulletHardware::getJointHandler,
         //     py::arg("joint_name"));
 

@@ -36,6 +36,11 @@ void PlanningSceneHelper::resync() {
     }
 }
 
+void PlanningSceneHelper::reset() {
+    planning_scene_->getCurrentStateNonConst().setToDefaultValues();
+    resync();
+}
+
 Eigen::Affine3d PlanningSceneHelper::linkTransform(const std::string &link_name, bool _sync) {
     if(_sync) {
         sync();

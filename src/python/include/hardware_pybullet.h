@@ -50,6 +50,13 @@ public:
     int getNumBodies();
 
     /**
+     * Get the joint index in pybullet according to the joint_name.
+     * @param joint_name
+     * @return Index of joint if founc. -1 otherwise.
+     */
+    int getJointIndex(const std::string& joint_name);
+
+    /**
      * printout all joint info
      * @details Used for debugging.
      */
@@ -77,7 +84,7 @@ public:
     /**
      *
      */
-    void free();
+    void free(int force = 200);
 
     // Implementation of HardwareInterface virtual interface.
     JointHandler * getJointHandler(const std::string &joint_name) override;

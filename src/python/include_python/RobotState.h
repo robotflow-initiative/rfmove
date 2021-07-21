@@ -63,7 +63,8 @@ void declare_robot_state(py::module &m) {
         (&moveit::core::RobotState::setToRandomPositions))
         .def("setToRandomPositions", static_cast
             <void(moveit::core::RobotState::*)(const moveit::core::JointModelGroup*)>
-            (&moveit::core::RobotState::setToRandomPositions))
+            (&moveit::core::RobotState::setToRandomPositions),
+            py::arg("joint_model_group"))
         /** getGlobalLinkTransform would update link transforms first.
          *  There is another const version of getGlobalLinkTransform which does not but raise error if
          *  checkLinkTransforms fails.
@@ -103,7 +104,14 @@ void declare_robot_state(py::module &m) {
         })
         .def("dirty", &moveit::core::RobotState::dirty)
         .def("update", &moveit::core::RobotState::update,
-         py::arg("force") = false);
+         py::arg("force") = false)
+        .def("linkRelativeTransform", [](moveit::core::RobotState& self,
+                                                const std::string& link_name,
+                                                const std::string& frame_id) -> Eigen::Affine3d {
+            Eigen::Affine3d linkTran = self.getGlobalLinkTransform(link_name);
+            Eigen::Affine3d frameTran = self.getFrameTransform(frame_id);
+            return (frameTran.inverse(Eigen::TransformTraits::Affine) * linkTran);
+        });
 
 }
 

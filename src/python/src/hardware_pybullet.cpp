@@ -93,14 +93,22 @@ void PybulletHardware::stayCurrent() {
     }
 }
 
-void PybulletHardware::free() {
+void PybulletHardware::free(int force) {
     for(size_t i = 0; i < joint_num_; ++i) {
-        setJointMotorControl2_(body_id_, i, PybulletJointHandler::TORQUE_CONTROL_, 0, 0, 200);
+        setJointMotorControl2_(body_id_, i, PybulletJointHandler::TORQUE_CONTROL_, 0, 0, force);
     }
 }
 
 int PybulletHardware::getNumBodies() {
     return py::cast<int>(getNumBodies_());
+}
+
+int PybulletHardware::getJointIndex(const std::string &joint_name) {
+    if(joint_index_map_.find(joint_name) != joint_index_map_.end()) {
+        return joint_index_map_[joint_name];
+    } else {
+        return -1;
+    }
 }
 
 JointHandler * PybulletHardware::getJointHandler(const std::string &joint_name) {

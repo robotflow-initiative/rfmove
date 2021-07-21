@@ -10,7 +10,7 @@
 #include "hardware_pybullet.h"
 #include "moveit/planning_scene/planning_scene.h"
 
-
+/// @todo Make PlanningSceneHelper a virtual class which can be expanded in python.
 class PlanningSceneHelper{
 public:
     PlanningSceneHelper(PybulletHardware pybullet, planning_scene::PlanningScenePtr);
@@ -28,6 +28,12 @@ public:
      * the joint position read from robot state.
      */
     void resync();
+
+    /**
+     * reset would first set the planning scene robot state as default state, then call resync() to sync pybullet
+     * with moveit.
+     */
+    void reset();
 
     /**
      * Get specific link transformation according to robot model frame.

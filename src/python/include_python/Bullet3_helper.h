@@ -8,6 +8,7 @@ void declare_pybullet_helper(py::module& m) {
         .def(py::init<PybulletHardware, planning_scene::PlanningScenePtr>())
         .def("sync", &PlanningSceneHelper::sync)
         .def("resync", &PlanningSceneHelper::resync)
+        .def("reset", &PlanningSceneHelper::reset)
         .def("linkTransform", &PlanningSceneHelper::linkTransform,
              "Get the transformation affine matrix for specific link according to robot model frame.",
              py::arg("link_name"),
