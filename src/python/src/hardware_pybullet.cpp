@@ -65,7 +65,8 @@ PybulletHardware::PybulletHardware(py::handle pybullet, int bodyUniqueId)
         , getNumJoints_(pybullet_.attr("getNumJoints"))
         , getJointState_(pybullet_.attr("getJointState"))
         , getJointStates_(pybullet_.attr("getJointStates"))
-        , setJointMotorControl2_(pybullet_.attr("setJointMotorControl2")){
+        , setJointMotorControl2_(pybullet_.attr("setJointMotorControl2"))
+        , addUserDebugLine_(pybullet_.attr("addUserDebugLine")){
     body_id_ = bodyUniqueId;
     joint_num_ = py::cast<int>(getNumJoints_(body_id_));
 
@@ -142,5 +143,25 @@ void PybulletHardware::getJointStateAll(std::vector<double>& position, std::vect
     for(size_t i=0; i<joint_num_; ++i) {
         position[i] = all_states[i].cast<py::tuple>()[0].cast<double>();
         velocity[i] = all_states[i].cast<py::tuple>()[0].cast<double>();
+    }
+}
+
+void PybulletHardware::drawTrajectory(SplineTrajectoryPtr trajectory, double life_time, double line_width) {
+    std::vector<Eigen::Affine3d> tip_transforms;
+    trajectory->getTipTransforms(tip_transforms);
+    std::vector<double> start_position;
+    std::vector<double> end_position;
+    std::vector<double> color = {1,0,0};
+    start_position.resize(3);
+    end_position.resize(3);
+    for(size_t i=0; i<tip_transforms.size()-1; ++i){
+        start_position = {tip_transforms[i].translation().x(),
+                          tip_transforms[i].translation().y(),
+                          tip_transforms[i].translation().z()};
+        end_position = {
+                tip_transforms[i+1].translation().x(),
+                tip_transforms[i+1].translation().y(),
+                tip_transforms[i+1].translation().z()};
+        addUserDebugLine_(start_position, end_position, color, line_width, life_time);
     }
 }

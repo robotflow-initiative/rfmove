@@ -34,12 +34,22 @@ void declare_controller(py::module &m) {
         .def_property("duration", &SplineTrajectory::duration, nullptr)
         .def_property("start_time", &SplineTrajectory::startTime, nullptr)
         .def_property("end_time", &SplineTrajectory::endTime, nullptr)
-        .def("sample", [](SplineTrajectory& self, const std::string& joint_name, double interval) -> trajectory_interface::PosVelAccState<double>*{
-            //std::cout << "sample " << joint_name << " with interval " << interval << std::endl;
-            auto* result = new trajectory_interface::PosVelAccState<double>;
-            self.sample(joint_name, *result, interval);
-            return result;
-        })
+        .def("sample_by_interval", [](SplineTrajectory& self, const std::string& joint_name, double interval)
+            -> trajectory_interface::PosVelAccState<double>* {
+                //std::cout << "sample " << joint_name << " with interval " << interval << std::endl;
+                auto* result = new trajectory_interface::PosVelAccState<double>;
+                self.sample_by_interval(joint_name, *result, interval);
+                return result;
+            },
+            py::arg("joint_name"),
+            py::arg("interval"))
+        .def("sample_at_time", [](SplineTrajectory& self, double time_point)
+            -> trajectory_interface::PosVelAccState<double>* {
+                auto* result = new trajectory_interface::PosVelAccState<double>;
+                self.sample_at_time(*result, time_point);
+                return result;
+            },
+            py::arg("time_point"))
         .def_property("tip_transforms", [](SplineTrajectory& self) {
             auto transforms = new std::vector<Eigen::Affine3d>();
             self.getTipTransforms(*transforms);
@@ -48,13 +58,14 @@ void declare_controller(py::module &m) {
             //   delete reinterpret_cast<std::vector<Eigen::Affine3d>*>(transforms);
             //});
             //return py::array(transforms->size(), transforms->data(), capsule);
-        }, nullptr);
+        }, nullptr)
+        .def_property("joint_names", &SplineTrajectory::getJointNames, nullptr);
 
     py::class_<trajectory_interface::PosVelAccState<double>,
-            std::unique_ptr<trajectory_interface::PosVelAccState<double>>>(m, "SegmentState")
+            std::unique_ptr<trajectory_interface::PosVelAccState<double>>>(m, "PosVelAccState")
         .def("__repr__", [](trajectory_interface::PosVelAccState<double>& self) {
             std::ostringstream sstr;
-            sstr << "<trajectory_interface::PosVecAccState<double>, SegmentState>" << std::endl;
+            sstr << "<trajectory_interface::PosVelAccState<double>, SegmentState>" << std::endl;
             sstr << "Position:" << std::endl;
             sstr << '[';
             for(double pos : self.position) {

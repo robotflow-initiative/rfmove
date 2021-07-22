@@ -22,13 +22,36 @@ void declare_pybullet_controller(py::module& m) {
      * This binding is mainly for debugging.
      */
     py::class_<JointHandler>(m, "JointHandler")
-        .def("position", &JointHandler::position)
-        .def("velocity", &JointHandler::velocity)
-        .def("setPosVel", &JointHandler::setPosVel);
+        .def_property("position", &JointHandler::position, nullptr)
+        .def_property("velocity", &JointHandler::velocity, nullptr)
+        .def("setPosVel", &JointHandler::setPosVel)
+        .def_property("joint_name", &JointHandler::name, nullptr);
+
+    py::class_<JointGroupHandler>(m, "JointGroupHandler")
+        .def_property("joint_names", [](JointGroupHandler &self){
+                std::vector<std::string> joint_names;
+                self.jointNames(joint_names);
+                return joint_names;
+            }, nullptr)
+        .def_property("positions", [](JointGroupHandler &self){
+                std::vector<double> positions;
+                self.positions(positions);
+                return positions;
+            }, nullptr)
+        .def_property("velocities", [](JointGroupHandler &self) {
+                std::vector<double> velocities;
+                self.velocities(velocities);
+                return velocities;
+            }, nullptr)
+        .def("setPosVels", &JointGroupHandler::setPosVels,
+            py::arg("positions"),
+            py::arg("velocities"));
 
     py::class_<HardwareInterface> (m, "HardwareInterface")
         .def("getJointHandler", &HardwareInterface::getJointHandler,
-         py::arg("joint_name"));
+             py::arg("joint_name"))
+        .def("getJointGroupHandler", &HardwareInterface::getJointGroupHandler,
+             py::arg("joint_names"));
 
     /**
      * @warning It is not a good idea to use PybulletHardware methods directly as they are only accessors to pybullet.
@@ -43,7 +66,11 @@ void declare_pybullet_controller(py::module& m) {
         .def("free", &PybulletHardware::free,
              py::arg("force") = 200)
         .def("getJointIndex", &PybulletHardware::getJointIndex,
-            py::arg("joint_name"));
+            py::arg("joint_name"))
+        .def("drawTrajectory", &PybulletHardware::drawTrajectory,
+            py::arg("trajectory"),
+            py::arg("life_time") = 10,
+            py::arg("line_width") = 3);
         //.def("getJointHandler", &PybulletHardware::getJointHandler,
         //     py::arg("joint_name"));
 

@@ -31,13 +31,13 @@ public:
                      bool computeTimeStamps = true,
                      Parameterization param = Parameterization::SPLINE);
     /**
-     * Sample positions, velocity and acceleration.
+     * Sample positions, velocity and acceleration with a fix interval.
      * @param joint_name
      * @param sample Sample result would be pushed backed into sample.
      * @param interval The time interval between samples.
      * @return The number of data points sampled.
      */
-    int sample(const std::string& joint_name, trajectory_interface::PosVelAccState<double>& sample, double interval = 1e-3);
+    int sample_by_interval(const std::string& joint_name, trajectory_interface::PosVelAccState<double>& sample, double interval = 1e-3);
 
     int sample_at_time(trajectory_interface::PosVelAccState<double>& result, double time_point);
 

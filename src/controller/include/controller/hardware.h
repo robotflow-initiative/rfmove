@@ -48,9 +48,10 @@ public:
     virtual ~JointGroupHandler() = default;
     virtual void positions(std::vector<double> positions) {positions.resize(0);}
     virtual void velocities(std::vector<double> velocities) {velocities.resize(0);}
-    virtual bool setPosVels(const std::vector<double>& positions, const std::vector<double>& velocities) = 0;
-    virtual bool setPositions(const std::vector<double>& positions) = 0;
-    virtual bool setVelocities(const std::vector<double>& velocities) = 0;
+    virtual int setPosVels(const std::vector<double>& positions, const std::vector<double>& velocities) = 0;
+    virtual int setPositions(const std::vector<double>& positions) = 0;
+    virtual int setVelocities(const std::vector<double>& velocities) = 0;
+    virtual void jointNames(std::vector<std::string>& joint_names) = 0;
 };
 
 /**
@@ -62,9 +63,10 @@ public:
     ~DefaultJointGroupHandler() override;
     void positions(std::vector<double> _positions) override;
     void velocities(std::vector<double> _velocities) override;
-    bool setPosVels(const std::vector<double>& positions, const std::vector<double>& velocities) override;
-    bool setPositions(const std::vector<double>& positions) override;
-    bool setVelocities(const std::vector<double>& velocities) override;
+    int setPosVels(const std::vector<double>& positions, const std::vector<double>& velocities) override;
+    int setPositions(const std::vector<double>& positions) override;
+    int setVelocities(const std::vector<double>& velocities) override;
+    void jointNames(std::vector<std::string>& joint_names) override;
 private:
     std::vector<JointHandler*> handlers_;
 };

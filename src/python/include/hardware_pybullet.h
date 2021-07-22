@@ -7,6 +7,7 @@
 
 #include <pybind11/pybind11.h>
 #include "controller/hardware.h"
+#include "controller/trajectory.h"
 
 namespace py=pybind11;
 
@@ -86,6 +87,8 @@ public:
      */
     void free(int force = 200);
 
+    void drawTrajectory(SplineTrajectoryPtr trajectory, double life_time = 10, double line_width = 3);
+
     // Implementation of HardwareInterface virtual interface.
     JointHandler * getJointHandler(const std::string &joint_name) override;
 private:
@@ -96,6 +99,7 @@ private:
     PyAttr getJointState_;
     PyAttr getJointStates_;
     PyAttr setJointMotorControl2_;
+    PyAttr addUserDebugLine_;
     std::map<std::string, int> joint_index_map_; /// A map between joint name and joint index in bullet.
     int body_id_;
     int joint_num_;

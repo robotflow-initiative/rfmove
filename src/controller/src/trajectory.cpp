@@ -20,13 +20,12 @@ SplineTrajectory::SplineTrajectory(robot_trajectory::RobotTrajectoryPtr robot_tr
     }
     group_name_ = robot_trajectory->getGroupName();
     const robot_model::JointModelGroup* joint_model_group = robot_trajectory->getGroup();
-    joint_names_ = joint_model_group->getJointModelNames();
-    //size_t waypoint_count = trajectory->getWayPointCount();
-    //if(waypoint_count < 2) {
-    //    ROS_ERROR_STREAM("Not enough trajectory waypoints to create spline segments."
-    //                     " Required 2 at least but only " << waypoint_count << " given.");
-    //    return;
-    // }
+
+    /**
+     * @note Do not use joint model names from jointModelGroup as joint names directly.
+     * That is because RobotTrajectoryMsg already remove all the fixed joint while jointModelGroup contains them.
+     */
+    //joint_names_ = joint_model_group->getJointModelNames();
 
     // Convert RobotTrajectory to trajectory_msgs/JointTrajectory
     robot_trajectory_ = robot_trajectory;
@@ -36,7 +35,7 @@ SplineTrajectory::SplineTrajectory(robot_trajectory::RobotTrajectoryPtr robot_tr
     // Convert trajectory_msgs/JointTrajectory to controller trajectory
     trajectory_ = joint_trajectory_controller::initJointTrajectory<Trajectory>(robot_trajectory_msg_.joint_trajectory,
                                                                                ros::Time(0));
-
+    joint_names_ = robot_trajectory_msg_.joint_trajectory.joint_names;
     // Get tip link information
     joint_model_group->getEndEffectorTips(tip_names_);
     if(!tip_names_.empty()) {
@@ -58,7 +57,7 @@ SplineTrajectory::SplineTrajectory(robot_trajectory::RobotTrajectoryPtr robot_tr
      */
 }
 
-int SplineTrajectory::sample(const std::string& joint_name, trajectory_interface::PosVelAccState<double>& sample, double duration) {
+int SplineTrajectory::sample_by_interval(const std::string& joint_name, trajectory_interface::PosVelAccState<double>& sample, double duration) {
     int index = jointIndex(joint_name);
     if(index < 0) {
         return 0;
@@ -94,6 +93,7 @@ int SplineTrajectory::sample(const std::string& joint_name, trajectory_interface
 int SplineTrajectory::sample_at_time(trajectory_interface::PosVelAccState<double> &result, double time_point) {
     result.position.resize(trajectory_.size());
     result.velocity.resize(trajectory_.size());
+    result.acceleration.resize(trajectory_.size());
     Segment::State sampled_state;
     size_t i = 0;
     for(auto joint_trajectory : trajectory_) {

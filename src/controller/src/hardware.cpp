@@ -30,33 +30,41 @@ void DefaultJointGroupHandler::velocities(std::vector<double> _velocities) {
     }
 }
 
-bool DefaultJointGroupHandler::setPosVels(const std::vector<double> &positions,
+int DefaultJointGroupHandler::setPosVels(const std::vector<double> &positions,
                                           const std::vector<double> &velocities) {
     size_t count = std::min<size_t>(handlers_.size(), positions.size());
     count = std::min<size_t>(count, velocities.size());
-    bool result = false;
+
+    int result = 0;
     for(size_t i = 0; i < count ; ++i) {
-        result = (result || handlers_[i]->setPosVel(positions[i], velocities[i]));
+        result += handlers_[i]->setPosVel(positions[i], velocities[i]);
     }
     return result;
 }
 
-bool DefaultJointGroupHandler::setPositions(const std::vector<double> &positions) {
+int DefaultJointGroupHandler::setPositions(const std::vector<double> &positions) {
     size_t count = std::min<size_t>(handlers_.size(), positions.size());
-    bool result = false;
+    int result = 0;
     for(size_t i = 0; i < count ; ++i) {
-        result = (result || handlers_[i]->setPosition(positions[i]));
+        result += handlers_[i]->setPosition(positions[i]);
     }
     return result;
 }
 
-bool DefaultJointGroupHandler::setVelocities(const std::vector<double> &velocities) {
+int DefaultJointGroupHandler::setVelocities(const std::vector<double> &velocities) {
     size_t count = std::min<size_t>(handlers_.size(), velocities.size());
-    bool result = false;
+    int result = 0;
     for(size_t i = 0; i < count ; ++i) {
-        result = (result || handlers_[i]->setVelocity(velocities[i]));
+        result += handlers_[i]->setVelocity(velocities[i]);
     }
     return result;
+}
+
+void DefaultJointGroupHandler::jointNames(std::vector<std::string>& joint_names) {
+    joint_names.resize(handlers_.size());
+    for(size_t i=0; i<handlers_.size(); ++i) {
+        joint_names[i] = handlers_[i]->name();
+    }
 }
 
 JointGroupHandler * HardwareInterface::getJointGroupHandler(const std::vector<std::string> &joint_names) {
