@@ -22,6 +22,7 @@
 #include <RobotTrajectory.h>
 #include <Controller.h>
 #include <Bullet3_helper.h>
+#include <Shapes.h>
 
 #ifdef WITH_BULLET3
 #include "Bullet3.h"
@@ -46,6 +47,7 @@ PYBIND11_MODULE(moveit_noros, m) {
     declare_controller(m);
     declare_pybullet_controller(m);
     declare_pybullet_helper(m);
+    declare_shapes(m);
 
 #ifdef WITH_BULLET3
     declare_bullet3(m);

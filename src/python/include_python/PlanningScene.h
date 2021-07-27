@@ -12,7 +12,18 @@
 namespace py = pybind11;
 
 void declare_planning_scene(py::module &m) {
-    py::class_<collision_detection::World, std::shared_ptr<collision_detection::World>>(m, "World");
+    py::class_<collision_detection::World, std::shared_ptr<collision_detection::World>>(m, "World")
+        .def_property("object_ids", &collision_detection::World::getObjectIds, nullptr)
+        .def_property("size", &collision_detection::World::size, nullptr)
+        .def("addToObject", static_cast<void
+                                       (collision_detection::World::*)
+                                       (const std::string&, const shapes::ShapeConstPtr&, const Eigen::Affine3d&)>
+                                       (&collision_detection::World::addToObject),
+            "Add a shape to an object or create a new object with this shape.",
+            py::arg("id"),
+            py::arg("shape"),
+            py::arg("pose"));
+
     py::class_<planning_scene::PlanningScene, std::shared_ptr<planning_scene::PlanningScene>>(m, "PlanningScene")
         /// @warning Do not use const version of checkSelfCollision unless robot_state in planningScene is unchangeable.
         .def("checkSelfCollision", static_cast
@@ -23,7 +34,15 @@ void declare_planning_scene(py::module &m) {
          * @warning getCurrentStateNonConst return a reference insteade of Ptr.
          * So we have to set the return policy to reference_internal
          */
-        .def("getCurrentStateNonConst", &planning_scene::PlanningScene::getCurrentStateNonConst, py::return_value_policy::reference_internal);
+        .def("getCurrentStateNonConst", &planning_scene::PlanningScene::getCurrentStateNonConst, py::return_value_policy::reference_internal)
+        .def_property("planning_frame", &planning_scene::PlanningScene::getPlanningFrame, nullptr)
+        .def_property("world", &planning_scene::PlanningScene::getWorldNonConst, nullptr)
+        .def("getFrameTransform", static_cast
+                            <const Eigen::Affine3d&(planning_scene::PlanningScene::*)
+                            (const std::string&)const>
+                            (&planning_scene::PlanningScene::getFrameTransform),
+                            py::return_value_policy::reference_internal);
+
         //.def_property("state", &planning_scene::PlanningScene::getCurrentStateNonConst, py::return_value_policy);
 
     py::class_<collision_detection::CollisionRequest>(m, "CollisionRequest") // We do not use smart pointer of CollisionRequest
