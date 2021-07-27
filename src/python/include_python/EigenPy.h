@@ -33,6 +33,7 @@ void affine3dRotate(Eigen::Affine3d &affine, double angle, Eigen::Vector3d axis)
     axis.normalize();
     Eigen::AngleAxis<double> rotation(angle, axis);
     affine.rotate(rotation);
+    // affine.makeAffine();
 }
 
 /**
@@ -58,11 +59,25 @@ void affine3dReset(Eigen::Affine3d &affine) {
 }
 
 /**
+ * Create a Eigen::Quaternion from python list
+ * @param data
+ * @return
+ */
+Eigen::Quaterniond createQuaternion(py::array_t<double> data) {
+    /// w, x, y, z
+    return Eigen::Quaterniond(data.at(3),
+                              data.at(0),
+                              data.at(1),
+                              data.at(2));
+}
+
+/**
  * @brief Declare all eigen binding class used by moveit.
  * @param m
  */
 void declare_eigen(py::module &m) {
     py::class_<Eigen::Quaterniond> (m, "EigenQuaterniond")
+        .def(py::init(&createQuaternion))
         .def("__str__", [](Eigen::Quaterniond &self){
             std::ostringstream sstr;
             sstr << "[ " << self.x()
@@ -129,14 +144,25 @@ void declare_eigen(py::module &m) {
             size_t copy_size = pose.size() > 16 ? 16 : pose.size();
             memcpy(self.matrix().data(), pose.data(), copy_size*sizeof(double));
         }, "Copy a numpy array data into Affine3d")
-        .def("setTranslation", [](Eigen::Affine3d &self, const py::array_t<double>& trans) -> void {
-            size_t copy_size = trans.size() > 3 ? 3 : trans.size();
-            memcpy(self.translation().data(), trans.data(), copy_size*sizeof(double));
-        })
         .def_property("rotation", &Eigen::Affine3d::rotation, nullptr)
-        .def_property("quaternion", [](Eigen::Affine3d& self){
-            return Eigen::Quaterniond(self.rotation());
-        }, nullptr)
+        .def_property("quaternion",
+            [](Eigen::Affine3d& self){
+                return Eigen::Quaterniond(self.rotation());
+            },
+            [](Eigen::Affine3d& self, py::array_t<double>& data){
+                /// Set rotation by 4d list
+                Eigen::Quaterniond q(data.at(3),
+                                     data.at(0),
+                                     data.at(1),
+                                     data.at(2));
+
+                self.matrix() << 1,0,0,self.translation().x(),
+                                 0,1,0,self.translation().y(),
+                                 0,0,1,self.translation().z(),
+                                 0,0,0,1;
+
+                self.rotate(q.toRotationMatrix());
+            })
         .def("rotate", &affine3dRotate)
         //.def("translation", &Eigen::Affine3d::translation)
         /** Return translation as a 3-d numpy array
@@ -162,12 +188,16 @@ void declare_eigen(py::module &m) {
                 data,                   //data pointer
                 free_when_done          //handler for free
             );
-        }, nullptr)
+        }, [](Eigen::Affine3d &self, const py::array_t<double>& trans) -> void {
+            size_t copy_size = trans.size() > 3 ? 3 : trans.size();
+            memcpy(self.translation().data(), trans.data(), copy_size * sizeof(double));}
+        )
         .def("translate", &affine3dTranslate)
         .def_property("inverse", [](Eigen::Affine3d &self){
             return self.inverse(Eigen::TransformTraits::Affine);
         }, nullptr)
         .def(py::self * py::self); // Binding for operator *
+
         /*
         .def("rotation", [](Eigen::Affine3d &self){
             auto rota = self.rotation();

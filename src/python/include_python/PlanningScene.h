@@ -22,7 +22,8 @@ void declare_planning_scene(py::module &m) {
             "Add a shape to an object or create a new object with this shape.",
             py::arg("id"),
             py::arg("shape"),
-            py::arg("pose"));
+            py::arg("pose"))
+        .def("removeObject", &collision_detection::World::removeObject);
 
     py::class_<planning_scene::PlanningScene, std::shared_ptr<planning_scene::PlanningScene>>(m, "PlanningScene")
         /// @warning Do not use const version of checkSelfCollision unless robot_state in planningScene is unchangeable.

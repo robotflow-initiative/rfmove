@@ -17,7 +17,6 @@ print("Model Frame: %s" % kinematic_model.getModelFrame())
 
 print("== Load planner configuration ==")
 pconfig = moveit.createPlannerConfigurationFromFile("../resources/ompl_planning.yaml")
-print(pconfig)
 
 print("== Create planner ==")
 planner = moveit.PlannerManager(kinematic_model, pconfig)
@@ -56,7 +55,7 @@ spline_trajectory = moveit.computeSpline(response.trajectory)
 #print(spline_trajectory.duration)
 
 print("== Sample spline trajectory ==")
-sample = spline_trajectory.sample("panda_joint1", 0.01)
+sample = spline_trajectory.sample_by_interval("panda_joint1", 0.01)
 #print(sample.position)
 
 fig = plt.figure(num = 1, figsize=(16, 9), dpi = 120)
