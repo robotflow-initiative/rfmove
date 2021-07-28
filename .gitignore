@@ -26,3 +26,6 @@ install/moveit_no_ros/*
 
 # for jupyter
 notebook/.ipynb_checkpoints
+
+# converted urdf
+resources/*_convert.urdf

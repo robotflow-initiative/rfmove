@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 print("==== Implement Motion Plan Tutorials. ====")
 print("== Load robot model ==")
-robot_loader = moveit.createRobotModelLoaderFromFile("../resources/panda_arm_hand.urdf", "../resources/panda_arm_hand.srdf")
+robot_loader = moveit.createRobotModelLoaderFromFile("../resources/panda_arm_hand_convert.urdf", "../resources/panda_arm_hand.srdf")
 kinematic_solver_loader = moveit.createKinematicsLoaderFromFile("../resources/kinematics.yaml")
 robot_loader.loadKinematicsSolvers(kinematic_solver_loader)
 kinematic_model = robot_loader.getModel()
@@ -24,7 +24,7 @@ planner = moveit.PlannerManager(kinematic_model, pconfig)
 print("== Create planning scene ==")
 PLANNING_GROUP = "panda_arm"
 planning_scene = robot_loader.newPlanningScene()
-#planning_scene.getCurrentStateNonConst().setToDefaultValues()
+planning_scene.getCurrentStateNonConst().setToDefaultValues()
 
 print("== Create pose goal ==")
 req = moveit.MotionPlanRequest(PLANNING_GROUP)

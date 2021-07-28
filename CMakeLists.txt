@@ -203,7 +203,10 @@ add_executable(rokae_server_demo src/rokae_server_demo.cpp)
 target_link_libraries(rokae_server_demo
         rokae_server)
 
-install(TARGETS model_and_state_demo planner_demo rokae_client_demo rokae_server_demo
+add_executable(urdf_converter src/util/urdf_converter.cpp)
+
+
+install(TARGETS model_and_state_demo planner_demo rokae_client_demo rokae_server_demo urdf_converter
         ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
