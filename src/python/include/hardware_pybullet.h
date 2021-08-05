@@ -46,6 +46,8 @@ private:
 
 class PybulletHardware : public HardwareInterface {
 public:
+    static int GEOM_BOX_;
+
     typedef py::detail::accessor<py::detail::accessor_policies::str_attr> PyAttr;
     explicit PybulletHardware(py::handle pybullet, int bodyUniqueId);
     int getNumBodies();

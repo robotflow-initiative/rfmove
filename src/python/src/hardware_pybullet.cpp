@@ -11,6 +11,8 @@ int PybulletJointHandler::POSITION_CONTROL_; // definition
 int PybulletJointHandler::VELOCITY_CONTROL_; // definition
 int PybulletJointHandler::TORQUE_CONTROL_; // definition
 
+int PybulletHardware::GEOM_BOX_;
+
 PybulletJointHandler::PybulletJointHandler(int body_id,
                                            int joint_index,
                                            const std::string& joint_name,
@@ -72,6 +74,9 @@ PybulletHardware::PybulletHardware(py::handle pybullet, int bodyUniqueId)
 
     PybulletJointHandler::POSITION_CONTROL_ = pybullet_.attr("POSITION_CONTROL").cast<int>();
     PybulletJointHandler::VELOCITY_CONTROL_ = pybullet_.attr("VELOCITY_CONTROL").cast<int>();
+
+    GEOM_BOX_ = pybullet_.attr("GEOM_BOX").cast<int>();
+
     std::cout << "Create PybulletHardware for body " << body_id_ << " with " << joint_num_ << " joints." << std::endl;
     all_index_.resize(joint_num_);
     joint_names_.resize(joint_num_);

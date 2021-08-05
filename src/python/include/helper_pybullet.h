@@ -1,5 +1,5 @@
 /**
- * @details Some help methods for pybullet. However, many of these methods can be implemented as member function
+ * @details Some helper methods for pybullet. However, many of these methods can be implemented as member function
  * of PybulletHardware. But I do not hope that the hardware itself depends on moveit.
  * So these methods are implemented as helper functions with PybulletHardware as parameter.
  */
@@ -51,6 +51,9 @@ public:
       * @return
       */
      Eigen::Affine3d linkRelativeTransform(const std::string& link_name, const std::string& frame, bool _sync = true);
+
+     //int addBox(const std::string& object_id, std::vector<double> size, std::vector<double> position,
+     //           );
 
 private:
     PybulletHardware pybullet_; // hardware only contains accessors.
