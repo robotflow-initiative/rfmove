@@ -68,6 +68,7 @@ not support SSLv3.
 dpkg --list | grep curl
 sudo apt --purge remove libcurl4
 sudo add-apt-repository ppa:xapienz/curl34
+(sudo add-apt-repository ppa:savoury1/curl34)  //if you can also use this repository at ubuntu20.04 
 sudo apt-get update
 sudo apt-get install curl
 

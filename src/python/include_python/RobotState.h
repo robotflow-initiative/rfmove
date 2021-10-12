@@ -99,6 +99,9 @@ void declare_robot_state(py::module &m) {
         .def("getJointVelocity", [](moveit::core::RobotState &self, const std::string& joint_name) -> double {
             return self.getJointVelocities(joint_name)[0];
         })
+        .def("getVariableAcceleration",[](moveit::core::RobotState &self,const std::string& joint_name)->double {
+            return self.getVariableAcceleration(joint_name);
+        })
         .def("toMsg", [](moveit::core::RobotState &self) {
 
         })

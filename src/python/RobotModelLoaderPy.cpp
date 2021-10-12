@@ -23,6 +23,8 @@
 #include <Controller.h>
 #include <Bullet3_helper.h>
 #include <Shapes.h>
+#include <JointLimitsPy.h>
+#include <rfSpline.h>
 
 #ifdef WITH_BULLET3
 #include "Bullet3.h"
@@ -48,7 +50,9 @@ PYBIND11_MODULE(moveit_noros, m) {
     declare_pybullet_controller(m);
     declare_pybullet_helper(m);
     declare_shapes(m);
-
+    declare_jointlimits_loader(m);
+    declare_rfSpline(m);
+    
 #ifdef WITH_BULLET3
     declare_bullet3(m);
 #endif
@@ -138,18 +142,18 @@ PYBIND11_MODULE(moveit_noros, m) {
         .def("configToString", &KinematicsLoader::configToString);
         //.def("allocKinematicsSolver", &KinematicsLoader::allocKinematicsSolver);
 
-    py::class_<JointLimitsLoader, std::shared_ptr<JointLimitsLoader>> (m, "JointLimitsLoader")
-        .def("__str__", [](const JointLimitsLoader& self) -> std::string {
-            std::ostringstream sstr;
-            sstr << self;
-            return sstr.str();
-        })
-        .def("__repr__", [](const JointLimitsLoader& self) -> std::string{
-            std::ostringstream sstr;
-            sstr << "<JointLimitsLoader>" << std::endl;
-            sstr << self;
-            return sstr.str();
-        });
+    //py::class_<JointLimitsLoader, std::shared_ptr<JointLimitsLoader>> (m, "JointLimitsLoader")
+    //    .def("__str__", [](const JointLimitsLoader& self) -> std::string {
+    //        std::ostringstream sstr;
+    //        sstr << self;
+    //        return sstr.str();
+    //    })
+    //    .def("__repr__", [](const JointLimitsLoader& self) -> std::string{
+    //        std::ostringstream sstr;
+    //        sstr << "<JointLimitsLoader>" << std::endl;
+    //        sstr << self;
+    //        return sstr.str();
+    //    });
 
     m.def("createKinematicsLoaderFromFile", &createKinematicsLoaderFromFile,
           "Create a KinematicsLoader from an yaml configuration file.",

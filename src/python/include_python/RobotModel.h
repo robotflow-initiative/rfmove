@@ -1,7 +1,6 @@
 //
 // Created by yongxi on 2021/6/1.
 //
-
 #ifndef MOVEIT_NO_ROS_ROBOTMODEL_H
 #define MOVEIT_NO_ROS_ROBOTMODEL_H
 

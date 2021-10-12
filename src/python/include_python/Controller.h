@@ -101,7 +101,10 @@ void declare_controller(py::module &m) {
             }, nullptr)
         .def_property("velocity", [](trajectory_interface::PosVelAccState<double>& self){
             return py::array(self.velocity.size(), self.velocity.data(), py::cast<>(self));
-        }, nullptr);
+        }, nullptr)
+        .def_property("acceleration",[](trajectory_interface::PosVelAccState<double>& self){
+            return py::array(self.acceleration.size(), self.acceleration.data(), py::cast<>(self));
+        },nullptr);
 
     m.def("computeSpline", &computeSpline,
           py::arg("robot_trajectory"),

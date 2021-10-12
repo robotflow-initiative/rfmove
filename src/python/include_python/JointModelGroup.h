@@ -96,6 +96,16 @@ void declare_joint_model_group(py::module &m){
              "Get the name of Link");
 
     py::class_<moveit::core::VariableBounds>(m, "VariableBounds")
+        .def(py::init<>())
+        .def_readwrite("min_position",&moveit::core::VariableBounds::min_position_)
+        .def_readwrite("max_position",&moveit::core::VariableBounds::max_position_)
+        .def_readwrite("position_bounded",&moveit::core::VariableBounds::position_bounded_)
+        .def_readwrite("min_velocity",&moveit::core::VariableBounds::min_velocity_)
+        .def_readwrite("max_velocity",&moveit::core::VariableBounds::max_velocity_)
+        .def_readwrite("velocity_bounded",&moveit::core::VariableBounds::velocity_bounded_)
+        .def_readwrite("min_acceleration",&moveit::core::VariableBounds::min_acceleration_)
+        .def_readwrite("max_acceleration",&moveit::core::VariableBounds::max_acceleration_)
+        .def_readwrite("acceleration_bounded",&moveit::core::VariableBounds::acceleration_bounded_)
         .def("__str__", [](moveit::core::VariableBounds& self){
             std::ostringstream sstr;
             sstr << self;
