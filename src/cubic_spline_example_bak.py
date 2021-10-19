@@ -13,15 +13,15 @@ from moveit_noros import rfWaypoint,PlannerSpline
 joint_name_list=["panda_joint1","panda_joint2","panda_joint3","panda_joint4","panda_joint5","panda_joint6","panda_joint7"]
 
 waypoint1=rfWaypoint([0.33,0,0.58],[0,3.14,-0.5])
+waypoint2=rfWaypoint([0.33,0.1,0.58],[0,3.14,-0.5])
+waypoint3=rfWaypoint([0.33,0.1,0.68],[0,3.14,0])
 
 print("== Initalize Planner moveit model ==")
 plannerspline=PlannerSpline("panda_arm")
-plannerspline.init("../resources/panda_arm_hand_urdf_convert.urdf",
-                   "../resources/panda_arm_hand.srdf",
-                   "../resources/kinematics.yaml",
-                   "../resources/ompl_planning.yaml",
-                   "../resources/joint_limits.yaml")
-
+plannerspline.loadRobotModel("../resources/panda_arm_hand_urdf_convert.urdf","../resources/panda_arm_hand.srdf")
+plannerspline.loadKinematicModel("../resources/kinematics.yaml")
+plannerspline.loadPlannerConfig("../resources/ompl_planning.yaml")
+plannerspline.loadJointLimit("../resources/joint_limits.yaml")
 
 print("== Initalize Pybullet ==")
 physicsClient=p.connect(p.GUI)
@@ -41,7 +41,7 @@ p.setJointMotorControlArray(bodyIndex=boxId,
 
 
 plannerspline.InitRobotState(np.array([0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]),"panda_arm")
-plannerspline.CreateSingleWaypointPath(waypoint1,"panda_arm",0.5,1,1)
+plannerspline.CreateSplineParameterization([waypoint1,waypoint2,waypoint3],"panda_arm",0.5,1,1)
 timeslist=plannerspline.getTimeList()
 
 joint_name="panda_joint2"
@@ -51,7 +51,22 @@ acllist=plannerspline.getJointAclValue(joint_name)
 
 
 
+#sampletimelist2
+#sampleveclist2
+#sampleacllist2
 
+result=plannerspline.computeSpline(0.001,"panda_arm")
+if result:
+    print("error")
+sampletimelist=plannerspline.getSampletimestamp()
+sampleposlist=plannerspline.getwaypointPositionList(joint_name)
+sampleveclist=plannerspline.getwaypointVelocityList(joint_name)
+sampleacllist=plannerspline.getwaypointAccelerationList(joint_name)
+#print(timeslist)
+#print(valuelist)
+#print(sampletimelist)
+#print(samplevaluelist)
+fig = plt.figure(num = 1, figsize=(16, 9), dpi = 120)
 
 # ompl 
 plannerspline.sample_by_interval(0.001)
@@ -85,14 +100,15 @@ for i in range(len(ompltimelist)):
                                 controlMode=p.POSITION_CONTROL)
     time.sleep(1./1000.)
 
-fig = plt.figure(num = 1, figsize=(16, 9), dpi = 120)
-
-origin_position = fig.add_subplot(3, 2, 1)
-origin_velocity = fig.add_subplot(3, 2, 2)
-origin_acceleration = fig.add_subplot(3, 2, 3)
-omplsample_position = fig.add_subplot(3, 2, 4)
-omplsample_velocity = fig.add_subplot(3, 2, 5)
-omplsample_acceleration = fig.add_subplot(3, 2, 6)
+origin_position = fig.add_subplot(3, 3, 1)
+origin_velocity = fig.add_subplot(3, 3, 4)
+origin_acceleration = fig.add_subplot(3, 3, 7)
+sample_position = fig.add_subplot(3, 3, 2)
+sample_velocity = fig.add_subplot(3, 3, 5)
+sample_acceleration = fig.add_subplot(3, 3, 8)
+omplsample_position = fig.add_subplot(3, 3, 3)
+omplsample_velocity = fig.add_subplot(3, 3, 6)
+omplsample_acceleration = fig.add_subplot(3, 3, 9)
 
 
 origin_position.set_title("Origin Trajectory Position")
@@ -105,14 +121,23 @@ origin_acceleration.set_title("Origin Trajectory Acceleration (1000Hz)")
 origin_acceleration.set_xlabel("time")
 origin_acceleration.set_ylabel("Acceleration")
 
-omplsample_position.set_title("ompl Sampled Trajectory Velocity (1000Hz)")
+
+sample_position.set_title("Sampled Trajectory Position (1000Hz)")
+sample_position.set_xlabel("time")
+sample_position.set_ylabel("position")
+sample_velocity.set_title("Sampled Trajectory Velocity (1000Hz)")
+sample_velocity.set_xlabel("time")
+sample_velocity.set_ylabel("velocity")
+sample_acceleration.set_title("Sampled Trajectory Acceleration (1000Hz)")
+sample_acceleration.set_xlabel("time")
+sample_acceleration.set_ylabel("Acceleration")
+
+omplsample_position.set_title("ompl Sampled Trajectory Position (1000Hz)")
 omplsample_position.set_xlabel("time")
 omplsample_position.set_ylabel("position")
-
 omplsample_velocity.set_title("ompl Sampled Trajectory Velocity (1000Hz)")
 omplsample_velocity.set_xlabel("time")
 omplsample_velocity.set_ylabel("velocity")
-
 omplsample_acceleration.set_title("ompl Sampled Trajectory Acceleration (1000Hz)")
 omplsample_acceleration.set_xlabel("time")
 omplsample_acceleration.set_ylabel("Acceleration")
@@ -121,8 +146,12 @@ plot1=origin_position.plot(timeslist, valuelist, linestyle='-', marker='o', mark
 plot2=origin_velocity.plot(timeslist, veclist, linestyle='-', marker='o', markersize = 3)
 plot3=origin_acceleration.plot(timeslist, acllist, linestyle='-', marker='o', markersize = 3)
 
-plot4=omplsample_position.plot(ompltimelist,omplposlist, linestyle='-')
-plot5=omplsample_position.plot(ompltimelist,omplveclist, linestyle='-')
-plot6=omplsample_position.plot(ompltimelist,omplacllist, linestyle='-')
+plot4=sample_position.plot(sampletimelist,sampleposlist, linestyle='-')
+plot5=sample_velocity.plot(sampletimelist,sampleveclist, linestyle='-')
+plot6=sample_acceleration.plot(sampletimelist,sampleacllist, linestyle='-')
+
+plot7=omplsample_position.plot(ompltimelist,omplposlist, linestyle='-')
+plot8=omplsample_velocity.plot(ompltimelist,omplveclist, linestyle='-')
+plot9=omplsample_acceleration.plot(ompltimelist,omplacllist, linestyle='-')
 
 plt.show()

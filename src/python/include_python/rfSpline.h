@@ -13,25 +13,46 @@ void declare_rfSpline(py::module& m){
     py::class_<rfWaypoint>(m,"rfWaypoint")
         .def(py::init<const std::array<double,3>&,const std::array<double,3>&>());
         
-    py::class_<PlannerSpline>(m,"PlannerSpline")
-        .def(py::init<std::string&>())
+    py::class_<PlannerSpline,std::shared_ptr<PlannerSpline>>(m,"PlannerSpline")
+        .def(py::init<const std::string& >())
         .def("loadRobotModel",&PlannerSpline::loadRobotModel)
         .def("loadKinematicModel",&PlannerSpline::loadKinematicModel)
         .def("loadPlannerConfig",&PlannerSpline::loadPlannerConfig)
         .def("loadJointLimit",&PlannerSpline::loadJointLimit)
-        .def("InitRobotState",static_cast<void (PlannerSpline::*)(std::vector<double>&,std::string&)>(&PlannerSpline::InitRobotState),"Set RotbotState by Waypoint")
+        .def("InitRobotState",static_cast<void (PlannerSpline::*)(std::vector<double>&,const std::string&)>(&PlannerSpline::InitRobotState),"Set RotbotState by Waypoint")
         .def("InitRobotState",static_cast<void (PlannerSpline::*)(rfWaypoint&)>(&PlannerSpline::InitRobotState),"Set RotbotState by Waypoint")
-        .def("CreateSplineParameterization",&PlannerSpline::CreateSplineParameterization,py::arg("watpoint"),py::arg("group_name"),py::arg("timeinterval")=0.1)
+
+        .def("init",&PlannerSpline::init)
+
+        .def("CreateSplineParameterization",
+                                &PlannerSpline::CreateSplineParameterization,
+                                py::arg("watpoints"),
+                                py::arg("group_name"),
+                                py::arg("frame_id"),
+                                py::arg("tip_name"),
+                                py::arg("timeinterval")=0.1,
+                                py::arg("max_velocity_scaling_factor")=1.0,
+                                py::arg("max_acceleration_scaling_factor")=1.0)
+
+        .def("CreateSingleWaypointPath",
+                                &PlannerSpline::CreateSingleWaypointPath,
+                                py::arg("waypoint"),
+                                py::arg("group_name"),
+                                py::arg("frame_id"),
+                                py::arg("tip_name"),
+                                py::arg("max_velocity_scaling_factor")=1.0,
+                                py::arg("max_acceleration_scaling_factor")=1.0)
+
         .def("getTimeList",&PlannerSpline::getTimeList)
         .def("getJointPosValue",&PlannerSpline::getJointPosValue)
         .def("getJointVecValue",&PlannerSpline::getJointVecValue)
         .def("getJointAclValue",&PlannerSpline::getJointAclValue)
-        .def("computeSpline",static_cast<bool (PlannerSpline::*)(double&,std::string&)>(&PlannerSpline::computeSpline),"compute and sample pos velocity acceleration")
+        //.def("computeSpline",static_cast<bool (PlannerSpline::*)(double&,std::string&)>(&PlannerSpline::computeSpline),"compute and sample pos velocity acceleration")
         //.def("computeSpline",static_cast<tk::spline (PlannerSpline::*)(std::vector<double>&,std::vector<double>&>))(&PlannerSpline::computeSpline),"get pos velocity acceleration tk::spline")
-        .def("getwaypointPositionList",&PlannerSpline::getwaypointPositionList)
-        .def("getwaypointVelocityList",&PlannerSpline::getwaypointVelocityList)
-        .def("getwaypointAccelerationList",&PlannerSpline::getwaypointAccelerationList)
-        .def("getSampletimestamp",&PlannerSpline::getSampletimestamp)
+        //.def("getwaypointPositionList",&PlannerSpline::getwaypointPositionList)
+        //.def("getwaypointVelocityList",&PlannerSpline::getwaypointVelocityList)
+        //.def("getwaypointAccelerationList",&PlannerSpline::getwaypointAccelerationList)
+        //.def("getSampletimestamp",&PlannerSpline::getSampletimestamp)
         .def("sample_by_interval",&PlannerSpline::sample_by_interval)
         .def("get_ompl_sample",&PlannerSpline::get_ompl_sample)
         .def("get_sample_by_interval_times",&PlannerSpline::get_sample_by_interval_times)
