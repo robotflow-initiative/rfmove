@@ -223,9 +223,9 @@ void PlannerSpline::CreateSingleWaypointSegment(
 
     for(int it=0;it<(response.trajectory_->getWayPointCount());it++)
     {
-        timeslist.push_back(time);
+        timeslist.push_back(time=time+response.trajectory_->getWayPointDurationFromPrevious(it));
         JointsPositionsList.push_back(response.trajectory_->getWayPointPtr(it));
-        time=time+response.trajectory_->getWayPointDurationFromPrevious(it);
+        
     }
 }
 

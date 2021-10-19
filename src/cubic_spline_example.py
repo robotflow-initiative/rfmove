@@ -41,7 +41,7 @@ p.setJointMotorControlArray(bodyIndex=boxId,
 
 
 plannerspline.InitRobotState(np.array([0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]),"panda_arm")
-plannerspline.CreateSingleWaypointPath(waypoint1,"panda_arm",0.5,1,1)
+plannerspline.CreateSingleWaypointPath(waypoint1,"panda_arm","panda_link0","panda_link8",1,1)
 timeslist=plannerspline.getTimeList()
 
 joint_name="panda_joint2"
@@ -88,10 +88,10 @@ for i in range(len(ompltimelist)):
 fig = plt.figure(num = 1, figsize=(16, 9), dpi = 120)
 
 origin_position = fig.add_subplot(3, 2, 1)
-origin_velocity = fig.add_subplot(3, 2, 2)
-origin_acceleration = fig.add_subplot(3, 2, 3)
-omplsample_position = fig.add_subplot(3, 2, 4)
-omplsample_velocity = fig.add_subplot(3, 2, 5)
+origin_velocity = fig.add_subplot(3, 2, 3)
+origin_acceleration = fig.add_subplot(3, 2, 5)
+omplsample_position = fig.add_subplot(3, 2, 2)
+omplsample_velocity = fig.add_subplot(3, 2, 4)
 omplsample_acceleration = fig.add_subplot(3, 2, 6)
 
 
@@ -122,7 +122,7 @@ plot2=origin_velocity.plot(timeslist, veclist, linestyle='-', marker='o', marker
 plot3=origin_acceleration.plot(timeslist, acllist, linestyle='-', marker='o', markersize = 3)
 
 plot4=omplsample_position.plot(ompltimelist,omplposlist, linestyle='-')
-plot5=omplsample_position.plot(ompltimelist,omplveclist, linestyle='-')
-plot6=omplsample_position.plot(ompltimelist,omplacllist, linestyle='-')
+plot5=omplsample_velocity.plot(ompltimelist,omplveclist, linestyle='-')
+plot6=omplsample_acceleration.plot(ompltimelist,omplacllist, linestyle='-')
 
 plt.show()
