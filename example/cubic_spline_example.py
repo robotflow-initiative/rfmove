@@ -16,7 +16,7 @@ waypoint1=rfWaypoint([0.33,0,0.58],[0,3.14,-0.5])
 
 print("== Initalize Planner moveit model ==")
 plannerspline=PlannerSpline("panda_arm")
-plannerspline.init("../resources/panda_arm_hand_urdf_convert.urdf",
+plannerspline.init("../resources/panda_arm_hand_convert.urdf",
                    "../resources/panda_arm_hand.srdf",
                    "../resources/kinematics.yaml",
                    "../resources/ompl_planning.yaml",
@@ -32,7 +32,7 @@ p.setAdditionalSearchPath("../resources")
 
 startPos=[0,0,0]
 startOrientation=p.getQuaternionFromEuler([0,0,0])
-boxId=p.loadURDF("panda_arm_hand_urdf_convert.urdf",startPos,startOrientation,useFixedBase=1)
+boxId=p.loadURDF("panda_arm_hand_convert.urdf",startPos,startOrientation,useFixedBase=1)
 initalizePybulletRobotState=list([0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279])
 p.setJointMotorControlArray(bodyIndex=boxId,
                             jointIndices=range(len(joint_name_list)),
@@ -84,7 +84,7 @@ for i in range(len(ompltimelist)):
                                 targetPositions=waypoints[i],
                                 controlMode=p.POSITION_CONTROL)
     time.sleep(1./1000.)
-
+'''
 fig = plt.figure(num = 1, figsize=(16, 9), dpi = 120)
 
 origin_position = fig.add_subplot(3, 2, 1)
@@ -126,3 +126,4 @@ plot5=omplsample_velocity.plot(ompltimelist,omplveclist, linestyle='-')
 plot6=omplsample_acceleration.plot(ompltimelist,omplacllist, linestyle='-')
 
 plt.show()
+'''

@@ -7,6 +7,7 @@ include_directories(
         ../../extern/kdl_kinematics_plugin/include
         include_python
         include
+        include_python/rfmove_np
         ${EIGEN3_INCLUDE_DIR}
         ../../extern
         ${YAML_CPP_INCLUDE_DIR}

@@ -133,29 +133,6 @@ public:
     std::vector<double> sample_by_interval_times;
     std::vector<double> get_sample_by_interval_times();
 
-    //success return 0 
-    //fail return 1
-    //通过spline.h库来改善样条曲线 算法有待改善
-    //bool computeSpline(double& inverval,std::string& groupname);
-
-    //std::vector<double> computeSplinePositon(std::vector<double> x,std::vector<double> y,double inverval);
-    //计算spline的函数，为了外部使用，还没有实现
-    //tk::spline computeSpline(std::vector<double>& x,std::vector<double>& y,std::string& groupname);
-
-    // Sample time list
-    //spline 曲线
-    //std::vector<double> sampletimestamp;
-    //std::vector<double> getSampletimestamp();
-
-    // waypoint num x joint num
-    // 一行一条轨迹//算法还有待改善
-    //通过spline获取出的轨迹 一共n行，n代表group的自由度，每行一个path
-    //std::vector<std::vector<double>> WayPositons_vectorList;
-    //std::vector<std::vector<double>> WayVelocity_vectorList;
-    //std::vector<std::vector<double>> WayAcceleration_vectorList;
-    //std::vector<double> getwaypointPositionList(const std::string jointname);
-    //std::vector<double> getwaypointVelocityList(const std::string jointname);
-    //std::vector<double> getwaypointAccelerationList(const std::string jointname);
 
     // name to idx
     // 名字到索引的映射
@@ -192,21 +169,18 @@ int PlannerSpline::jointIndex(const std::string& jointname)
         std::cout<<"Error jointname ,please input the right joint name "<<std::endl;
         return -1;
     }
-    //std::cout<<"iter->second:::"<<iter->second<<std::endl;
     return iter->second;
 }
 
 
 
-void PlannerSpline::CreateSingleWaypointSegment(
-                                     planning_interface::MotionPlanRequest &req,
-                                     const std::string &tip_name,
-                                     geometry_msgs::PoseStamped &pose)
+void PlannerSpline::CreateSingleWaypointSegment(planning_interface::MotionPlanRequest &req,
+                                                const std::string &tip_name,
+                                                geometry_msgs::PoseStamped &pose)
 {
     PlannerManager planner(kinematic_model,pconfig);
 
-    moveit_msgs::Constraints pose_goal=
-    kinematic_constraints::constructGoalConstraints(tip_name, pose,0.01, 0.01);
+    moveit_msgs::Constraints pose_goal=kinematic_constraints::constructGoalConstraints(tip_name, pose,0.01, 0.01);
 
     req.goal_constraints.clear();
     req.goal_constraints.push_back(pose_goal);
@@ -358,7 +332,7 @@ std::vector<double> PlannerSpline::sample_by_time(double time,const std::string&
     return PosVecAcl;
 }
 
-
+// 一系列登陆模型的对象
 void PlannerSpline::loadRobotModel(const std::string& urdf,const std::string& srdf)
 {
     loader = createRobotModelLoaderFromFile(urdf,srdf);
@@ -394,13 +368,13 @@ void PlannerSpline::loadPlannerConfig(const std::string& Planner_path)
         jointidx++;
     }
 }
-
+// 还没有实现
 void PlannerSpline::InitRobotState(rfWaypoint& waypont)
 {
 
 }
 
-//
+//初始化到一个初始化的robot state状态
 void PlannerSpline::InitRobotState(std::vector<double> &JGJointValues,const std::string &group_name)
 {
     moveit::core::JointModelGroup* joint_model_group = loader->getRobotModel()->getJointModelGroup(group_name);    
@@ -429,6 +403,8 @@ void PlannerSpline::CreateSplineSegment(planning_interface::MotionPlanRequest &r
     planning_interface::PlanningContextPtr context=planner.getPlanningContext(planning_scene,req);
     planning_interface::MotionPlanResponse response;
     context->solve(response);
+
+    //获取规划后的对象
     trajectory_processing::IterativeParabolicTimeParameterization parameterization;
     parameterization.computeTimeStamps(*response.trajectory_.get(),req.max_velocity_scaling_factor,req.max_acceleration_scaling_factor);
 
@@ -556,140 +532,6 @@ std::vector<double> PlannerSpline::getJointAclValue(const std::string& jointname
     }
     return AcePos;
 }
-//success return 0 
-//fail return 1
-/*
-bool PlannerSpline::computeSpline(double& interval,std::string& groupname) //s  
-{
-    WayPositons_vectorList.clear();
-    WayVelocity_vectorList.clear();
-    WayAcceleration_vectorList.clear();
-    sampletimestamp.clear();
 
-    if(timeslist.empty()||JointsPositionsList.empty())
-    {
-        std::cout<<"Get a empty WayPoint List!"<<std::endl;
-        return 1;
-    }
-    
-    robot_state::RobotState& robot_state=planning_scene->getCurrentStateNonConst();
-    std::vector<std::string> namelist=robot_state.getJointModelGroup(groupname)->getJointModelNames();
-    for(std::vector<std::string>::iterator it=namelist.begin();it!=namelist.end();it++)
-    {
-
-        std::vector<double> joint_value_tmp;
-        try{
-            for(std::vector<moveit::core::RobotStatePtr>::iterator rsit=JointsPositionsList.begin();
-                                                                rsit!=JointsPositionsList.end();rsit++)
-            {   
-                joint_value_tmp.push_back((*rsit)->getVariablePosition(*(it)));
-            }
-            tk::spline S(timeslist,joint_value_tmp);
-
-            // for position
-            double time_step=0;
-            joint_value_tmp.clear();
-            sampletimestamp.clear();
-            //according to interval ,sample the point 
-            //std::cout<<"time is "<<(int)(timeslist[timeslist.size()-1]/interval)<<std::endl;
-            while(time_step<=(timeslist[timeslist.size()-1]/interval))
-            {
-                    sampletimestamp.push_back(time_step*interval);
-                    //std::cout<<S(time_step*interval)<<std::endl;
-                    joint_value_tmp.push_back(S(time_step*interval));
-                    time_step++;  
-            }
-            WayPositons_vectorList.push_back(joint_value_tmp);
-
-            //for velocity
-            time_step=0;
-            joint_value_tmp.clear();
-            //according to interval ,sample the point 
-            while(time_step<=(timeslist[timeslist.size()-1]/interval))
-            {
-                joint_value_tmp.push_back(S.deriv(1,time_step*interval));
-                time_step++;
-            }
-            WayVelocity_vectorList.push_back(joint_value_tmp);
-
-            //for Acceleration
-            time_step=0;
-            joint_value_tmp.clear();
-            //according to interval ,sample the point 
-            while(time_step<=(timeslist[timeslist.size()-1]/interval))
-            {
-                joint_value_tmp.push_back(S.deriv(2,time_step*interval));
-                time_step++;
-            }
-            WayAcceleration_vectorList.push_back(joint_value_tmp);
-        }catch(...)
-        {
-            std::cout<<"Joint name is error"<<std::endl;
-            return 1;
-        }
-    }
-   return 0;
-}*/
-
-/*
-std::vector<double> PlannerSpline::getSampletimestamp()
-{
-    return sampletimestamp;
-}*/
-
-/*
-std::vector<double> PlannerSpline::getwaypointPositionList(const std::string jointname)
-{
-    std::vector<double> result;
-    std::map<std::string, int>::iterator iter;
-    iter=name_idx.find(jointname);
-    if(iter==name_idx.end())
-    {
-        std::cout<<"Error jointname ,please input the right joint name "<<std::endl;
-        return result;
-    }
-    //std::cout<<"iter->second:::"<<iter->second<<std::endl;
-    return WayPositons_vectorList[iter->second];
-
-}*/
-
-/*
-std::vector<double> PlannerSpline::getwaypointVelocityList(const std::string jointname)
-{
-    std::vector<double> result;
-    std::map<std::string, int>::iterator iter;
-    iter=name_idx.find(jointname);
-    if(iter==name_idx.end())
-    {
-        std::cout<<"Error jointname ,please input the right joint name "<<std::endl;
-        return result;
-    }
-    //std::cout<<"iter->second:::"<<iter->second<<std::endl;
-    return WayVelocity_vectorList[iter->second];
-
-}*/
-
-/*
-std::vector<double> PlannerSpline::getwaypointAccelerationList(const std::string jointname)
-{
-    std::vector<double> result;
-    std::map<std::string, int>::iterator iter;
-    iter=name_idx.find(jointname);
-    if(iter==name_idx.end())
-    {
-        std::cout<<"Error jointname ,please input the right joint name "<<std::endl;
-        return result;
-    }
-    //std::cout<<"iter->second:::"<<iter->second<<std::endl;
-    return WayAcceleration_vectorList[iter->second];
-
-}*/
-
-//std::vector<double>PlannerSpline::computeSpline(std::vector<double> x,std::vector<double> y,double inverval)
-//{
-    
-    /*std::vector<double> result;
-    return result;*/
-//}
 
 #endif

@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 print("==== Implement Motion Plan Tutorials. ====")
 print("== Load robot model ==")
-robot_loader = moveit.createRobotModelLoaderFromFile("../resources/panda_arm_hand_urdf_convert.urdf", "../resources/panda_arm_hand.srdf")
+robot_loader = moveit.createRobotModelLoaderFromFile("../resources/panda_arm_hand_convert.urdf", "../resources/panda_arm_hand.srdf")
 kinematic_solver_loader = moveit.createKinematicsLoaderFromFile("../resources/kinematics.yaml")
 
 joint_limits_loader=moveit.createJointLimitsLoaderFromFile("../resources/joint_limits.yaml")
