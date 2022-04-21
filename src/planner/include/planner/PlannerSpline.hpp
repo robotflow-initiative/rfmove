@@ -1,6 +1,3 @@
-//
-// Created by yongxi on 6/22/21.
-//
 #ifndef PLANNER_TIME_H
 #define PLANNER_TIME_H
 
@@ -76,8 +73,7 @@ public:
     void CreateSplineSegment(planning_interface::MotionPlanRequest &req,
                              geometry_msgs::PoseStamped &pose,
                              const std::string &tip_name,
-                             bool firstflag,
-                             double timeinterval);
+                             bool firstflag);
 
     void CreateSplineParameterization(std::vector<rfWaypoint>& waypoint,
                                       const std::string &group_name,
@@ -140,7 +136,6 @@ public:
     int jointIndex(const std::string& joint_name);
 };
 
-
 trajectory_interface::PosVelAccState<double> PlannerSpline::get_ompl_sample(const std::string& jointname)
 {
     std::map<std::string,trajectory_interface::PosVelAccState<double>>::iterator iter;    
@@ -181,7 +176,6 @@ void PlannerSpline::CreateSingleWaypointSegment(planning_interface::MotionPlanRe
     PlannerManager planner(kinematic_model,pconfig);
 
     moveit_msgs::Constraints pose_goal=kinematic_constraints::constructGoalConstraints(tip_name, pose,0.01, 0.01);
-
     req.goal_constraints.clear();
     req.goal_constraints.push_back(pose_goal);
 
@@ -192,14 +186,10 @@ void PlannerSpline::CreateSingleWaypointSegment(planning_interface::MotionPlanRe
     trajectory_processing::IterativeParabolicTimeParameterization parameterization;
     parameterization.computeTimeStamps(*response.trajectory_.get(),req.max_velocity_scaling_factor,req.max_acceleration_scaling_factor);
 
-    JointsPositionsList.clear();
-    timeslist.clear();
-
     for(int it=0;it<(response.trajectory_->getWayPointCount());it++)
     {
         timeslist.push_back(time=time+response.trajectory_->getWayPointDurationFromPrevious(it));
         JointsPositionsList.push_back(response.trajectory_->getWayPointPtr(it));
-        
     }
 }
 
@@ -217,6 +207,9 @@ void PlannerSpline::CreateSingleWaypointSegment(planning_interface::MotionPlanRe
     req.max_acceleration_scaling_factor=max_acceleration_scaling_factor;
     geometry_msgs::PoseStamped pose;
     pose.header.frame_id=frame_id;
+
+    JointsPositionsList.clear();
+    timeslist.clear();
     time=0.0;
 
     pose.pose.position.x=waypoint.trans[0];
@@ -243,6 +236,7 @@ int PlannerSpline::sample_by_interval(double timeinterval)
     sample_by_interval_times.clear();
     for(auto& jointname:name_idx)
     {
+
         sample = trajectory_interface::PosVelAccState<double>();
         PosVecAcl.clear();
        
@@ -357,12 +351,10 @@ void PlannerSpline::loadPlannerConfig(const std::string& Planner_path)
     //PlannerManager planner(kinematic_model, pconfig);
     planning_scene=loader->newPlanningScene();
     robot_state::RobotState& robot_state=planning_scene->getCurrentStateNonConst();
-    
     std::vector<std::string> namelist=robot_state.getJointModelGroup(groupname)->getJointModelNames();
     int jointidx=0;
     for(std::vector<std::string>::iterator it=namelist.begin();it!=namelist.end();it++)
     {
-        //std::cout<<"name is "<<*it<<std::endl;
         std::vector<double> joint_value_tmp;
         name_idx.insert(std::make_pair(*it,jointidx));
         jointidx++;
@@ -386,8 +378,7 @@ void PlannerSpline::InitRobotState(std::vector<double> &JGJointValues,const std:
 void PlannerSpline::CreateSplineSegment(planning_interface::MotionPlanRequest &req,
                                         geometry_msgs::PoseStamped &pose,
                                         const std::string &tip_name,
-                                        bool firstflag,
-                                        double timeintervel)
+                                        bool firstflag)
 {
     PlannerManager planner(kinematic_model, pconfig);
     moveit_msgs::Constraints pose_goal=kinematic_constraints::constructGoalConstraints(
@@ -398,8 +389,7 @@ void PlannerSpline::CreateSplineSegment(planning_interface::MotionPlanRequest &r
     );
     req.goal_constraints.clear();
     req.goal_constraints.push_back(pose_goal);
-    //std::cout<<"req.max_velocity_scaling_factor::"<<req.max_velocity_scaling_factor<<std::endl;
-    //std::cout<<"max_acceleration_scaling_factor::"<<req.max_acceleration_scaling_factor<<std::endl;
+
     planning_interface::PlanningContextPtr context=planner.getPlanningContext(planning_scene,req);
     planning_interface::MotionPlanResponse response;
     context->solve(response);
@@ -408,7 +398,12 @@ void PlannerSpline::CreateSplineSegment(planning_interface::MotionPlanRequest &r
     trajectory_processing::IterativeParabolicTimeParameterization parameterization;
     parameterization.computeTimeStamps(*response.trajectory_.get(),req.max_velocity_scaling_factor,req.max_acceleration_scaling_factor);
 
-    
+    for(int it=0;it<(response.trajectory_->getWayPointCount());it++)
+    {
+        timeslist.push_back(time=time+response.trajectory_->getWayPointDurationFromPrevious(it));
+        JointsPositionsList.push_back(response.trajectory_->getWayPointPtr(it));
+    }
+    /*  
     for(int it=0;it<(response.trajectory_->getWayPointCount());it++)
     {
         if(!it)
@@ -444,7 +439,7 @@ void PlannerSpline::CreateSplineSegment(planning_interface::MotionPlanRequest &r
             JointsPositionsList.push_back(response.trajectory_->getWayPointPtr(it));         
             time=time+response.trajectory_->getWayPointDurationFromPrevious(it);
         }
-    }
+    }*/
 }
 
 
@@ -466,8 +461,11 @@ void PlannerSpline::CreateSplineParameterization(std::vector<rfWaypoint>& waypoi
 
     geometry_msgs::PoseStamped pose;
     pose.header.frame_id=frame_id;
+    
+    JointsPositionsList.clear();
+    timeslist.clear();
     time=0.0;
-
+    /*
     for(std::vector<rfWaypoint>::const_iterator it=waypoint.begin();it!=waypoint.end();it++)
     {
         if(it==waypoint.begin())
@@ -490,11 +488,19 @@ void PlannerSpline::CreateSplineParameterization(std::vector<rfWaypoint>& waypoi
             pose.pose.orientation.z=it->quad[2];
             pose.pose.orientation.w=it->quad[3];
             CreateSplineSegment(req,pose,tip_name,false,timeintervel);
-        }
-
-        moveit::core::JointModelGroup* joint_model_group = loader->getRobotModel()->getJointModelGroup(group_name);    
-        robot_state=*JointsPositionsList[JointsPositionsList.size()-1].get();
-        planning_scene->setCurrentState(robot_state);
+        }*/
+        for(std::vector<rfWaypoint>::const_iterator it=waypoint.begin();it!=waypoint.end();it++)
+        {
+            pose.pose.position.x=it->trans[0];
+            pose.pose.position.y=it->trans[1];
+            pose.pose.position.z=it->trans[2];
+            pose.pose.orientation.x=it->quad[0];
+            pose.pose.orientation.y=it->quad[1];
+            pose.pose.orientation.z=it->quad[2];
+            pose.pose.orientation.w=it->quad[3];
+            CreateSplineSegment(req,pose,tip_name,false);  
+            robot_state=*JointsPositionsList[JointsPositionsList.size()-1].get();
+            planning_scene->setCurrentState(robot_state);
     }
 }
 
