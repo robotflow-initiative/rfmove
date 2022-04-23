@@ -14,8 +14,8 @@ from moveit_noros import rfWaypoint,PlannerSpline
 joint_name_list=["panda_joint1","panda_joint2","panda_joint3","panda_joint4","panda_joint5","panda_joint6","panda_joint7"]
 
 waypoint1=rfWaypoint([0.33,0,0.58],[0,3.14,-0.5])
-waypoint2=rfWaypoint([0.33,0.1,0.58],[0,3.14,-0.5])
-waypoint3=rfWaypoint([0.33,0.1,0.68],[0,3.14,0])
+waypoint2=rfWaypoint([0.33,0.2,0.58],[0,2.14,-0.5])
+waypoint3=rfWaypoint([0.33,0.1,0.68],[0,3.14,0.5])
 
 print("== Initalize Planner moveit model ==")
 plannerspline=PlannerSpline("panda_arm")
