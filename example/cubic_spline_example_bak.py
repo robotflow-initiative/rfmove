@@ -92,7 +92,8 @@ for i in range(len(ompltimelist)):
 #print(omplveclist)
 #print(omplacllist)
 
-for i in range(len(ompltimelist)):
+#for i in range(len(ompltimelist)):
+while(1):
     p.stepSimulation()
     p.setJointMotorControlArray(bodyIndex=boxId,
                                 jointIndices=range(len(joint_name_list)),
