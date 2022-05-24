@@ -268,6 +268,24 @@ int PlannerSpline::sample_by_interval(double timeinterval)
                 sample.acceleration.push_back(PosVecAcl[2]);
                 ++sample_count;
             }
+            
+            PosVecAcl = sample_by_time(end_time, jointname.first);
+            if (PosVecAcl.empty())
+            {
+                std::cout << "Sample is fail at time: " << end_time << std::endl;
+                return -1;
+            }
+
+            //仅仅在刚开始的时候清空列表，然后初始化一次sample_by_interval_times
+            if (!jointname.second)
+            {
+                sample_by_interval_times.push_back(end_time);
+            }
+
+            sample.position.push_back(PosVecAcl[0]);
+            sample.velocity.push_back(PosVecAcl[1]);
+            sample.acceleration.push_back(PosVecAcl[2]);
+            
             sampleVector.insert(std::make_pair(jointname.first, sample));
         }
         catch (...)

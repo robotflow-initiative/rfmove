@@ -184,29 +184,29 @@ include_directories(
 )
 
 # Compile demo executable
-add_executable(model_and_state_demo src/model_and_state_demo.cpp)
-target_link_libraries(model_and_state_demo
-        robot_model_noros)
+#add_executable(model_and_state_demo src/model_and_state_demo.cpp)
+#target_link_libraries(model_and_state_demo
+#        robot_model_noros)
 
-add_executable(planner_demo src/planner_demo.cpp)
-target_link_libraries(planner_demo
-        planner_noros
-        robot_model_noros
-        ${Boost_SYSTEM_LIBRARY})
+#add_executable(planner_demo src/planner_demo.cpp)
+#target_link_libraries(planner_demo
+#        planner_noros
+#        robot_model_noros
+#        ${Boost_SYSTEM_LIBRARY})
 
-add_executable(rokae_client_demo src/rokae_client_demo.cpp)
-target_link_libraries(rokae_client_demo
-        robot_model_noros
-        rokae_client)
+#add_executable(rokae_client_demo src/rokae_client_demo.cpp)
+#target_link_libraries(rokae_client_demo
+#        robot_model_noros
+#        rokae_client)
 
-add_executable(rokae_server_demo src/rokae_server_demo.cpp)
-target_link_libraries(rokae_server_demo
-        rokae_server)
+#add_executable(rokae_server_demo src/rokae_server_demo.cpp)
+#target_link_libraries(rokae_server_demo
+#        rokae_server)
 
 add_executable(urdf_converter src/util/urdf_converter.cpp)
 
 
-install(TARGETS model_and_state_demo planner_demo rokae_client_demo rokae_server_demo urdf_converter
+install(TARGETS  urdf_converter
         ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

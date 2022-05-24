@@ -5,7 +5,7 @@ import moveit_noros as moveit
 
 print("==== Implement Robot Model and Robot State Tutorial From Moveit Tutorials. ====")
 print("== Load robot model ==")
-robot_loader = moveit.createRobotModelLoaderFromFile("../resources/panda_arm_hand.urdf", "../resources/panda_arm_hand.srdf")
+robot_loader = moveit.createRobotModelLoaderFromFile("../resources/franka_convert.urdf", "../resources/panda_arm_hand.srdf")
 kinematic_solver_loader = moveit.createKinematicsLoaderFromFile("../resources/kinematics.yaml")
 robot_loader.loadKinematicsSolvers(kinematic_solver_loader)
 kinematic_model = robot_loader.getModel()
@@ -24,7 +24,7 @@ for i in range(len(joint_names)):
 
 print("== Test Joint Limits ==")
 print("Set joint value out of bound.")
-joint_values[0]=5.57
+joint_values=[-0.5643897236905532, -0.5825977421676405, 1.0961524120464714, -2.592718377606749, -2.46713083006551, 1.7440744119104092, -0.030400820102622322]
 kinematic_state.setJointGroupPositions(joint_model_group, joint_values)
 if kinematic_state.satisfiesBounds():
     print("Current state is valid.")
@@ -39,12 +39,14 @@ else:
 
 print("== Forward Kinematics ==")
 print("Set to random position")
-kinematic_state.setToRandomPositions(joint_model_group)
-end_effector_state = kinematic_state.getGlobalLinkTransform("panda_link8")
-print("Translation:")
-print(end_effector_state.translation())
-print("Rotation:")
-print(end_effector_state.rotation())
+#kinematic_state.setToRandomPositions(joint_model_group)
+end_effector_state = kinematic_state.getGlobalLinkTransform("panda_link7")
+print(end_effector_state)
+#print("Translation:")
+#print(end_effector_state.translation())
+#print("Rotation:")
+#print(end_effector_state.rotation())
+
 
 print("== Inverse Kinematics ==")
 found_ik = kinematic_state.setFromIK(joint_model_group, end_effector_state)
