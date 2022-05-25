@@ -110,6 +110,7 @@ public:
   // Note: Do not remove this.
   virtual bool initialize(const std::string& robot_description, const std::string& group_name,
                           const std::string& base_name, const std::string& tip_name, double search_discretization);
+  
   bool initialize(rdf_loader::RDFLoaderPtr rdfLoader, const std::string& group_name,
                   const std::string& base_name, const std::string& tip_name, double search_discretization);
   /**

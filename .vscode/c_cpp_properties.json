@@ -4,7 +4,10 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/include/python3.8"
+                "/usr/include/python3.8",
+                "/home/lees/linux_bak/rfmove/extern/franka_ikfast_panda_arm_plugin/src",
+                "/home/lees/linux_bak/rfmove/extern/franka_ikfast_panda_arm_plugin/include",
+                "${workspaceFolder}/extern/franka_ikfast_plugin/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

@@ -26,21 +26,24 @@ SET(EXPORT_HEAD_DIR "exported_heads")
 ## Let tinyxml use stl string instead of tinystr
 add_compile_definitions(TIXML_USE_STL)
 
-## Set kinetic lib search directory
-IF(DEFINED ENV{KINETIC_LIB_DIR})
-    SET(KINETIC_LIB_DIR $ENV{KINETIC_LIB_DIR})
-ELSE()
-    SET(KINETIC_LIB_DIR "/opt/ros/kinetic/lib")
-ENDIF()
-MESSAGE(STATUS "ROS kinetic library path: ${KINETIC_LIB_DIR}")
+SET(KINETIC_LIB_DIR ${PROJECT_SOURCE_DIR}/extern/lib)
 
+## Set kinetic lib search directory
+##IF(DEFINED ENV{KINETIC_LIB_DIR})
+##    SET(KINETIC_LIB_DIR $ENV{KINETIC_LIB_DIR})
+##ELSE()
+##    SET(KINETIC_LIB_DIR "/opt/ros/kinetic/lib")
+##ENDIF()
+##MESSAGE(STATUS "ROS kinetic library path: ${KINETIC_LIB_DIR}")
+
+SET(KINETIC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/extern/include)
 ## Set kinetic include search directory
-IF(DEFINED ENV{KINETIC_INCLUDE_DIR})
-    SET(KINETIC_INCLUDE_DIR $ENV{KINETIC_INCLUDE_DIR})
-ELSE()
-    SET(KINETIC_INCLUDE_DIR "/opt/ros/kinetic/include")
-ENDIF()
-MESSAGE(STATUS "ROS kinetic include path: ${KINETIC_INCLUDE_DIR}")
+#IF(DEFINED ENV{KINETIC_INCLUDE_DIR})
+#    SET(KINETIC_INCLUDE_DIR $ENV{KINETIC_INCLUDE_DIR})
+#ELSE()
+#    SET(KINETIC_INCLUDE_DIR "/opt/ros/kinetic/include")
+#ENDIF()
+#MESSAGE(STATUS "ROS kinetic include path: ${KINETIC_INCLUDE_DIR}")
 
 ## Set Python Version for pybind11
 SET(PYBIND11_PYTHON_VERSION "3.8")
@@ -58,8 +61,12 @@ message(STATUS "CMAKE_INSTALL_INCLUDEDIR: ${CMAKE_INSTALL_INCLUDEDIR}")
 
 # we use yaml-cpp as submodule
 #find_package(yaml-cpp REQUIRED)
-SET(YAML_CPP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/extern/yaml-cpp/include)
-SET(YAML_CPP_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/extern/yaml-cpp/src)
+#SET(YAML_CPP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/extern/yaml-cpp/include)
+#SET(YAML_CPP_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/extern/yaml-cpp/src)
+
+SET(YAML_CPP_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/extern/yaml-cpp/include)
+SET(YAML_CPP_SRC_DIR ${PROJECT_SOURCE_DIR}/extern/yaml-cpp/src)
+
 # SET(YAML_CPP_LIB ${CMAKE_CURRENT_SOURCE_DIR}/extern/yaml-cpp/build/libyaml-cpp.a)
 MESSAGE(STATUS "YAML_CPP_INCLUDE_DIR ${YAML_CPP_INCLUDE_DIR}")
 #MESSAGE(STATUS "YAML_CPP_LIB ${YAML_CPP_LIB}")
@@ -181,6 +188,7 @@ include_directories(
     src/planner/include
     src/rokae/include
     extern
+    ${PROJECT_SOURCE_DIR}/extern/include
 )
 
 # Compile demo executable

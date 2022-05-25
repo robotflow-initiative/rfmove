@@ -8,6 +8,7 @@
 #include <memory>
 #include <utility>
 #include "kdl_kinematics_plugin/kdl_kinematics_plugin.h"
+#include "franka_panda_arm_ikfast_moveit_plugin.cpp"
 
 const std::string KinematicsLoader::default_solver_type = "kdl_kinematics_plugin/KDLKinematicsPlugin"; // NOLINT
 const double KinematicsLoader::default_timeout = 0.5;
@@ -156,6 +157,9 @@ kinematics::KinematicsBasePtr KinematicsLoader::createSolver(const std::string& 
     if (solver_type=="kdl_kinematics_plugin/KDLKinematicsPlugin") {
         return kinematics::KinematicsBasePtr(new kdl_kinematics_plugin::KDLKinematicsPlugin());
     }
+    if (solver_type=="franka_ikfast_panda_arm_plugin/IKFastKinematicsPlugin") {
+        return kinematics::KinematicsBasePtr(new franka_panda_arm_ikfast::IKFastKinematicsPlugin());
+    }
     ROS_ERROR_STREAM("Unknown solver type " << solver_type);
     throw UnknownSolver;
 }
@@ -173,7 +177,15 @@ kinematics::KinematicsBasePtr KinematicsLoader::createInitSolver(
         ROS_INFO_STREAM("Initialize kdl for " << group_name << ". From " << base_frame << " To " << tip_frame);
         kdl_plugin ->initialize(rdf_loader_, group_name, base_frame, tip_frame, search_discretization);
         return kinematics::KinematicsBasePtr(kdl_plugin);
-    } else {
+    } else if(solver_type=="franka_ikfast_panda_arm_plugin/IKFastKinematicsPlugin") 
+    {
+        franka_panda_arm_ikfast::IKFastKinematicsPlugin* franka_ikfast_panda_arm_plugin =new franka_panda_arm_ikfast::IKFastKinematicsPlugin();
+        ROS_INFO_STREAM("Initialize kdl for " << group_name << ". From " << base_frame << " To " << tip_frame);
+        franka_ikfast_panda_arm_plugin->initialize(rdf_loader_, group_name, base_frame, tip_frame, search_discretization);
+        return kinematics::KinematicsBasePtr(franka_ikfast_panda_arm_plugin);
+    }
+    else {
+
         ROS_ERROR_STREAM("Solver " << solver_type << "not supported yet.");
         return kinematics::KinematicsBasePtr(nullptr);
     }

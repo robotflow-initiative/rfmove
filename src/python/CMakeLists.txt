@@ -1,10 +1,11 @@
 include_directories(
         ${KINETIC_INCLUDE_DIR}
-        ../robot_model/include
-        ../planner/include
-        ../controller/include
-        ../util
-        ../../extern/kdl_kinematics_plugin/include
+        ${PROJECT_SOURCE_DIR}/src/robot_model/include
+        ${PROJECT_SOURCE_DIR}/src/planner/include
+        ${PROJECT_SOURCE_DIR}/src/controller/include
+        ${PROJECT_SOURCE_DIR}/src/util
+        ${PROJECT_SOURCE_DIR}/extern/kdl_kinematics_plugin/include
+        ${PROJECT_SOURCE_DIR}/extern/franka_ikfast_plugin/include
         include_python
         include
         include_python/rfmove_np

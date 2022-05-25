@@ -2,7 +2,8 @@ include_directories(
         include
         ${KINETIC_INCLUDE_DIR}
         ${EIGEN3_INCLUDE_DIR}
-        ../util
+        ${PROJECT_SOURCE_DIR}/src/util
+        ${PROJECT_SOURCE_DIR}/extern/franka_ikfast_plugin/include
         ${YAML_CPP_INCLUDE_DIR}
 )
 
