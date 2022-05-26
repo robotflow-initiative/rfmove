@@ -45,6 +45,7 @@ SET(KINETIC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/extern/include)
 #ENDIF()
 #MESSAGE(STATUS "ROS kinetic include path: ${KINETIC_INCLUDE_DIR}")
 
+
 ## Set Python Version for pybind11
 SET(PYBIND11_PYTHON_VERSION "3.8")
 
@@ -156,6 +157,21 @@ find_library(trajectory_processing_lib moveit_trajectory_processing
         HINTS ${KINETIC_LIB_DIR}
         REQUIRED)
 MESSAGE(STATUS "lib moveit_trajectory_processing: ${trajectory_processing_lib}")
+
+find_library(lapack_lib lapack
+        HINTS ${KINETIC_LIB_DIR}
+        REQUIRED)
+MESSAGE(STATUS "lapack: ${lapack_lib}")
+
+find_library(blas_lib blas
+        HINTS ${KINETIC_LIB_DIR}
+        REQUIRED)
+MESSAGE(STATUS "blas: ${blas_lib}")
+
+find_library(gfortran_lib gfortran
+        HINTS ${KINETIC_LIB_DIR}
+        REQUIRED)
+MESSAGE(STATUS "gfortran: ${gfortran_lib}")
 
 find_package(Python ${PYBIND11_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
 MESSAGE(STATUS "Python_SITELIB: ${Python_SITELIB}")

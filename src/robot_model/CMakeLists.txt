@@ -23,7 +23,10 @@ target_link_libraries(robot_model_noros
         ${collision_detection_lib}
         ${planning_scene_lib}
         yaml-cpp
-        kdl_kinematics_noros)
+        kdl_kinematics_noros
+        ${lapack_lib}
+        ${blas_lib}
+        ${gfortran_lib})
 
 install(TARGETS robot_model_noros
         ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}

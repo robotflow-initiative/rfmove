@@ -3,10 +3,10 @@ import sys
 import numpy
 import time
 
-import pybullet as p
-import pybullet_data
 sys.path.append("../install/lib")
 import moveit_noros as moveit
+import pybullet as p
+import pybullet_data
 import numpy as np
 import matplotlib.pyplot as plt
 from moveit_noros import rfWaypoint,PlannerSpline

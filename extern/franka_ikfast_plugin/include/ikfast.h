@@ -1,37 +1,3 @@
-// -*- coding: utf-8 -*-
-// Copyright (C) 2012 Rosen Diankov <rosen.diankov@gmail.com>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-/** \brief  Header file for all ikfast c++ files/shared objects.
-
-    The ikfast inverse kinematics compiler is part of OpenRAVE.
-
-    The file is divided into two sections:
-    - <b>Common</b> - the abstract classes section that all ikfast share regardless of their settings
-    - <b>Library Specific</b> - the library-specific definitions, which depends on the precision/settings that the
-   library was compiled with
-
-    The defines are as follows, they are also used for the ikfast C++ class:
-
-   - IKFAST_HEADER_COMMON - common classes
-   - IKFAST_HAS_LIBRARY - if defined, will include library-specific functions. by default this is off
-   - IKFAST_CLIBRARY - Define this linking statically or dynamically to get correct visibility.
-   - IKFAST_NO_MAIN - Remove the ``main`` function, usually used with IKFAST_CLIBRARY
-   - IKFAST_ASSERT - Define in order to get a custom assert called when NaNs, divides by zero, and other invalid
-   conditions are detected.
-   - IKFAST_REAL - Use to force a custom real number type for IkReal.
-   - IKFAST_NAMESPACE - Enclose all functions and classes in this namespace, the ``main`` function is excluded.
-
- */
 #include <vector>
 #include <list>
 #include <stdexcept>

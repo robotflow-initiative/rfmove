@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -g  -shared  -o rokae_cli.cpython-38-x86_64-linux-gnu.so CMakeFiles/rokae_cli.dir/src/rokae_client.cpp.o CMakeFiles/rokae_cli.dir/python/RokaeClientPy.cpp.o  -Wl,-rpath,/home/lees/linux_bak/rfmove/extern/lib: ../../../extern/lib/libmoveit_robot_trajectory.so -lpthread 

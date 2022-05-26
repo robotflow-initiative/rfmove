@@ -58,7 +58,10 @@ target_link_libraries(moveit_noros PRIVATE
         ${robot_trajectory_lib}
         ${trajectory_processing_lib}
         kdl_kinematics_noros
-        controller_noros)
+        controller_noros
+        ${lapack_lib}
+        ${blas_lib}
+        ${gfortran_lib})        
 
 IF(${WITH_BULLET3})
     MESSAGE("Build moveit_noros with bullet robotics from ${bullet_robotics_lib}")
