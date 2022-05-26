@@ -5,24 +5,24 @@ bin
 venv
 doxygen
 # for extern
-extern/lib/*
+!extern/lib/*
 !extern/lib/mklink.sh
 !extern/lib/rmlink.sh
-extern/include/*
-extern/include_bp
-extern/*.tar.gz
-extern/tinyxml/build
-extern/yaml-cpp/build
+!extern/include/*
+!extern/include_bp
+!extern/*.tar.gz
+!extern/tinyxml/build
+!extern/yaml-cpp/build
 
 # for install
 install/*
-!install/moveit_no_ros
+install/moveit_no_ros
 install/moveit_no_ros/*
-!install/moveit_no_ros/install.sh
-!install/moveit_no_ros/install.md
-!install/moveit_no_ros/pybullet_demo.py
-!install/moveit_no_ros/set_env.bash
-!install/moveit_no_ros/remove.sh
+install/moveit_no_ros/install.sh
+install/moveit_no_ros/install.md
+install/moveit_no_ros/pybullet_demo.py
+install/moveit_no_ros/set_env.bash
+install/moveit_no_ros/remove.sh
 
 # for jupyter
 notebook/.ipynb_checkpoints
