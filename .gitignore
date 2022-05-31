@@ -28,4 +28,4 @@ install/moveit_no_ros/remove.sh
 notebook/.ipynb_checkpoints
 
 # converted urdf
-resources/*_convert.urdf
+!resources/*_convert.urdf
