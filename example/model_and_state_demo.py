@@ -24,7 +24,7 @@ for i in range(len(joint_names)):
 
 print("== Test Joint Limits ==")
 print("Set joint value out of bound.")
-joint_values=[-0.5643897236905532, -0.5825977421676405, 1.0961524120464714, -2.592718377606749, -2.46713083006551, 1.7440744119104092, -0.030400820102622322]
+joint_values=joint_values=[-1.3177302367227017, -1.7353981633974485, 0.8012309797768007, -2.295736269770167, 1.9069654787403831, 2.296614604292792, 2.5637651905206544]
 kinematic_state.setJointGroupPositions(joint_model_group, joint_values)
 if kinematic_state.satisfiesBounds():
     print("Current state is valid.")

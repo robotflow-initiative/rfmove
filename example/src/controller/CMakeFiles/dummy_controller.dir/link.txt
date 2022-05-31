@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/dummy_controller.dir/dummy_hardware.cpp.o  -o dummy_controller  -Wl,-rpath,/home/lees/linux_bak/rfmove/example/src/controller:/home/lees/linux_bak/rfmove/extern/lib: libcontroller_noros.so ../../../extern/lib/libmoveit_robot_trajectory.so ../../../extern/lib/libmoveit_trajectory_processing.so 

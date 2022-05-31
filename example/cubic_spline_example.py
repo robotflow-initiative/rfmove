@@ -2,7 +2,7 @@ import sys
 
 import numpy
 import time
-
+import math
 sys.path.append("../install/lib")
 import moveit_noros as moveit
 import pybullet as p
@@ -13,9 +13,9 @@ from moveit_noros import rfWaypoint,PlannerSpline
 
 joint_name_list=["panda_joint1","panda_joint2","panda_joint3","panda_joint4","panda_joint5","panda_joint6","panda_joint7"]
 
-waypoint1=rfWaypoint([0.33,0,0.58],[0,3.14,-0.5])
-waypoint2=rfWaypoint([0.33,0.2,0.58],[0,2.14,-0.5])
-waypoint3=rfWaypoint([0.33,0.1,0.68],[0,3.14,0.5])
+waypoint1=rfWaypoint([0.33,0,0.58],[0,math.pi,-0.5])
+waypoint2=rfWaypoint([0.33,0.2,0.58],[0,math.pi,-0.5])
+waypoint3=rfWaypoint([0.33,0.1,0.68],[0,math.pi,0.5])
 
 print("== Initalize Planner moveit model ==")
 plannerspline=PlannerSpline("panda_arm")
@@ -25,6 +25,12 @@ plannerspline.init("../resources/franka_convert.urdf",
                    "../resources/ompl_planning.yaml",
                    "../resources/joint_limits.yaml")
 
+moveit_box=moveit.Box(0.3,0.06,0.4)
+box_pose=moveit.EigenAffine3d()
+box_pose.translation=[0.5,0.32,1]
+box_pose.quaternion=[0,0,0,1]
+
+plannerspline.AddCollectionObject("box_1",moveit_box,box_pose)
 
 print("== Initalize Pybullet ==")
 physicsClient=p.connect(p.GUI)
@@ -38,6 +44,22 @@ startPos=[0,0,0]
 #从欧拉角设定四元素
 startOrientation=p.getQuaternionFromEuler([0,0,0])
 boxId=p.loadURDF("franka_convert.urdf",startPos,startOrientation,useFixedBase=1)
+
+box_collision_id =p.createCollisionShape(shapeType = p.GEOM_BOX,
+                                       halfExtents = [0.15, 0.03, 0.2],
+                                       collisionFramePosition = [0,0,0])
+box_visual_id = p.createVisualShape(shapeType = p.GEOM_BOX,
+                                       halfExtents = [0.15, 0.03, 0.2],
+                                       visualFramePosition = [0,0,0],
+                                       rgbaColor = [1, 0.2, 0, 0.9],
+                                       specularColor = [0, 0, 0])
+box_body_id = p.createMultiBody(baseMass = 0, # 0 means this object is fixed
+                                       baseCollisionShapeIndex = box_collision_id,
+                                       baseVisualShapeIndex = box_visual_id,
+                                       basePosition = [0.5,0.32,1],
+                                       baseOrientation = [0,0,0,1],
+                                       baseInertialFramePosition = [0,0,0])
+
 
 home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]
 initalizePybulletRobotState=list(home)

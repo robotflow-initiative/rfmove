@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC -g  -shared -Wl,-soname,librokae_client.so -o librokae_client.so CMakeFiles/rokae_client.dir/src/rokae_client.cpp.o  -Wl,-rpath,/home/lees/linux_bak/rfmove/extern/lib: ../../../extern/lib/libmoveit_robot_trajectory.so -lpthread 

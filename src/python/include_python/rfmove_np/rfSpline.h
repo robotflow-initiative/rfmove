@@ -5,6 +5,7 @@
 #include <planner/PlannerSpline.hpp>
 #include <planner/rfWaypoint.hpp>
 #include <pybind11/pybind11.h>
+#include "moveit/planning_scene/planning_scene.h"
 
 namespace py=pybind11;
 
@@ -50,6 +51,7 @@ void declare_rfSpline(py::module& m){
         .def("sample_by_interval",&PlannerSpline::sample_by_interval)
         .def("get_ompl_sample",&PlannerSpline::get_ompl_sample)
         .def("get_sample_by_interval_times",&PlannerSpline::get_sample_by_interval_times)
+        .def("AddCollectionObject",&PlannerSpline::AddCollectionObject,"AddCollectionObject_new")
         .def("__repr__",
             [](const PlannerSpline& ps){
                 return "<object for jointlimit loader>";

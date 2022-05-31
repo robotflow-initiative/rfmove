@@ -3,6 +3,8 @@
 
 #include<vector>
 #include<array>
+#include<Eigen/Dense>
+#include<Eigen/Geometry>
 
 class rfWaypoint{
 
@@ -26,23 +28,16 @@ rfWaypoint::rfWaypoint(const std::array<double,3> &trans,const std::array<double
 std::array<double,4> rfWaypoint::ToQuaternion(double yaw, double pitch, double roll) // yaw (Z), pitch (Y), roll (X)
 {
     // Abbreviations for the various angular functions
-    double cy = cos(yaw * 0.5);
-    double sy = sin(yaw * 0.5);
-    double cp = cos(pitch * 0.5);
-    double sp = sin(pitch * 0.5);
-    double cr = cos(roll * 0.5);
-    double sr = sin(roll * 0.5);
- 
+    Eigen::Quaterniond qua(Eigen::AngleAxisd(yaw,Eigen::Vector3d::UnitZ())*
+                           Eigen::AngleAxisd(pitch,Eigen::Vector3d::UnitY())*
+                           Eigen::AngleAxisd(roll,Eigen::Vector3d::UnitX()).matrix());
+
+    qua.normalize();
     std::array<double,4> quad;
-    quad[3] = cy * cp * cr + sy * sp * sr;
-    quad[0] = cy * cp * sr - sy * sp * cr;
-    quad[1] = sy * cp * sr + cy * sp * cr;
-    quad[2] = sy * cp * cr - cy * sp * sr;
-    //quad.w = cy * cp * cr + sy * sp * sr;
-    //quad.x = cy * cp * sr - sy * sp * cr;
-    //quad.y = sy * cp * sr + cy * sp * cr;
-    //quad.z = sy * cp * cr - cy * sp * sr;
-    //waypoint 0 x;1 y;2 z;3 w
+    quad[3] = qua.w();
+    quad[0] = qua.x();
+    quad[1] = qua.y();
+    quad[2] = qua.z();
     return quad;
 }
 

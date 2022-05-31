@@ -49,7 +49,7 @@ public:
 
 public:
     explicit PlannerSpline(const std::string &groupname) : groupname(groupname) {}
-
+    
     // create robot_loader
     void loadRobotModel(const std::string &urdf, const std::string &srdf);
     void loadKinematicModel(const std::string &kinematic_path);
@@ -65,6 +65,10 @@ public:
               const std::string &kinematic_path,
               const std::string &Planner_path,
               const std::string &jointLimit_path);
+
+    const collision_detection::WorldPtr& AddCollectionObject(const std::string& obj_id,
+                                                             const shapes::ShapeConstPtr& shape,
+                                                             const Eigen::Affine3d& pose3d);
 
     // CreateSpline based on spline.h
     // 这个API主要功能在于合并多个waypoint点，但还是有问题？
@@ -282,11 +286,11 @@ int PlannerSpline::sample_by_interval(double timeinterval)
                 sample_by_interval_times.push_back(end_time);
             }
 
-            sample.position.push_back(PosVecAcl[0]);
-            sample.velocity.push_back(PosVecAcl[1]);
-            sample.acceleration.push_back(PosVecAcl[2]);
-            
+            sample.position.push_back(JointsPositionsList[timeslist.size() - 1]->getVariablePosition(jointname.first));
+            sample.velocity.push_back(JointsPositionsList[timeslist.size() - 1]->getVariableVelocity(jointname.first));
+            sample.acceleration.push_back(JointsPositionsList[timeslist.size() - 1]->getVariableAcceleration(jointname.first));   
             sampleVector.insert(std::make_pair(jointname.first, sample));
+            ++sample_count;
         }
         catch (...)
         {
@@ -296,6 +300,14 @@ int PlannerSpline::sample_by_interval(double timeinterval)
     }
     return sample_count;
 }
+
+const collision_detection::WorldPtr& PlannerSpline::AddCollectionObject(const std::string& obj_id,const shapes::ShapeConstPtr& shape,const Eigen::Affine3d& pose3d)
+{
+    const collision_detection::WorldPtr& world=this->planning_scene->getWorldNonConst();
+    world->addToObject(obj_id,shape,pose3d);
+    return world;
+}
+
 
 // 设返回值，0是pos 1是vec 2 is acl
 std::vector<double> PlannerSpline::sample_by_time(double time, const std::string &jointname)
@@ -424,43 +436,6 @@ void PlannerSpline::CreateSplineSegment(planning_interface::MotionPlanRequest &r
         timeslist.push_back(time = time + response.trajectory_->getWayPointDurationFromPrevious(it));
         JointsPositionsList.push_back(response.trajectory_->getWayPointPtr(it));
     }
-    /*
-    for(int it=0;it<(response.trajectory_->getWayPointCount());it++)
-    {
-        if(!it)
-        {
-            if(firstflag)  //firstflat 判断为true时说明是整个waypoints path第一个点
-            {
-                timeslist.push_back(time);
-                JointsPositionsList.push_back(response.trajectory_->getWayPointPtr(it));
-                time=time+response.trajectory_->getWayPointDurationFromPrevious(it);
-            }else
-            {
-                time=time+response.trajectory_->getWayPointDurationFromPrevious(it);
-                continue;
-            }
-        }else if(time-timeslist[timeslist.size()-1]<=timeintervel)  //setup the timeinterval
-        {
-            //如果是最后一个点的话，转而删除前面一个点
-            if(it==response.trajectory_->getWayPointCount()-1)
-            {
-                timeslist.pop_back();
-                JointsPositionsList.pop_back();
-                timeslist.push_back(time);
-                JointsPositionsList.push_back(response.trajectory_->getWayPointPtr(it));
-                time=time+response.trajectory_->getWayPointDurationFromPrevious(it);
-                continue;
-            }else{
-                time=time+response.trajectory_->getWayPointDurationFromPrevious(it);
-                continue;
-            }
-        }else
-        {
-            timeslist.push_back(time);
-            JointsPositionsList.push_back(response.trajectory_->getWayPointPtr(it));
-            time=time+response.trajectory_->getWayPointDurationFromPrevious(it);
-        }
-    }*/
 }
 
 void PlannerSpline::CreateSplineParameterization(std::vector<rfWaypoint> &waypoint,
@@ -485,30 +460,7 @@ void PlannerSpline::CreateSplineParameterization(std::vector<rfWaypoint> &waypoi
     JointsPositionsList.clear();
     timeslist.clear();
     time = 0.0;
-    /*
-    for(std::vector<rfWaypoint>::const_iterator it=waypoint.begin();it!=waypoint.end();it++)
-    {
-        if(it==waypoint.begin())
-        {
-            pose.pose.position.x=it->trans[0];
-            pose.pose.position.y=it->trans[1];
-            pose.pose.position.z=it->trans[2];
-            pose.pose.orientation.x=it->quad[0];
-            pose.pose.orientation.y=it->quad[1];
-            pose.pose.orientation.z=it->quad[2];
-            pose.pose.orientation.w=it->quad[3];
-            //hanlde with the first waypoint
-            CreateSplineSegment(req,pose,tip_name,true,timeintervel);
-        }else{
-            pose.pose.position.x=it->trans[0];
-            pose.pose.position.y=it->trans[1];
-            pose.pose.position.z=it->trans[2];
-            pose.pose.orientation.x=it->quad[0];
-            pose.pose.orientation.y=it->quad[1];
-            pose.pose.orientation.z=it->quad[2];
-            pose.pose.orientation.w=it->quad[3];
-            CreateSplineSegment(req,pose,tip_name,false,timeintervel);
-        }*/
+
     for (std::vector<rfWaypoint>::const_iterator it = waypoint.begin(); it != waypoint.end(); it++)
     {
         pose.pose.position.x = it->trans[0];

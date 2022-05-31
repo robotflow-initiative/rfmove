@@ -27,19 +27,19 @@ planner_configs:
   RRTkConfigDefault:
     type: geometric::RRT
     range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
-    goal_bias: 0.05  # When close to goal select goal, with this probability? default: 0.05
+    goal_bias: 0.003  # When close to goal select goal, with this probability? default: 0.05
   RRTConnectkConfigDefault:
     type: geometric::RRTConnect
     range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
   RRTstarkConfigDefault:
     type: geometric::RRTstar
     range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
-    goal_bias: 0.05  # When close to goal select goal, with this probability? default: 0.05
+    goal_bias: 0.003  # When close to goal select goal, with this probability? default: 0.05
     delay_collision_checking: 1  # Stop collision checking as soon as C-free parent found. default 1
   TRRTkConfigDefault:
     type: geometric::TRRT
     range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
-    goal_bias: 0.05  # When close to goal select goal, with this probability? default: 0.05
+    goal_bias: 0.003  # When close to goal select goal, with this probability? default: 0.05
     max_states_failed: 10  # when to start increasing temp. default: 10
     temp_change_factor: 2.0  # how much to increase or decrease temp. default: 2.0
     min_temperature: 10e-10  # lower limit of temp change. default: 10e-10
