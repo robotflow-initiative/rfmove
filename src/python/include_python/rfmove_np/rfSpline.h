@@ -51,7 +51,9 @@ void declare_rfSpline(py::module& m){
         .def("sample_by_interval",&PlannerSpline::sample_by_interval)
         .def("get_ompl_sample",&PlannerSpline::get_ompl_sample)
         .def("get_sample_by_interval_times",&PlannerSpline::get_sample_by_interval_times)
-        .def("AddCollectionObject",&PlannerSpline::AddCollectionObject,"AddCollectionObject_new")
+        .def("AddCollectionObject",&PlannerSpline::AddObject,"AddCollectionObject_new")
+        .def("RemoveObject",&PlannerSpline::RemoveObject,"Remove Object")
+        .def("clearObjects",&PlannerSpline::clearObjects,"Clear Objects")
         .def("__repr__",
             [](const PlannerSpline& ps){
                 return "<object for jointlimit loader>";

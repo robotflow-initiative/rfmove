@@ -13,9 +13,9 @@ from moveit_noros import rfWaypoint,PlannerSpline
 
 joint_name_list=["panda_joint1","panda_joint2","panda_joint3","panda_joint4","panda_joint5","panda_joint6","panda_joint7"]
 
-waypoint1=rfWaypoint([0.33,0,0.58],[0,math.pi,-0.5])
-waypoint2=rfWaypoint([0.33,0.2,0.58],[0,math.pi,-0.5])
-waypoint3=rfWaypoint([0.33,0.1,0.68],[0,math.pi,0.5])
+waypoint1=rfWaypoint([0.33,0,0.58],[0,math.pi,math.pi/2])
+waypoint2=rfWaypoint([0.33,0.2,0.58],[0,math.pi,math.pi/2])
+waypoint3=rfWaypoint([0.20,-0.3,0.64],[0,math.pi,math.pi/2])
 
 print("== Initalize Planner moveit model ==")
 plannerspline=PlannerSpline("panda_arm")
@@ -25,12 +25,78 @@ plannerspline.init("../resources/franka_convert.urdf",
                    "../resources/ompl_planning.yaml",
                    "../resources/joint_limits.yaml")
 
-moveit_box=moveit.Box(0.3,0.06,0.4)
+# 长方体添加
+def euler_to_quaternion(roll, pitch, yaw):
+    qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+    qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
+    qz = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
+    qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+
+    return [qx, qy, qz, qw]
+
+
+r=[math.pi/4,math.pi/4,math.pi/2]
+t=[0.0,0.3,0.2]
+moveit_box=moveit.Box(0.06,0.06,0.4)
 box_pose=moveit.EigenAffine3d()
-box_pose.translation=[0.5,0.32,1]
-box_pose.quaternion=[0,0,0,1]
+box_pose.translation=t  #都是在几何中心
+box_pose.quaternion=euler_to_quaternion(r[0],r[1],r[2])
 
 plannerspline.AddCollectionObject("box_1",moveit_box,box_pose)
+
+# 移除长方体
+# plannerspline.RemoveObject("box_1")
+
+# 添加圆柱形
+'''
+moveit_Cylinder=moveit.Cylinder(0.1,0.4)  #r,l
+Cylinder_pose=moveit.EigenAffine3d()
+Cylinder_pose.translation=[0.0,0.3,0.2]  #都是在几何中心
+Cylinder_pose.quaternion=[0,0,0,1]
+
+plannerspline.AddCollectionObject("Cylinder_1",moveit_Cylinder,Cylinder_pose)
+
+# 移除圆柱形
+plannerspline.RemoveObject("Cylinder_1")
+'''
+
+# 添加圆形
+'''
+moveit_Sphere=moveit.Sphere(0.2)  # r
+Sphere_pose=moveit.EigenAffine3d()
+Sphere_pose.translation=[0.0,0.4,0.2]  #都是在几何中心
+Sphere_pose.quaternion=[0,0,0,1]
+
+plannerspline.AddCollectionObject("Sphere_1",moveit_Sphere,Sphere_pose)
+
+'''
+# 移除圆形
+# plannerspline.RemoveObject("Sphere_1")
+
+# 添加圆锥形
+'''
+moveit_Cone=moveit.Cone(0.1,0.4) # r,l
+Cone_pose=moveit.EigenAffine3d()
+Cone_pose.translation=[0.0,0.4,0.2]  #都是在几何中心
+Cone_pose.quaternion=[0,0,0,1]
+plannerspline.AddCollectionObject("Cone_1",moveit_Cone,Cone_pose)
+# 移除圆形
+# plannerspline.RemoveObject("Cone_1")
+'''
+
+# 添加平面
+'''
+moveit_Plane=moveit.Plane(1,0,0,-0.3) # r,l
+Plane_pose=moveit.EigenAffine3d()
+Plane_pose.translation=[0.0,0.0,0]  #都是在几何中心
+Plane_pose.quaternion=[0,0,0,1]
+plannerspline.AddCollectionObject("Cone_1",moveit_Plane,Plane_pose)
+# 移除圆形
+# plannerspline.RemoveObject("Plane_1")
+'''
+
+# 移除所有点
+# plannerspline.clearObjects()
 
 print("== Initalize Pybullet ==")
 physicsClient=p.connect(p.GUI)
@@ -45,6 +111,39 @@ startPos=[0,0,0]
 startOrientation=p.getQuaternionFromEuler([0,0,0])
 boxId=p.loadURDF("franka_convert.urdf",startPos,startOrientation,useFixedBase=1)
 
+# pybullet 添加长方体
+
+box_collision_id =p.createCollisionShape(shapeType = p.GEOM_BOX,
+                                       halfExtents = [0.03, 0.03, 0.2],
+                                       collisionFramePosition = [0,0,0])
+box_visual_id = p.createVisualShape(shapeType = p.GEOM_BOX,
+                                       halfExtents = [0.03, 0.03, 0.2],
+                                       visualFramePosition = [0,0,0],
+                                       rgbaColor = [1, 0.2, 0, 0.9],
+                                       specularColor = [0, 0, 0])
+box_body_id = p.createMultiBody(baseMass = 0, # 0 means this object is fixed
+                                       baseCollisionShapeIndex = box_collision_id,
+                                       baseVisualShapeIndex = box_visual_id,
+                                       basePosition = [0.0,0.3,0.2],  #都是在几何中心
+                                       baseOrientation = euler_to_quaternion(0,0,0),
+                                       baseInertialFramePosition = [0,0,0])
+
+box_collision_id =p.createCollisionShape(shapeType = p.GEOM_BOX,
+                                       halfExtents = [0.5, 0.03, 0.3], #[长，高，宽]
+                                       collisionFramePosition = [0,0,0])
+box_visual_id = p.createVisualShape(shapeType = p.GEOM_BOX,
+                                       halfExtents = [0.5, 0.03, 0.3],
+                                       visualFramePosition = [0,0,0],
+                                       rgbaColor = [1, 0.2, 0, 0.9],
+                                       specularColor = [0, 0, 0])
+box_body_id = p.createMultiBody(baseMass = 0, # 0 means this object is fixed
+                                       baseCollisionShapeIndex = box_collision_id,
+                                       baseVisualShapeIndex = box_visual_id,
+                                       basePosition = [0.8,0.0,0.9],  #都是在几何中心
+                                       baseOrientation = euler_to_quaternion(7*math.pi/12,0,0),
+                                       baseInertialFramePosition = [0,0,0])
+
+
 box_collision_id =p.createCollisionShape(shapeType = p.GEOM_BOX,
                                        halfExtents = [0.15, 0.03, 0.2],
                                        collisionFramePosition = [0,0,0])
@@ -56,10 +155,66 @@ box_visual_id = p.createVisualShape(shapeType = p.GEOM_BOX,
 box_body_id = p.createMultiBody(baseMass = 0, # 0 means this object is fixed
                                        baseCollisionShapeIndex = box_collision_id,
                                        baseVisualShapeIndex = box_visual_id,
-                                       basePosition = [0.5,0.32,1],
-                                       baseOrientation = [0,0,0,1],
+                                       basePosition = [0.4,0.0,0.4],  #都是在几何中心
+                                       baseOrientation = euler_to_quaternion(math.pi/2,0,0),
                                        baseInertialFramePosition = [0,0,0])
 
+
+box_collision_id =p.createCollisionShape(shapeType = p.GEOM_BOX,
+                                       halfExtents = [0.03, 0.03, 0.3],
+                                       collisionFramePosition = [0,0,0])
+box_visual_id = p.createVisualShape(shapeType = p.GEOM_BOX,
+                                       halfExtents = [0.03, 0.03, 0.3],
+                                       visualFramePosition = [0,0,0],
+                                       rgbaColor = [1, 0.2, 0, 0.9],
+                                       specularColor = [0, 0, 0])
+box_body_id = p.createMultiBody(baseMass = 0, # 0 means this object is fixed
+                                       baseCollisionShapeIndex = box_collision_id,
+                                       baseVisualShapeIndex = box_visual_id,
+                                       basePosition = [-0.2,0.5,0.4],  #都是在几何中心
+                                       baseOrientation = euler_to_quaternion(math.pi/2,math.pi/6,0),
+                                       baseInertialFramePosition = [0,0,0])
+
+
+# pybullet 添加圆形
+'''
+sphere_collision_id =p.createCollisionShape(shapeType = p.GEOM_SPHERE,
+                                       radius  = 0.2,
+                                       collisionFramePosition = [0,0,0])
+sphere_visual_id = p.createVisualShape(shapeType = p.GEOM_SPHERE,
+                                       radius = 0.2,
+                                       visualFramePosition = [0,0,0],
+                                       rgbaColor = [1, 0.2, 0, 0.9],
+                                       specularColor = [0, 0, 0])
+sphere_body_id = p.createMultiBody(baseMass = 0, # 0 means this object is fixed
+                                       baseCollisionShapeIndex = sphere_collision_id,
+                                       baseVisualShapeIndex = sphere_visual_id,
+                                       basePosition = [0.0,0.4,0.2],  #都是在几何中心
+                                       baseOrientation = [0,0,0,1], 
+                                       baseInertialFramePosition = [0,0,0])
+'''
+
+# pybullet 添加圆柱形
+'''
+clindyer_collision_id =p.createCollisionShape(shapeType = p.GEOM_CYLINDER,
+                                       radius  = 0.1,
+                                       collisionFramePosition = [0,0,0],
+                                       height  = 0.4)
+
+clindyer_visual_id = p.createVisualShape(shapeType = p.GEOM_CYLINDER,
+                                         radius = 0.1,
+                                         length=0.4,
+                                         visualFramePosition = [0,0,0],
+                                         rgbaColor = [1, 0.2, 0, 0.9],
+                                         specularColor = [0, 0, 0])
+
+clindyer_body_id = p.createMultiBody(baseMass = 0, # 0 means this object is fixed
+                                     baseCollisionShapeIndex = clindyer_collision_id,
+                                     baseVisualShapeIndex = clindyer_visual_id,
+                                     basePosition = [0.0,0.3,0.2],  #都是在几何中心
+                                     baseOrientation = [0,0,0,1], 
+                                     baseInertialFramePosition = [0,0,0])
+'''
 
 home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]
 initalizePybulletRobotState=list(home)
@@ -132,12 +287,22 @@ for i in range(len(ompltimelist)):
     waypoints.append([joint1pos[i],joint2pos[i],joint3pos[i],joint4pos[i],joint5pos[i],joint6pos[i],joint7pos[i]])
 
 
-for i in range(len(ompltimelist)):
-    p.stepSimulation()
-    p.setJointMotorControlArray(bodyIndex=boxId,
-                                jointIndices=range(len(joint_name_list)),
-                                targetPositions=waypoints[i],
-                                controlMode=p.POSITION_CONTROL)
+for i in range(len(ompltimelist)+25000):
+
+    if i<len(ompltimelist):
+        p.stepSimulation()
+        p.setJointMotorControlArray(bodyIndex=boxId,
+                                    jointIndices=range(len(joint_name_list)),
+                                    targetPositions=waypoints[i],
+                                    controlMode=p.POSITION_CONTROL)
+    else:
+        p.stepSimulation()
+        p.setJointMotorControlArray(bodyIndex=boxId,
+                                    jointIndices=range(len(joint_name_list)),
+                                    targetPositions=waypoints[len(ompltimelist)-1],
+                                    controlMode=p.POSITION_CONTROL)
+        print("======================bulletPoselin8=========================")
+        print(p.getLinkState(boxId,6,)[4])
     time.sleep(1./1000.)
 
 vlist_1=[omplposlist_1,omplposlist_2,omplposlist_3,omplposlist_4,omplposlist_5,omplposlist_6,omplposlist_7]

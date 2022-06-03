@@ -66,10 +66,12 @@ public:
               const std::string &Planner_path,
               const std::string &jointLimit_path);
 
-    const collision_detection::WorldPtr& AddCollectionObject(const std::string& obj_id,
+    const collision_detection::WorldPtr& AddObject(const std::string& obj_id,
                                                              const shapes::ShapeConstPtr& shape,
                                                              const Eigen::Affine3d& pose3d);
+    bool RemoveObject(const std::string& id);
 
+    void clearObjects();
     // CreateSpline based on spline.h
     // 这个API主要功能在于合并多个waypoint点，但还是有问题？
     void CreateSplineSegment(planning_interface::MotionPlanRequest &req,
@@ -301,13 +303,25 @@ int PlannerSpline::sample_by_interval(double timeinterval)
     return sample_count;
 }
 
-const collision_detection::WorldPtr& PlannerSpline::AddCollectionObject(const std::string& obj_id,const shapes::ShapeConstPtr& shape,const Eigen::Affine3d& pose3d)
+const collision_detection::WorldPtr& PlannerSpline::AddObject(const std::string& obj_id,const shapes::ShapeConstPtr& shape,const Eigen::Affine3d& pose3d)
 {
     const collision_detection::WorldPtr& world=this->planning_scene->getWorldNonConst();
     world->addToObject(obj_id,shape,pose3d);
     return world;
 }
 
+bool PlannerSpline::RemoveObject(const std::string& id)
+{   
+    const collision_detection::WorldPtr& world=this->planning_scene->getWorldNonConst();
+    world->removeObject(id);
+    return true;
+}
+
+void PlannerSpline::clearObjects()
+{
+    const collision_detection::WorldPtr& world=this->planning_scene->getWorldNonConst();
+    world->clearObjects();
+}
 
 // 设返回值，0是pos 1是vec 2 is acl
 std::vector<double> PlannerSpline::sample_by_time(double time, const std::string &jointname)
