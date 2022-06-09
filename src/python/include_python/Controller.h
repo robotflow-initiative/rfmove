@@ -34,6 +34,7 @@ void declare_controller(py::module &m) {
         .def_property("duration", &SplineTrajectory::duration, nullptr)
         .def_property("start_time", &SplineTrajectory::startTime, nullptr)
         .def_property("end_time", &SplineTrajectory::endTime, nullptr)
+        
         .def("sample_by_interval", [](SplineTrajectory& self, const std::string& joint_name, double interval)
             -> trajectory_interface::PosVelAccState<double>* {
                 //std::cout << "sample " << joint_name << " with interval " << interval << std::endl;

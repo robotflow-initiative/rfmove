@@ -56,7 +56,8 @@ SplineTrajectory::SplineTrajectory(robot_trajectory::RobotTrajectoryPtr robot_tr
     }
      */
 }
-
+//添加std::vector<double>& sample_by_interval_times
+//去掉sample = trajectory_interface::PosVelAccState<double>()
 int SplineTrajectory::sample_by_interval(const std::string& joint_name, trajectory_interface::PosVelAccState<double>& sample, double duration) {
     int index = jointIndex(joint_name);
     if(index < 0) {
@@ -71,6 +72,8 @@ int SplineTrajectory::sample_by_interval(const std::string& joint_name, trajecto
     int sample_count = 0;
     //std::cout << "sample start" << std::endl;
     for(double target_time = start_time; target_time <= end_time; target_time+=duration) {
+        //sample_by_interval_times.push_back(target_time);
+
         trajectory_interface::sample(joint_trajectory, target_time, sampled_state);
         //if(sampled_state.position.size() != 1) {
         //    std::cout << "sampled state position size " << sampled_state.position.size() << std::endl;

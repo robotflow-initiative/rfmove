@@ -15,6 +15,7 @@
 #include <planner/spline.h>
 #include <planner/rfWaypoint.hpp>
 #include <robot_model/JointLimitsLoader.h>
+#include <controller/trajectory.h>
 
 class PlannerCException
 {
@@ -26,6 +27,7 @@ public:
 class PlannerSpline
 {
 public:
+    typedef std::shared_ptr<PlannerSpline> Ptr;
     // robot loader
     RobotModelLoaderPtr loader;
 
@@ -110,23 +112,17 @@ public:
     //通过ompl规划出来的joint信息，robot 包含pos acl以及vec信息 但不包含ompl采样
     std::vector<moveit::core::RobotStatePtr> JointsPositionsList;
     // std::vector<std::vector<double>> getJointsPosList();
-
     //通过节点名获取对应的pos joint acceleration 信息
-    // ompl轨迹
-    // 1 fail
-    // 0 success
     std::vector<double> getJointPosValue(const std::string &jointname);
     std::vector<double> getJointVecValue(const std::string &jointname);
     std::vector<double> getJointAclValue(const std::string &Jointname);
 
+    // 还没由开始采样的轨迹
+    std::vector<robot_trajectory::RobotTrajectoryPtr> trajectories;
     // 通过sample_by_interval 来获取采样轨迹
     int sample_by_interval(double timeinterval);
-    std::vector<double> sample_by_time(double time, const std::string &jointname);
-
     //一共n个节点，包含n个PosVecAccState
     std::map<std::string, trajectory_interface::PosVelAccState<double>> sampleVector;
-
-    trajectory_interface::PosVelAccState<double> sample;
     trajectory_interface::PosVelAccState<double> get_ompl_sample(const std::string &jointname);
 
     //通过sample_by_interval 来获取的时间撮
@@ -228,78 +224,43 @@ std::vector<double> PlannerSpline::get_sample_by_interval_times()
 {
     return sample_by_interval_times;
 }
+
 int PlannerSpline::sample_by_interval(double timeinterval)
 {
-    sampleVector.clear();
-    std::vector<double> PosVecAcl;
-    int sample_count = 0;
-    //在运行的时候先清空时间列表
+    
     sample_by_interval_times.clear();
+    sampleVector.clear();
+    int sample_count=0;
+    //在运行的时候先清空时间列表
     for (auto &jointname : name_idx)
     {
-
-        sample = trajectory_interface::PosVelAccState<double>();
-        PosVecAcl.clear();
-
-        sample_count = 0;
-        if (JointsPositionsList.empty())
-        {
-            std::cout << "JointsPosition is not inital!" << std::endl;
-            return -1;
-        }
-        //首个时间
-        double start_time = timeslist[0];
-        //末尾时间点
-        double end_time = timeslist[timeslist.size() - 1];
-        try
-        {
-            for (double target_time = start_time; target_time <= end_time; target_time += timeinterval)
+        sample_count=0;
+ 
+           
+        double target_time=0;
+        const std::string joint_name=jointname.first;
+        if(joint_name.compare("panda_joint8")!=0)
+            sample_by_interval_times.clear();
+        trajectory_interface::PosVelAccState<double> Sample= trajectory_interface::PosVelAccState<double>();
+        for(size_t index=0;index<trajectories.size();index++)
+        { 
+            trajectory_interface::PosVelAccState<double> sample= trajectory_interface::PosVelAccState<double>();
+            SplineTrajectory Spline(trajectories[index],false,SplineTrajectory::Parameterization::SPLINE);
+            Spline.sample_by_interval(joint_name,sample, timeinterval);
+            for(size_t i=0;i<sample.position.size();i++)
             {
-
-                PosVecAcl = sample_by_time(target_time, jointname.first);
-                if (PosVecAcl.empty())
-                {
-                    std::cout << "Sample is fail at time: " << target_time << std::endl;
-                    return -1;
-                }
-
-                //仅仅在刚开始的时候清空列表，然后初始化一次sample_by_interval_times
-                if (!jointname.second)
-                {
+                if(joint_name.compare("panda_joint8")!=0)
                     sample_by_interval_times.push_back(target_time);
-                }
-
-                sample.position.push_back(PosVecAcl[0]);
-                sample.velocity.push_back(PosVecAcl[1]);
-                sample.acceleration.push_back(PosVecAcl[2]);
-                ++sample_count;
+                Sample.position.push_back(sample.position[i]);
+                Sample.velocity.push_back(sample.velocity[i]);
+                Sample.acceleration.push_back(sample.acceleration[i]);
+                sample_count++;
+                target_time+=timeinterval;
             }
-            
-            PosVecAcl = sample_by_time(end_time, jointname.first);
-            if (PosVecAcl.empty())
-            {
-                std::cout << "Sample is fail at time: " << end_time << std::endl;
-                return -1;
-            }
-
-            //仅仅在刚开始的时候清空列表，然后初始化一次sample_by_interval_times
-            if (!jointname.second)
-            {
-                sample_by_interval_times.push_back(end_time);
-            }
-
-            sample.position.push_back(JointsPositionsList[timeslist.size() - 1]->getVariablePosition(jointname.first));
-            sample.velocity.push_back(JointsPositionsList[timeslist.size() - 1]->getVariableVelocity(jointname.first));
-            sample.acceleration.push_back(JointsPositionsList[timeslist.size() - 1]->getVariableAcceleration(jointname.first));   
-            sampleVector.insert(std::make_pair(jointname.first, sample));
-            ++sample_count;
         }
-        catch (...)
-        {
-            std::cout << "Joint name is error" << std::endl;
-            return -1;
-        }
+        sampleVector.insert(std::make_pair(joint_name,Sample));
     }
+
     return sample_count;
 }
 
@@ -323,49 +284,6 @@ void PlannerSpline::clearObjects()
     world->clearObjects();
 }
 
-// 设返回值，0是pos 1是vec 2 is acl
-std::vector<double> PlannerSpline::sample_by_time(double time, const std::string &jointname)
-{
-    std::vector<double> PosVecAcl;
-    double deltatime;
-    double deltapos;
-    double slope;
-    double compute_time;
-    //我们需要看时间段，因此减去最后一个元素
-    for (int index_time = 0; index_time < (timeslist.size() - 1); index_time++)
-    {
-        if (time > timeslist[index_time + 1])
-        {
-            continue;
-        }
-        if (time <= timeslist[index_time + 1] && time >= timeslist[index_time])
-        {
-            // compute delta time
-            deltatime = timeslist[index_time + 1] - timeslist[index_time];
-            deltatime += std::numeric_limits<double>::epsilon(); // prevent divide-by-zero
-
-            // compute pos sample
-            deltapos = JointsPositionsList[index_time + 1]->getVariablePosition(jointname) - JointsPositionsList[index_time]->getVariablePosition(jointname);
-            slope = deltapos / deltatime;
-            compute_time = time - timeslist[index_time];
-            PosVecAcl.push_back(slope * compute_time + JointsPositionsList[index_time]->getVariablePosition(jointname));
-
-            // compute vec sample
-            deltapos = JointsPositionsList[index_time + 1]->getVariableVelocity(jointname) - JointsPositionsList[index_time]->getVariableVelocity(jointname);
-            slope = deltapos / deltatime;
-            compute_time = time - timeslist[index_time];
-            PosVecAcl.push_back(slope * compute_time + JointsPositionsList[index_time]->getVariableVelocity(jointname));
-
-            // compute acl sample
-            deltapos = JointsPositionsList[index_time + 1]->getVariableAcceleration(jointname) - JointsPositionsList[index_time]->getVariableAcceleration(jointname);
-            slope = deltapos / deltatime;
-            compute_time = time - timeslist[index_time];
-            PosVecAcl.push_back(slope * compute_time + JointsPositionsList[index_time]->getVariableAcceleration(jointname));
-            return PosVecAcl;
-        }
-    }
-    return PosVecAcl;
-}
 
 // 一系列登陆模型的对象
 void PlannerSpline::loadRobotModel(const std::string &urdf, const std::string &srdf)
@@ -435,7 +353,7 @@ void PlannerSpline::CreateSplineSegment(planning_interface::MotionPlanRequest &r
     context->solve(response);
 
     //获取规划后的对象
-    trajectory_processing::IterativeParabolicTimeParameterization parameterization;
+    trajectory_processing::IterativeSplineParameterization parameterization;
     if(firstflag){
         parameterization.computeTimeStamps(*response.trajectory_.get(), req.max_velocity_scaling_factor, req.max_acceleration_scaling_factor);
     }else{
@@ -450,6 +368,7 @@ void PlannerSpline::CreateSplineSegment(planning_interface::MotionPlanRequest &r
         timeslist.push_back(time = time + response.trajectory_->getWayPointDurationFromPrevious(it));
         JointsPositionsList.push_back(response.trajectory_->getWayPointPtr(it));
     }
+    trajectories.push_back(response.trajectory_);
 }
 
 void PlannerSpline::CreateSplineParameterization(std::vector<rfWaypoint> &waypoint,

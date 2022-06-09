@@ -15,7 +15,7 @@ joint_name_list=["panda_joint1","panda_joint2","panda_joint3","panda_joint4","pa
 
 waypoint1=rfWaypoint([0.33,0,0.58],[0,math.pi,math.pi/2])
 waypoint2=rfWaypoint([0.33,0.2,0.58],[0,math.pi,math.pi/2])
-waypoint3=rfWaypoint([0.20,-0.3,0.64],[0,math.pi,math.pi/2])
+#waypoint3=rfWaypoint([0.20,-0.2,0.54],[0,math.pi,math.pi/2])
 
 print("== Initalize Planner moveit model ==")
 plannerspline=PlannerSpline("panda_arm")
@@ -112,7 +112,7 @@ startOrientation=p.getQuaternionFromEuler([0,0,0])
 boxId=p.loadURDF("franka_convert.urdf",startPos,startOrientation,useFixedBase=1)
 
 # pybullet 添加长方体
-
+'''
 box_collision_id =p.createCollisionShape(shapeType = p.GEOM_BOX,
                                        halfExtents = [0.03, 0.03, 0.2],
                                        collisionFramePosition = [0,0,0])
@@ -175,7 +175,7 @@ box_body_id = p.createMultiBody(baseMass = 0, # 0 means this object is fixed
                                        baseOrientation = euler_to_quaternion(math.pi/2,math.pi/6,0),
                                        baseInertialFramePosition = [0,0,0])
 
-
+'''
 # pybullet 添加圆形
 '''
 sphere_collision_id =p.createCollisionShape(shapeType = p.GEOM_SPHERE,
@@ -231,13 +231,14 @@ timeslist=plannerspline.getTimeList()
 '''
 #每次运行前，必须使用当前机器人的状态重新init一下机器人
 plannerspline.InitRobotState(np.array([0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]),"panda_arm")
-plannerspline.CreateSplineParameterization([waypoint1,waypoint2,waypoint3],"panda_arm","panda_link0","panda_link7")
+plannerspline.CreateSplineParameterization([waypoint1,waypoint2],"panda_arm","panda_link0","panda_link7",0.1,0.1,0.1)
 timeslist=plannerspline.getTimeList()
 
 
 plannerspline.sample_by_interval(0.001)
 
 ompltimelist=plannerspline.get_sample_by_interval_times()
+
 
 posvecacl_1=plannerspline.get_ompl_sample("panda_joint1")
 omplposlist_1=posvecacl_1.position
