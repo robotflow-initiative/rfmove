@@ -3,7 +3,6 @@
 
 #include <planner/rfWaypoint.hpp>
 #include <planner/PlannerSpline.hpp>
-#include <planner/rfWaypoint.hpp>
 #include <pybind11/pybind11.h>
 #include "moveit/planning_scene/planning_scene.h"
 
@@ -11,8 +10,19 @@ namespace py=pybind11;
 
 void declare_rfSpline(py::module& m){
 
-    py::class_<rfWaypoint>(m,"rfWaypoint")
-        .def(py::init<const std::array<double,3>&,const std::array<double,3>&>());
+    py::class_<rfWaypoint> rfwaypoint(m,"rfWaypoint");
+
+    py::enum_<rfWaypoint::Control_Type>(rfwaypoint,"Control_Type")
+        .value("Absolute",rfWaypoint::Control_Type::Absolute)
+        .value("Relative",rfWaypoint::Control_Type::Relative)
+        .export_values();
+
+    rfwaypoint.def(py::init<const std::array<double,3>&,
+                            const std::array<double,3>&,
+                            rfWaypoint::Control_Type>(),
+                            py::arg("trans"),
+                            py::arg("eular"),
+                            py::arg("control_type")=rfWaypoint::Control_Type::Absolute);
         
     py::class_<PlannerSpline,std::shared_ptr<PlannerSpline>>(m,"PlannerSpline")
         .def(py::init<const std::string& >())
