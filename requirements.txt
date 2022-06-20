@@ -9,3 +9,5 @@ gym
 stable-baselines3
 opencv-python
 liblapack
+matplotlib
+opencv-python

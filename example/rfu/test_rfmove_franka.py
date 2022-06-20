@@ -6,11 +6,9 @@ import numpy as np
 import time
 import math
 # rfmove_dir 根目录
-rfmove_dir="/home/lees/linux_bak/rfmove"
+rfmove_dir="/home/ziye01/rfmove"
 sys.path.append(rfmove_dir+"/install/lib")
 
-import pybullet as p
-import pybullet_data
 
 import moveit_noros as moveit
 import matplotlib.pyplot as plt
@@ -25,8 +23,8 @@ class RFMoveEnv(RFUniverseBaseEnv):
         self.gripper_id = self.id * 10
         self.interval = 20
         super().__init__(
-            executable_file='/home/lees/Play_Unity_moveit/Player/Player.x86_64',
-            scene_file='/home/lees/Play_Unity_moveit/Player/Player_Data/StreamingAssets/SceneData/RFMoveTest.json',
+            executable_file='/home/ziye01/Player/RFUniverse_Player_For_Linux_v0.1.2b/RFUniverse/Player.x86_64',
+            scene_file='/home/ziye01/Player/RFUniverse_Player_For_Linux_v0.1.2b/RFUniverse/Player_Data/StreamingAssets/SceneData/RFMoveTest.json',
             assets=['GameObject_Box','GameObject_Sphere',"GameObject_Cylinder"],
             articulation_channel=True,
             game_object_channel=True
