@@ -24,8 +24,8 @@ class RFMoveEnv(RFUniverseBaseEnv):
         self.gripper_id = self.id * 10
         self.interval = 20
         super().__init__(
-            executable_file='/home/ziye01/Player/RFUniverse_Player_For_Linux_v0.1.2b/RFUniverse/Player.x86_64',
-            scene_file='/home/ziye01/Player/RFUniverse_Player_For_Linux_v0.1.2b/RFUniverse/Player_Data/StreamingAssets/SceneData/RFMoveTest.json',
+            executable_file='/home/ziye01/Player/RFUniverse/Player.x86_64',
+            scene_file='/home/ziye01/Player/RFUniverse/Player_Data/StreamingAssets/SceneData/RFMoveTest2.json',
             assets=['GameObject_Box','GameObject_Sphere',"GameObject_Capsule"],
             articulation_channel=True,
             game_object_channel=True
@@ -65,22 +65,6 @@ class Rf_Move_Rfuniverse():
     def __init__(self,Home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]):
         print("== Initializer RFUniverse Env ==")
         self.env = RFMoveEnv()
-        
-        # 设置默认固体位置
-        
-       # self.env.game_object_channel.set_action(
-       #     'SetTransform',
-       #     id=78494578,
-       #     #position=[0,30,0],
-       #     scale=[0.1, 0.1, 0.1]
-        #)
-        
-        #self.env.game_object_channel.set_action(
-       #     'SetTransform',
-        #    id=58447323,
-            #position=[0,30,0],
-        #    scale=[0.1, 0.1, 0.1]
-       # )
         
     
         print("== Initalze Home and DeltaH ==")
@@ -194,110 +178,6 @@ class Rf_Move_Rfuniverse():
                                               joint5pos[i]*180/math.pi,
                                               joint6pos[i]*180/math.pi,
                                               joint7pos[i]*180/math.pi])
-    # 仅仅在unity里面加载对象                               
-    def addObjectOnlyUnity(self,shape_obj):
-        #moveit 端的变换矩阵
-        H=np.zeros((4,4))
-        H[0:3,0:3]=self.eulerAngle2rotationMat([shape_obj.pose[3],shape_obj.pose[4],shape_obj.pose[5]])
-      
-        H[0:3,3]=np.array([shape_obj.pose[0],shape_obj.pose[1],shape_obj.pose[2]])
-        H[3,3]=1
-
-        if(shape_obj.shape=='Box'):
-            # 补偿中心坐标不一致的问题
-            # 最新版的不需要中心补偿            
-            H_z=np.array([[1.0,   0.0   ,0.0   ,0.0],
-                          [0.0,   1.0   ,0.0   ,0.0],
-                          [0.0,   0.0   ,1.0   ,0.0],
-                          [0.0,   0.0   ,0.0   ,1.0]]) 
-            H_set=H.dot(H_z)
-            #取回 平移部分  x,y,z
-            u_t=H_set[0:3,3]
-            #取回 欧拉角部分  r,p,y 
-            u_r=self.rotationMatrixToEulerAngles(H_set[0:3,0:3])
-
-            # 设定unity部分 
-            self.env.asset_channel.set_action(
-                'InstanceObject',
-                name='GameObject_Box',
-                id=shape_obj.id
-            )
-            self.env.game_object_channel.set_action(
-                'SetTransform',
-                id=shape_obj.id,
-                position=[-u_t[1],             u_t[2],              u_t[0]],
-                rotation=[u_r[1]*180/math.pi, -u_r[2]*180/math.pi, -u_r[0]*180/math.pi],
-                scale=[shape_obj.scale[1],shape_obj.scale[2],shape_obj.scale[0]]
-            )
-            self.env.game_object_channel.set_action(
-                'SetColor',
-                id=shape_obj.id,
-                color=shape_obj.color
-            )
-           
-        if(shape_obj.shape=="Capsule"):
-             # 最新版的不需要中心补偿            
-            H_z=np.array([[1.0,   0.0   ,0.0   ,0.0],
-                          [0.0,   1.0   ,0.0   ,0.0],
-                          [0.0,   0.0   ,1.0   ,0.0],
-                          [0.0,   0.0   ,0.0   ,1.0]]) 
-
-            H_set=H.dot(H_z)
-            #取回 平移部分  x,y,z
-            u_t=H_set[0:3,3]
-            #取回 欧拉角部分  r,p,y
-            u_r=self.rotationMatrixToEulerAngles(H_set[0:3,0:3])
-            
-            # 设定unity部分 
-            self.env.asset_channel.set_action(
-                'InstanceObject',
-                name='GameObject_Capsule',
-                id=shape_obj.id
-            )
-            self.env.game_object_channel.set_action(
-                'SetTransform',
-                id=shape_obj.id,
-                position=[-u_t[1],             u_t[2],              u_t[0]],
-                rotation=[u_r[1]*180/math.pi, -u_r[2]*180/math.pi, -u_r[0]*180/math.pi],
-                scale=[shape_obj.scale[0],shape_obj.scale[0],shape_obj.scale[1]]
-            )
-            self.env.game_object_channel.set_action(
-                'SetColor',
-                id=shape_obj.id,
-                color=shape_obj.color
-            )
-        
-        if(shape_obj.shape=="Sphere"):
-            H_z=np.array([[1.0,   0.0   ,0.0   ,0.0],
-                          [0.0,   1.0   ,0.0   ,0.0],
-                          [0.0,   0.0   ,1.0   ,0.0],
-                          [0.0,   0.0   ,0.0   ,1.0]])
-            H_set=H.dot(H_z)
-            #取回 平移部分  x,y,z
-            u_t=H_set[0:3,3]
-            #取回 欧拉角部分  r,p,y
-            u_r=self.rotationMatrixToEulerAngles(H_set[0:3,0:3])
-    
-            # 设定unity部分 
-            self.env.asset_channel.set_action(
-                'InstanceObject',
-                name='GameObject_Sphere',
-                id=shape_obj.id
-            )
-            self.env.game_object_channel.set_action(
-                'SetTransform',
-                id=shape_obj.id,
-                position=[-u_t[1],             u_t[2],              u_t[0]],
-                rotation=[u_r[1]*180/math.pi, -u_r[2]*180/math.pi, -u_r[0]*180/math.pi],
-                scale=[shape_obj.scale[0],shape_obj.scale[0],shape_obj.scale[1]]
-            )
-            
-            self.env.game_object_channel.set_action(
-                'SetColor',
-                id=shape_obj.id,
-                color=shape_obj.color
-            )
-            pass
 
     def detectUnityObject(self):
          #冗余量 防止刮
@@ -307,65 +187,55 @@ class Rf_Move_Rfuniverse():
         self.env._step()
         colliders = self.env.asset_channel.data['colliders']
 
-        # 一一输出unity环境中的碰撞对象
-        # * 本人如何修改物体的大小和位置,我需要验证角度是否正确
-        # * 如何添加胶囊体，通作主动或者被动的方法,我需要为两种模式，添加胶囊体，其实rfmove是圆柱形
+        # 输出unity环境中的碰撞对象
         for one in colliders:
-            # print(one['object_id'])
             for i in one['collider']:
-                #print(i['type'])
                 if i['type'] == 'box':
                     # scale=[shape_obj.scale[1],shape_obj.scale[2],shape_obj.scale[0]]
                     moveit_box=moveit.Box(i['size'][2]+thread,
                                           i['size'][0]+thread,
                                           i['size'][1]+thread)
-                    '''
-                    print("size is :::===================")
-                    print(i['size'][2],
-                          i['size'][0],
-                          i['size'][1])
-                    '''
+                    
+                   
                     # [-u_t[1], u_t[2], u_t[0]],
                     # print(i['position'])
                     box_pose=moveit.EigenAffine3d()
                     box_pose.translation=[i['position'][2],
                                          -i['position'][0],
                                           i['position'][1]]  #长方体在几何中心
-                    '''
-                    print("position is :::===================")
-                    print(i['position'][2],
-                         -i['position'][0],
-                          i['position'][1])
-                    '''
+                    
+                    
                     # [u_r[1], -u_r[2], -u_r[0]],
+                    # 我们已经不用欧拉角了
+                    '''
                     box_pose.quaternion=self.eularToQua(-i['rotation'][2],
                                                          i['rotation'][0],
                                                         -i['rotation'][1]) # x,y,z
+
                     '''
-                    print("rotation is :::===================")
-                    print(-i['rotation'][2],
-                           i['rotation'][0],
-                          -i['rotation'][1])          
-                          '''  
+                    # 轴角法，角度是求逆向函数的
+                    box_pose.quaternion=[-i['rotation'][2],i['rotation'][0],-i['rotation'][1],i['rotation'][3]]
+                       
                     self.plannerspline.AddCollectionObject("unity_rfmove_"+str(i),moveit_box,box_pose)
 
                 elif i['type'] == 'sphere':
                     moveit_Sphere=moveit.Sphere(i['radius']+thread)  #r
-            
-                    # [-u_t[1], u_t[2], u_t[0]],
-                    # print(i['position'])
+                    
                     Shpere_pose=moveit.EigenAffine3d()
+                    
+                    
                     Shpere_pose.translation=[i['position'][2],
                                             -i['position'][0],
                                              i['position'][1]]  #长方体在几何中心
-
+                    # 球形本来就没有角度一说，我们也不用欧拉角
                     Shpere_pose.quaternion=self.eularToQua(0,0,0)
                     self.plannerspline.AddCollectionObject("unity_rfmove_"+str(i), moveit_Sphere,Shpere_pose)
 
                 elif i['type'] == 'capsule':
-                                  
-                    moveit_Cylinder=moveit.Cylinder(i['radius']+thread,i['height']+thread)  #r,l
-
+                    print(i)        
+                    moveit_Cylinder=moveit.Cylinder(i['radius']+thread,
+                                                    i['height']+thread)
+        
                     # 在moveit这一侧其实是圆柱体
                     Cylinder_pose=moveit.EigenAffine3d()
 
@@ -374,10 +244,9 @@ class Rf_Move_Rfuniverse():
                     Cylinder_pose.translation=[i['position'][2],
                                               -i['position'][0],
                                                i['position'][1]]  #都是在几何中心
-
-                    Cylinder_pose.quaternion=self.eularToQua(-i['rotation'][2],
-                                                              i['rotation'][0],
-                                                             -i['rotation'][1]) # x,y,z
+                   
+                    Cylinder_pose.quaternion=[-i['rotation'][2],i['rotation'][0],-i['rotation'][1],i['rotation'][3]]
+                    print(Cylinder_pose.quaternion)
 
                     self.plannerspline.AddCollectionObject("unity_rfmove_"+str(i),moveit_Cylinder,Cylinder_pose)
                     
@@ -396,13 +265,6 @@ class Rf_Move_Rfuniverse():
         
 
         if(shape_obj.shape=='Box'):
-            # 补偿中心坐标不一致的问题
-            '''
-            H_z=np.array([[1.0,   0.0   ,0.0   ,0.0                  ],
-                        [0.0,   1.0   ,0.0   ,0.0                  ],
-                        [0.0,   0.0   ,1.0   ,-shape_obj.scale[2]/2],
-                        [0.0,   0.0   ,0.0   ,1.0                  ]])
-                        '''
             # 最新版的不需要中心补偿            
             H_z=np.array([[1.0,   0.0   ,0.0   ,0.0],
                           [0.0,   1.0   ,0.0   ,0.0],
@@ -417,8 +279,14 @@ class Rf_Move_Rfuniverse():
             moveit_box=moveit.Box(shape_obj.scale[0]+thread,shape_obj.scale[1]+thread,shape_obj.scale[2]+thread)
             box_pose=moveit.EigenAffine3d()
             box_pose.translation=[shape_obj.pose[0],shape_obj.pose[1],shape_obj.pose[2]]  #长方体在几何中心
+            
             box_pose.quaternion=self.eularToQua(shape_obj.pose[3],shape_obj.pose[4],shape_obj.pose[5]) # x,y,z
             self.plannerspline.AddCollectionObject(str(shape_obj.id),moveit_box,box_pose)
+
+            print(shape_obj.scale)
+            print(box_pose.quaternion)
+            print(box_pose.translation)
+
             
             # 设定unity部分 
             self.env.asset_channel.set_action(
@@ -440,12 +308,6 @@ class Rf_Move_Rfuniverse():
             )
            
         if(shape_obj.shape=="Capsule"):
-            '''
-            H_z=np.array([[1.0,   0.0   ,0.0   ,0.0                  ],
-                          [0.0,   1.0   ,0.0   ,0.0                  ],
-                          [0.0,   0.0   ,1.0   ,-shape_obj.scale[1]/2],
-                          [0.0,   0.0   ,0.0   ,1.0                  ]])
-            '''
              # 最新版的不需要中心补偿            
             H_z=np.array([[1.0,   0.0   ,0.0   ,0.0],
                           [0.0,   1.0   ,0.0   ,0.0],
@@ -785,15 +647,15 @@ if __name__=="__main__":
     move2.AddObject(box4)
     
     move2.planner(poslist=poslist)
-    move2.run(100)
+    move2.run(1000000000)
     print(move2.get_TCP_t())
     print(move2.get_TCP_r())
-    
     '''
+    
     # 避障碍  Capsule对象案例
-    # 注销即可尝试
+    # 胶囊体手动添加有待开发
     # 胶囊体有待开发
-
+    
     '''
     move2=Rf_Move_Rfuniverse()
     home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]
@@ -823,7 +685,7 @@ if __name__=="__main__":
 
     # 避障碍  圆形对象案例
     # 注销即可尝试
-    
+    '''
     move2=Rf_Move_Rfuniverse()
     home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]
 
@@ -890,26 +752,27 @@ if __name__=="__main__":
     move2.run(500)
     print(move2.get_TCP_t())
     print(move2.get_TCP_r())
-    
+    '''
 
     # 避障5，检测unity中的物体
-    '''
+    
     move2=Rf_Move_Rfuniverse()
     home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]  #制定启动的home状态，第一次使用必须制定
-    poslist= [[0.33,0.1,0.48,0,math.pi,math.pi/2],
-              [0.33,0.4,0.58,0,math.pi,math.pi/2]]
-              #[0.30,-0.3,0.44,0,math.pi,math.pi/2],
-              #[0.33,-0.5,0.54,0,math.pi,math.pi/2],
-              #[0.25,0.5,0.54,0,math.pi,math.pi/2],
-              #[0.25,0.5,0.34,0,math.pi,math.pi/2],
-              #[-0.40,0.5,0.34,0,math.pi,math.pi/2]]
-    move2.detectUnityObject();
+    poslist= [[0.8,0.0,0.68,0,math.pi/2,0],
+              [0.0,0.8,0.68,math.pi/2,0,math.pi/2]]
+              #[0.0,0.5,0.44,0,math.pi/2,0],
+              #[0.33,-0.5,0.54,0,math.pi/2,0],
+              #[0.25,0.5,0.54,0,math.pi/2,0],
+              #[0.25,0.5,0.34,0,math.pi/2,0],
+              #[-0.40,0.5,0.34,0,math.pi/2,0]]
+
+   # move2.detectUnityObject();
     move2.planner(home=home,poslist=poslist)
     
-    move2.run(100000)
+    move2.run(100)
     print(move2.get_TCP_t())
     print(move2.get_TCP_r())
-    '''
+    
     
 
 
