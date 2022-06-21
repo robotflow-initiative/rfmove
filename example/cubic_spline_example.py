@@ -112,22 +112,22 @@ startOrientation=p.getQuaternionFromEuler([0,0,0])
 boxId=p.loadURDF("franka_convert.urdf",startPos,startOrientation,useFixedBase=1)
 
 # pybullet 添加长方体
-'''
+
 box_collision_id =p.createCollisionShape(shapeType = p.GEOM_BOX,
-                                       halfExtents = [0.03, 0.03, 0.2],
+                                       halfExtents = [0.23, 0.23, 0.23],
                                        collisionFramePosition = [0,0,0])
 box_visual_id = p.createVisualShape(shapeType = p.GEOM_BOX,
-                                       halfExtents = [0.03, 0.03, 0.2],
+                                       halfExtents = [0.23, 0.23, 0.23],
                                        visualFramePosition = [0,0,0],
                                        rgbaColor = [1, 0.2, 0, 0.9],
                                        specularColor = [0, 0, 0])
 box_body_id = p.createMultiBody(baseMass = 0, # 0 means this object is fixed
                                        baseCollisionShapeIndex = box_collision_id,
                                        baseVisualShapeIndex = box_visual_id,
-                                       basePosition = [0.0,0.3,0.2],  #都是在几何中心
+                                       basePosition = [0.022298574447631836,-0.6372448801994324,0.655444324016571],  #都是在几何中心
                                        baseOrientation = euler_to_quaternion(0,0,0),
                                        baseInertialFramePosition = [0,0,0])
-
+'''
 box_collision_id =p.createCollisionShape(shapeType = p.GEOM_BOX,
                                        halfExtents = [0.5, 0.03, 0.3], #[长，高，宽]
                                        collisionFramePosition = [0,0,0])
@@ -177,21 +177,22 @@ box_body_id = p.createMultiBody(baseMass = 0, # 0 means this object is fixed
 
 '''
 # pybullet 添加圆形
-'''
+
 sphere_collision_id =p.createCollisionShape(shapeType = p.GEOM_SPHERE,
-                                       radius  = 0.2,
+                                       radius  = 0.22,
                                        collisionFramePosition = [0,0,0])
 sphere_visual_id = p.createVisualShape(shapeType = p.GEOM_SPHERE,
-                                       radius = 0.2,
+                                       radius = 0.22,
                                        visualFramePosition = [0,0,0],
                                        rgbaColor = [1, 0.2, 0, 0.9],
                                        specularColor = [0, 0, 0])
 sphere_body_id = p.createMultiBody(baseMass = 0, # 0 means this object is fixed
                                        baseCollisionShapeIndex = sphere_collision_id,
                                        baseVisualShapeIndex = sphere_visual_id,
-                                       basePosition = [0.0,0.4,0.2],  #都是在几何中心
+                                       basePosition = [0.04056398943066597,0.5609892010688782,0.6506312489509583],  #都是在几何中心
                                        baseOrientation = [0,0,0,1], 
                                        baseInertialFramePosition = [0,0,0])
+
 '''
 
 # pybullet 添加圆柱形
@@ -214,7 +215,7 @@ clindyer_body_id = p.createMultiBody(baseMass = 0, # 0 means this object is fixe
                                      basePosition = [0.0,0.3,0.2],  #都是在几何中心
                                      baseOrientation = [0,0,0,1], 
                                      baseInertialFramePosition = [0,0,0])
-'''
+
 
 home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]
 initalizePybulletRobotState=list(home)
