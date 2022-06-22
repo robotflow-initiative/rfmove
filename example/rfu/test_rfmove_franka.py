@@ -150,6 +150,7 @@ class Rf_Move_Rfuniverse():
             print(self.Home)
             self.plannerspline.InitRobotState(np.array(self.Home),"panda_arm")
 
+        print(poslist)
         self.plannerspline.CreateSplineParameterization(self.setrfuniverPosition(poslist=poslist),"panda_arm","panda_link0","panda_link7")
         self.timeslist=self.plannerspline.getTimeList()
 
@@ -168,6 +169,7 @@ class Rf_Move_Rfuniverse():
 
 
         self.time_joint_positions = []
+        self.time_joint_positions.clear()
         
 
         for i in range(len(self.ompltimelist)):
@@ -543,147 +545,38 @@ class Rf_Move_Rfuniverse():
     
 
 if __name__=="__main__":
-    # 计算link7和unity之间的误差矩阵
-    '''
-    move=Rf_Move_Rfuniverse()  # 初始化对象
-    
-    # 取消原来的误差矩阵
-    #delatH=np.array([[1, 0,  0,  0],
-    #                 [0, 1,  0,  0],
-    #                 [0, 0,  1,  0],
-    #                 [0, 0,  0,  1]])
-    
-    #使用默认路径，用于测试
-    #move.setDelta(DeltaH=delatH) 
-    home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]
-    poslist=[[0.33,0,0.58,math.pi/3,math.pi/3,-math.pi/3]]  #x,y,z,wx,wy,wz
-    move.planner(home=home,poslist=poslist)
 
-    #运行规划
-    move.run(100)
-    #输出执行结果
-    print(move.get_TCP_t())
-    print(move.get_TCP_r())
-
-    #运行程序，获取误差矩阵End->Link7，
-    H=move.computeEnd2Link7(
-                          [0,0,0],
-                          [0.33,0,0.58],
-                          [0.0032342442567790558, -0.0036667915520783635, 0.791228688550986],
-                          [0.329399436712265, -0.0022427323274314404, 0.7949707508087158])
-    print(H)  #最后的补偿矩阵
-    '''
-    
-    # 基本使用方法1
-    '''
-    move1=Rf_Move_Rfuniverse()
-    move1.planner()
-    move1.run(10)
-    print(move1.get_TCP_t())
-    print(move1.get_TCP_r())
-    '''
-    
-    # 基本使用方法2
-    '''
+    # 避障1，检测unity中的物体,进行物体规避
     move2=Rf_Move_Rfuniverse()
-    delatH=np.array([[1, 0,  0,  0],
-                     [0, 1,  0,  0],
-                     [0, 0,  1,  0],
-                     [0, 0,  0,  1]])
-    move2.setDelta(DeltaH=delatH)  #重新设置与link7之间的误差矩阵，一般不需要使用
+    # 底部方个大箱子当平面来用，否则有时候会装到地面
+    
+
     home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]  #制定启动的home状态，第一次使用必须制定
-    poslist=[[0.33,0,0.58,0,math.pi,0],  #测试路径
-             [0.33,0.1,0.68,0,math.pi/3,0],
-             [0.55,0.0,0.48,0,math.pi/2,0]]
+    poslist= [[0.6,0.0,0.68,0,math.pi/2,0],
+              [0.0,0.6,0.68,0,math.pi/2,math.pi/2],
+              [-0.6,0.0,0.68,0,math.pi/2,math.pi],
+              [-0.9,0.0,0.38,0,math.pi/2,math.pi],
+              [0.0,-0.9,0.38,0,math.pi/2,3*math.pi/2],
+              [0.9,0.0,0.38,0,math.pi/2,2*math.pi]]
+             
+    # 检测环境中的碰撞对象，然后加入到规划中
+    # 注销这一行就会碰撞
+    move2.detectUnityObject();
     move2.planner(home=home,poslist=poslist)
-    print(move2.get_last_planner_waypoint())  #答应最后路径点
+    
     move2.run(100)
     print(move2.get_TCP_t())
     print(move2.get_TCP_r())
-    '''
-   
+
     # 基本使用方法3
-    '''
-    #home=[]  #放空home，标示以当前路径作为启动路径
-    #poslist=[[0.13,0.4,0.58,0,math.pi,0]]
-    #move2.planner(home=home,poslist=poslist)
-    #move2.run(100)  #100表示运行完后在，停留100个周期
-    '''
+    # 这里的home放空，可以对当前路径进行规划
+   
+    home=[]  #放空home，标示以当前路径作为启动路径
+    poslist2=[[0.13,0.4,0.58,0,math.pi,0]]
+    move2.planner(home=home,poslist=poslist2)
+    move2.run(100)  #100表示运行完后在，停留100个周期
 
-    # 避障碍  Box对象案例
-    # 注销即可尝试
-    '''
-    move2=Rf_Move_Rfuniverse()
-    home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]
-
-    poslist= [[0.33,0.1,0.48,0,math.pi,math.pi/2],
-              [0.33,0.4,0.58,0,math.pi,math.pi/2],
-              [0.30,-0.3,0.44,0,math.pi,math.pi/2],
-              [0.33,-0.5,0.54,0,math.pi,math.pi/2],
-              [0.25,0.5,0.54,0,math.pi,math.pi/2],
-              [0.25,0.5,0.34,0,math.pi,math.pi/2],
-              [-0.40,0.5,0.34,0,math.pi,math.pi/2]]
-    
-    box1=ShapeObject(shape="Box",
-                     id=1,
-                     scale=[0.06,0.06,0.4],
-                     pose=[0.0,0.3,0.2,0,0,0])
-    box2=ShapeObject(shape="Box",
-                     id=2,
-                     scale=[1,0.06,0.6],    #[长，高，宽]
-                     pose=[0.6,0,0.9,7*math.pi/12,math.pi/12,0])
-    box3=ShapeObject(shape="Box",
-                     id=3,
-                     scale=[0.3,0.06,0.4],
-                     pose=[0.4,0.0,0.4,math.pi/2,0,0])
-    box4=ShapeObject(shape="Box",
-                     id=4,
-                     scale=[0.06,0.06,0.6],
-                     pose=[-0.2,0.5,0.4,math.pi/2,math.pi/6,0])
-    
-    move2.AddObject(box1)
-    move2.AddObject(box2)
-    move2.AddObject(box3)
-    move2.AddObject(box4)
-    
-    move2.planner(poslist=poslist)
-    move2.run(1000000000)
-    print(move2.get_TCP_t())
-    print(move2.get_TCP_r())
-    '''
-    
-    # 避障碍  Capsule对象案例
-    # 胶囊体手动添加有待开发
-    # 胶囊体有待开发
-    
-    '''
-    move2=Rf_Move_Rfuniverse()
-    home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]
-
-    poslist= [[0.33,0.1,0.48,0,math.pi,math.pi/2],
-              [0.33,0.4,0.58,0,math.pi,math.pi/2],
-              [0.30,-0.3,0.44,0,math.pi,math.pi/2],
-              [0.33,-0.5,0.54,0,math.pi,math.pi/2],
-              [0.25,0.5,0.54,0,math.pi,math.pi/2],
-              [0.25,0.5,0.34,0,math.pi,math.pi/2],
-              [-0.40,0.5,0.34,0,math.pi,math.pi/2]]
-    
-    Capsule_1=ShapeObject(shape="Capsule",
-                          id=1,
-                          scale=[0.06,0.06,0.06],
-                          pose=[0.0,0.4,0.2,0,0,0])
-    
-    move2.AddObject(Capsule_1)
-
-    
-    move2.planner(poslist=poslist)
-    move2.run(500)
-    print(move2.get_TCP_t())
-    print(move2.get_TCP_r())
-    '''
-    
-
-    # 避障碍  圆形对象案例
+    # 避障2  添加添加圆形对象
     # 注销即可尝试
     '''
     move2=Rf_Move_Rfuniverse()
@@ -754,25 +647,120 @@ if __name__=="__main__":
     print(move2.get_TCP_r())
     '''
 
-    # 避障5，检测unity中的物体
-    
+    # 避障碍3 Box对象案例
+    # 注销即可尝试
+    '''
     move2=Rf_Move_Rfuniverse()
-    home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]  #制定启动的home状态，第一次使用必须制定
-    poslist= [[0.6,0.0,0.68,0,math.pi/2,0],
-              [0.0,0.6,0.68,0,math.pi/2,math.pi/2],
-              [-0.6,0.0,0.68,0,math.pi/2,math.pi],
-              [-0.9,0.0,0.38,0,math.pi/2,math.pi],
-              [0.0,-0.9,0.38,0,math.pi/2,3*math.pi/2],
-              [0.9,0.0,0.38,0,math.pi/2,2*math.pi]]
-             
-    # 检测环境中的碰撞对象，然后加入到规划中
-    # 注销这一行就会碰撞
-    move2.detectUnityObject();
-    move2.planner(home=home,poslist=poslist)
+    home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]
+
+    poslist= [[0.33,0.1,0.48,0,math.pi,math.pi/2],
+              [0.33,0.4,0.58,0,math.pi,math.pi/2],
+              [0.30,-0.3,0.44,0,math.pi,math.pi/2],
+              [0.33,-0.5,0.54,0,math.pi,math.pi/2],
+              [0.25,0.5,0.54,0,math.pi,math.pi/2],
+              [0.25,0.5,0.34,0,math.pi,math.pi/2],
+              [-0.40,0.5,0.34,0,math.pi,math.pi/2]]
     
+    box1=ShapeObject(shape="Box",
+                     id=1,
+                     scale=[0.06,0.06,0.4],
+                     pose=[0.0,0.3,0.2,0,0,0])
+    box2=ShapeObject(shape="Box",
+                     id=2,
+                     scale=[1,0.06,0.6],    #[长，高，宽]
+                     pose=[0.6,0,0.9,7*math.pi/12,math.pi/12,0])
+    box3=ShapeObject(shape="Box",
+                     id=3,
+                     scale=[0.3,0.06,0.4],
+                     pose=[0.4,0.0,0.4,math.pi/2,0,0])
+    box4=ShapeObject(shape="Box",
+                     id=4,
+                     scale=[0.06,0.06,0.6],
+                     pose=[-0.2,0.5,0.4,math.pi/2,math.pi/6,0])
+    
+    move2.AddObject(box1)
+    move2.AddObject(box2)
+    move2.AddObject(box3)
+    move2.AddObject(box4)
+    
+    move2.planner(poslist=poslist)
+    move2.run(1000000000)
+    print(move2.get_TCP_t())
+    print(move2.get_TCP_r())
+    '''
+
+    # 计算link7和unity之间的误差矩阵
+    # 用于计算unity和link7之间的补偿举证，已经计算好了，可以不管以下内容
+    '''
+    move=Rf_Move_Rfuniverse()  # 初始化对象
+    
+    # 取消原来的误差矩阵
+    #delatH=np.array([[1, 0,  0,  0],
+    #                 [0, 1,  0,  0],
+    #                 [0, 0,  1,  0],
+    #                 [0, 0,  0,  1]])
+    
+    #使用默认路径，用于测试
+    #move.setDelta(DeltaH=delatH) 
+    home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]
+    poslist=[[0.33,0,0.58,math.pi/3,math.pi/3,-math.pi/3]]  #x,y,z,wx,wy,wz
+    move.planner(home=home,poslist=poslist)
+
+    #运行规划
+    move.run(100)
+    #输出执行结果
+    print(move.get_TCP_t())
+    print(move.get_TCP_r())
+
+    #运行程序，获取误差矩阵End->Link7，
+    H=move.computeEnd2Link7(
+                          [0,0,0],
+                          [0.33,0,0.58],
+                          [0.0032342442567790558, -0.0036667915520783635, 0.791228688550986],
+                          [0.329399436712265, -0.0022427323274314404, 0.7949707508087158])
+    print(H)  #最后的补偿矩阵
+    '''
+    
+    # 基本使用方法1
+    # 使用默认路径
+    '''
+    move1=Rf_Move_Rfuniverse()
+    move1.planner()
+    move1.run(10)
+    print(move1.get_TCP_t())
+    print(move1.get_TCP_r())
+    '''
+    
+    # 基本使用方法2
+    # 直接对link7进行规划
+    '''
+    move2=Rf_Move_Rfuniverse()
+    delatH=np.array([[1, 0,  0,  0],
+                     [0, 1,  0,  0],
+                     [0, 0,  1,  0],
+                     [0, 0,  0,  1]])
+    move2.setDelta(DeltaH=delatH)  #重新设置与link7之间的误差矩阵，一般不需要使用
+    home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]  #制定启动的home状态，第一次使用必须制定
+    poslist=[[0.33,0,0.58,0,math.pi,0],  #测试路径
+             [0.33,0.1,0.68,0,math.pi/3,0],
+             [0.55,0.0,0.48,0,math.pi/2,0]]
+    move2.planner(home=home,poslist=poslist)
+    print(move2.get_last_planner_waypoint())  #答应最后路径点
     move2.run(100)
     print(move2.get_TCP_t())
     print(move2.get_TCP_r())
+    '''
+   
+    
+    
+
+    
+    
+    
+    
+
+    
+   
     
     
 

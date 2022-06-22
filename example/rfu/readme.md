@@ -30,6 +30,14 @@ make install
 
 # 运行
 1. 下载Universe-Player,可在rfmove创库0.1.6版本的中找到下载
+```bash
+# 通过以下命令可以变价rfuniverse的世界环境，
+./Player.x86_64 -edit
+# 如果你的运动规划在运动过程中老是碰撞地面，可以在你的机器人底部添加一个box，box的中心坐标在几何中，沉入地面就可以了
+# 使用以下命令添加地面碰撞物体
+move2.detectUnityObject(); #本命令会在运动规划中，将所有universe环境中的长方体，球形以及胶囊体加入运动规划的避障过程
+
+```
 2. 修改脚本的以下内容test_rfmove_franka.py的以下内容
 ```python
 # 修改以下内容，为你的Universe-Player的绝对路径

@@ -244,6 +244,8 @@ int PlannerSpline::sample_by_interval(double timeinterval)
         trajectory_interface::PosVelAccState<double> Sample= trajectory_interface::PosVelAccState<double>();
         for(size_t index=0;index<trajectories.size();index++)
         { 
+            //Spline for each trajectory 
+            //There are some thing improve
             trajectory_interface::PosVelAccState<double> sample= trajectory_interface::PosVelAccState<double>();
             SplineTrajectory Spline(trajectories[index],false,SplineTrajectory::Parameterization::SPLINE);
             Spline.sample_by_interval(joint_name,sample, timeinterval);
@@ -390,6 +392,7 @@ void PlannerSpline::CreateSplineParameterization(std::vector<rfWaypoint> &waypoi
     geometry_msgs::PoseStamped pose;
     pose.header.frame_id = frame_id;
 
+    trajectories.clear();
     JointsPositionsList.clear();
     timeslist.clear();
     time = 0.0;
