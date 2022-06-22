@@ -181,7 +181,7 @@ class Rf_Move_Rfuniverse():
 
     def detectUnityObject(self):
          #冗余量 防止刮
-        thread=0.04
+        thread=0.02
 
         self.env.asset_channel.GetRFMoveColliders()
         self.env._step()
@@ -758,15 +758,16 @@ if __name__=="__main__":
     
     move2=Rf_Move_Rfuniverse()
     home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]  #制定启动的home状态，第一次使用必须制定
-    poslist= [[0.8,0.0,0.68,0,math.pi/2,0],
-              [0.0,0.8,0.68,math.pi/2,0,math.pi/2]]
-              #[0.0,0.5,0.44,0,math.pi/2,0],
-              #[0.33,-0.5,0.54,0,math.pi/2,0],
-              #[0.25,0.5,0.54,0,math.pi/2,0],
-              #[0.25,0.5,0.34,0,math.pi/2,0],
-              #[-0.40,0.5,0.34,0,math.pi/2,0]]
-
-   # move2.detectUnityObject();
+    poslist= [[0.6,0.0,0.68,0,math.pi/2,0],
+              [0.0,0.6,0.68,0,math.pi/2,math.pi/2],
+              [-0.6,0.0,0.68,0,math.pi/2,math.pi],
+              [-0.9,0.0,0.38,0,math.pi/2,math.pi],
+              [0.0,-0.9,0.38,0,math.pi/2,3*math.pi/2],
+              [0.9,0.0,0.38,0,math.pi/2,2*math.pi]]
+             
+    # 检测环境中的碰撞对象，然后加入到规划中
+    # 注销这一行就会碰撞
+    move2.detectUnityObject();
     move2.planner(home=home,poslist=poslist)
     
     move2.run(100)
