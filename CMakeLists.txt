@@ -193,7 +193,6 @@ add_subdirectory(src/robot_model)
 add_subdirectory(src/planner)
 add_subdirectory(src/controller)
 add_subdirectory(src/python)
-add_subdirectory(src/rokae)
 
 
 # Include Directories used for executable demo

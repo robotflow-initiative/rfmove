@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<robot name="lifting" xmlns:xacro="https://www.ros.org/wiki/xacro">
+    <xacro:macro name="lifting">
+        <xacro:property name="M_PI" value="3.1415926" />
+        <xacro:property name="File_Path_DAE" value="package://lifting_description/meshes/dae" />
+        <xacro:property name="File_Path_STL" value="package://lifting_description/meshes/stl" />
+        <xacro:property name="Joint_Fixed" value="fixed" />
+
+        <link name="electric_cylinder_base_link">
+            <inertial>
+                <origin xyz="-0.19365 0.43875 0.51281" rpy="0 0 0" />
+                <mass value="0.68116" />
+                <inertia ixx="0.0020629" ixy="-0.00044209" ixz="-3.1301E-12" iyy="0.00093278" iyz="-2.18E-12" izz="0.0025262" />
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <mesh filename="${File_Path_DAE}/electric_cylinder_base_link.dae" />
+                </geometry>
+                <material name="">
+                    <color rgba="0.69804 0.69804 0.69804 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <mesh filename="${File_Path_STL}/electric_cylinder_base_link.STL" />
+                </geometry>
+            </collision>
+        </link>
+        <link name="cylinder_link">
+            <inertial>
+                <origin xyz="-2.3637E-07 0.20854 0.0011345" rpy="0 0 0" />
+                <mass value="0.47234" />
+                <inertia ixx="0.0068471" ixy="2.0037E-08" ixz="1.0212E-09" iyy="0.00028887" iyz="1.0853E-05" izz="0.0068369" />
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <mesh filename="${File_Path_DAE}/cylinder_link.dae" />
+                </geometry>
+                <material name="">
+                    <color rgba="0.69804 0.69804 0.69804 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <mesh filename="${File_Path_STL}/cylinder_link.STL" />
+                </geometry>
+            </collision>
+        </link>
+        <joint name="joint_cylinder" type="${Joint_Fixed}">
+            <origin xyz="0.031152 0 0.06334" rpy="0 0 0" />
+            <parent link="electric_cylinder_base_link" />
+            <child link="cylinder_link" />
+            <axis xyz="0 0 0" />
+        </joint>
+
+        <link name="lifting_rod_link">
+            <inertial>
+                <origin xyz="-2.7756E-17 0.17716 -1.1102E-16" rpy="0 0 0" />
+                <mass value="0.17381" />
+                <inertia ixx="0.0018298" ixy="1.468E-19" ixz="1.2399E-22" iyy="1.3427E-05" iyz="2.1083E-20" izz="0.0018298" />
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <mesh filename="${File_Path_DAE}/lifting_rod_link.dae" />
+                </geometry>
+                <material name="">
+                    <color rgba="0.75294 0.75294 0.75294 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <mesh filename="${File_Path_STL}/lifting_rod_link.STL" />
+                </geometry>
+            </collision>
+        </link>
+        <joint name="joint_lifting_rod" type="prismatic">
+            <origin xyz="0 0 0.03" rpy="0 0 0"></origin>
+            <axis xyz="0 0 1" />
+            <parent link="cylinder_link" />
+            <child link="lifting_rod_link" />
+            <limit effort="30" velocity="1.0" lower="0" upper="0.3" />
+        </joint>
+    </xacro:macro>
+</robot>

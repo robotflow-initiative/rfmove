@@ -1,0 +1,63 @@
+# Simulation settings for using moveit_sim_controllers
+moveit_sim_hw_interface:
+  joint_model_group: left_arm
+  joint_model_group_pose: ready
+# Settings for ros_control_boilerplate control loop
+generic_hw_control_loop:
+  loop_hz: 300
+  cycle_time_error_threshold: 0.01
+# Settings for ros_control hardware interface
+hardware_interface:
+  joints:
+    - joint_driven_gear
+    - joint_lifting_rod
+    - joint_PTZ_head
+    - joint_PTZ_axis
+    - left_arm_joint_1
+    - left_arm_joint_2
+    - left_arm_joint_3
+    - left_arm_joint_4
+    - left_arm_joint_5
+    - left_arm_joint_6
+    - left_arm_joint_7
+    - right_arm_joint_1
+    - right_arm_joint_2
+    - right_arm_joint_3
+    - right_arm_joint_4
+    - right_arm_joint_5
+    - right_arm_joint_6
+    - right_arm_joint_7
+    - joint_driving_gear
+    - left_wheel_joint
+    - right_wheel_joint
+  sim_control_mode: 1  # 0: position, 1: velocity
+# Publish all joint states
+# Creates the /joint_states topic necessary in ROS
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50
+controller_list:
+  - name: left_arm_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+      - left_arm_joint_1
+      - left_arm_joint_2
+      - left_arm_joint_3
+      - left_arm_joint_4
+      - left_arm_joint_5
+      - left_arm_joint_6
+      - left_arm_joint_7
+  - name: right_arm_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+      - right_arm_joint_1
+      - right_arm_joint_2
+      - right_arm_joint_3
+      - right_arm_joint_4
+      - right_arm_joint_5
+      - right_arm_joint_6
+      - right_arm_joint_7

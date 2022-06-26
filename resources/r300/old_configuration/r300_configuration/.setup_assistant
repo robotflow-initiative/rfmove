@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: r300_description
+    relative_path: urdf/r300_robot.xacro
+    xacro_args: "--inorder "
+  SRDF:
+    relative_path: config/r300.srdf
+  CONFIG:
+    author_name: Riften
+    author_email: huangyongxi@sjtu.edu.cn
+    generated_timestamp: 1625042614

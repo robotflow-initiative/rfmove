@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<robot name="ptz_module" xmlns:xacro="https://www.ros.org/wiki/xacro">
-  <xacro:include filename="$(find ptz_description)/urdf/ptz_module.xacro" />
-  <xacro:ptz_driver />
-</robot>
