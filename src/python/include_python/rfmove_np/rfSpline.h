@@ -64,6 +64,7 @@ void declare_rfSpline(py::module& m){
         .def("AddCollectionObject",&PlannerSpline::AddObject,"AddCollectionObject_new")
         .def("RemoveObject",&PlannerSpline::RemoveObject,"Remove Object")
         .def("clearObjects",&PlannerSpline::clearObjects,"Clear Objects")
+        .def("reset_name_idx",&PlannerSpline::reset_name_idx,"Reset name idx Map")
         .def("__repr__",
             [](const PlannerSpline& ps){
                 return "<object for jointlimit loader>";

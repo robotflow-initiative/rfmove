@@ -84,93 +84,93 @@ MESSAGE(STATUS "include Eigen3: ${EIGEN3_INCLUDE_DIRS}")
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 
 find_library(rdf_loader_lib moveit_rdf_loader
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib moveit_rdf_loader: ${rdf_loader_lib}")
 
 find_library(robot_model_lib moveit_robot_model
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib moveit_robot_model: ${robot_model_lib}")
 
 find_library(kinematics_base_lib moveit_kinematics_base
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib moveit_kinematics_base: ${kinematics_base_lib}")
 
 find_library(orocos_kdl_lib orocos-kdl # can also installed as third party library: https://orocos.org/kdl.html
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib orocos-kdl: ${orocos_kdl_lib}")
 
 find_library(robot_state_lib moveit_robot_state
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib moveit_robot_state: ${robot_state_lib}")
 
 find_library(kinematics_base_lib moveit_kinematics_base
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib moveit_kinematics_base: ${kinematics_base_lib}")
 
 find_library(kdl_parser_lib kdl_parser
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib kdl_parser: ${kdl_parser_lib}")
 
 find_library(kdl_conversions_lib kdl_conversions
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib kdl_conversions: ${kdl_conversions_lib}")
 
 find_library(collision_detection_lib moveit_collision_detection
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib moveit_collision_detection: ${collision_detection_lib}")
 
 find_library(planning_scene_lib moveit_planning_scene
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib moveit_planning_scene: ${planning_scene_lib}")
 
 find_library(planning_interface_lib moveit_planning_interface
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib moveit_planning_interface: ${planning_interface_lib}")
 
 find_library(ompl_interface_lib moveit_ompl_interface
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib moveit_ompl_interface: ${ompl_interface_lib}")
 
 find_library(constraint_samplers_lib moveit_constraint_samplers
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib moveit_constraint_samplers: ${constraint_samplers_lib}")
 
 find_library(robot_trajectory_lib moveit_robot_trajectory
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib moveit_robot_trajectory: ${robot_trajectory_lib}")
 
 find_library(trajectory_processing_lib moveit_trajectory_processing
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lib moveit_trajectory_processing: ${trajectory_processing_lib}")
 
 find_library(lapack_lib lapack
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "lapack: ${lapack_lib}")
 
 find_library(blas_lib blas
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "blas: ${blas_lib}")
 
 find_library(gfortran_lib gfortran
-        HINTS ${KINETIC_LIB_DIR}
-        REQUIRED)
+        PATHS ${KINETIC_LIB_DIR}
+        NO_DEFAULT_PATH)
 MESSAGE(STATUS "gfortran: ${gfortran_lib}")
 
 find_package(Python ${PYBIND11_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)

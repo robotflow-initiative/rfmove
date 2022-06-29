@@ -86,11 +86,11 @@ class Rf_Move_Rfuniverse():
 
         print("== Initalize Planner moveit model ==")
         self.plannerspline=PlannerSpline("panda_arm")
-        self.plannerspline.init(rfmove_dir+"/resources/franka_convert.urdf",
-                                rfmove_dir+"/resources/panda_arm_hand.srdf",
-                                rfmove_dir+"/resources/kinematics.yaml",
-                                rfmove_dir+"/resources/ompl_planning.yaml",
-                                rfmove_dir+"/resources/joint_limits.yaml")
+        self.plannerspline.init(rfmove_dir+"/resources/franka/urdf/franka_convert.urdf",
+                                rfmove_dir+"/resources/franka/urdf/panda_arm_hand.srdf",
+                                rfmove_dir+"/resources/franka/config/kinematics.yaml",
+                                rfmove_dir+"/resources/franka/config/ompl_planning.yaml",
+                                rfmove_dir+"/resources/franka/config/joint_limits.yaml")
         #跳出标志符号
         self.stopflag=False
         #代表当前行为已经完成用的计数器

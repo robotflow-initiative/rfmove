@@ -133,6 +133,7 @@ public:
     // 名字到索引的映射
     std::map<std::string, int> name_idx;
     int jointIndex(const std::string &joint_name);
+    void reset_name_idx(const std::string &groupname);
 };
 
 trajectory_interface::PosVelAccState<double> PlannerSpline::get_ompl_sample(const std::string &jointname)
@@ -236,12 +237,13 @@ int PlannerSpline::sample_by_interval(double timeinterval)
     {
         sample_count=0;
  
-           
+  
         double target_time=0;
         const std::string joint_name=jointname.first;
         if(joint_name.compare("panda_joint8")!=0)
             sample_by_interval_times.clear();
         trajectory_interface::PosVelAccState<double> Sample= trajectory_interface::PosVelAccState<double>();
+     
         for(size_t index=0;index<trajectories.size();index++)
         { 
             //Spline for each trajectory 
@@ -316,7 +318,19 @@ void PlannerSpline::loadPlannerConfig(const std::string &Planner_path)
     int jointidx = 0;
     for (std::vector<std::string>::iterator it = namelist.begin(); it != namelist.end(); it++)
     {
-        std::vector<double> joint_value_tmp;
+        name_idx.insert(std::make_pair(*it, jointidx));
+        jointidx++;
+    }
+}
+
+void PlannerSpline::reset_name_idx(const std::string &groupname)
+{
+    this->name_idx.clear();
+    robot_state::RobotState &robot_state = planning_scene->getCurrentStateNonConst();
+    std::vector<std::string> namelist = robot_state.getJointModelGroup(groupname)->getJointModelNames();
+    int jointidx = 0;
+    for (std::vector<std::string>::iterator it = namelist.begin(); it != namelist.end(); it++)
+    {
         name_idx.insert(std::make_pair(*it, jointidx));
         jointidx++;
     }
@@ -385,7 +399,7 @@ void PlannerSpline::CreateSplineParameterization(std::vector<rfWaypoint> &waypoi
     planning_interface::MotionPlanRequest req;
 
     req.group_name = group_name;
-
+    this->reset_name_idx(group_name);
     req.max_velocity_scaling_factor = max_velocity_scaling_factor;
     req.max_acceleration_scaling_factor = max_acceleration_scaling_factor;
 
