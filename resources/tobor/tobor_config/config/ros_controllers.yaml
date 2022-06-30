@@ -142,3 +142,115 @@ leftEE_group_controller:
       d: 1
       i: 1
       i_clamp: 1
+all_group_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - joint_driven_gear
+    - joint_lifting_rod
+    - left_arm_joint_1
+    - left_arm_joint_2
+    - left_arm_joint_3
+    - left_arm_joint_4
+    - left_arm_joint_5
+    - left_arm_joint_6
+    - left_arm_joint_7
+    - finger_joint_left
+    - right_arm_joint_1
+    - right_arm_joint_2
+    - right_arm_joint_3
+    - right_arm_joint_4
+    - right_arm_joint_5
+    - right_arm_joint_6
+    - right_arm_joint_7
+    - finger_joint_right
+  gains:
+    joint_driven_gear:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    joint_lifting_rod:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    left_arm_joint_1:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    left_arm_joint_2:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    left_arm_joint_3:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    left_arm_joint_4:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    left_arm_joint_5:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    left_arm_joint_6:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    left_arm_joint_7:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    finger_joint_left:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    right_arm_joint_1:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    right_arm_joint_2:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    right_arm_joint_3:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    right_arm_joint_4:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    right_arm_joint_5:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    right_arm_joint_6:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    right_arm_joint_7:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    finger_joint_right:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1

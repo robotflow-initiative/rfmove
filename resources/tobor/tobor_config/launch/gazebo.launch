@@ -3,7 +3,7 @@
   <arg name="paused" default="false"/>
   <arg name="gazebo_gui" default="true"/>
   <arg name="initial_joint_positions" doc="Initial joint configuration of the robot"
-       default=" -J joint_driven_gear 0 -J joint_lifting_rod 0 -J left_arm_joint_1 0 -J left_arm_joint_2 0 -J left_arm_joint_3 0 -J left_arm_joint_4 0 -J left_arm_joint_5 0 -J left_arm_joint_6 0 -J left_arm_joint_7 0 -J right_arm_joint_1 0 -J right_arm_joint_2 0 -J right_arm_joint_3 0 -J right_arm_joint_4 0 -J right_arm_joint_5 0 -J right_arm_joint_6 0 -J right_arm_joint_7 0 -J robotiq_85_left_knuckle_joint_right 0"/>
+       default=" -J finger_joint_left 0 -J finger_joint_right 0 -J joint_driven_gear 0 -J joint_lifting_rod 0 -J left_arm_joint_1 0 -J left_arm_joint_2 0 -J left_arm_joint_3 0 -J left_arm_joint_4 0 -J left_arm_joint_5 0 -J left_arm_joint_6 0 -J left_arm_joint_7 0 -J right_arm_joint_1 0 -J right_arm_joint_2 0 -J right_arm_joint_3 0 -J right_arm_joint_4 0 -J right_arm_joint_5 0 -J right_arm_joint_6 0 -J right_arm_joint_7 0"/>
 
   <!-- startup simulated world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">

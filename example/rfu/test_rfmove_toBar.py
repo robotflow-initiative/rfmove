@@ -134,7 +134,7 @@ class Rf_Move_Rfuniverse():
 
         self.plannerspline.CreateSplineParameterization(self.setrfuniverPosition(poslist=poslist),"left_arm_group","base_link","left_arm_link7",1,1,1)
         
-        self.plannerspline.sample_by_interval(0.01)
+        self.plannerspline.sample_by_interval(0.02)
         self.ompltimelist_left.clear()
         self.ompltimelist_left=self.plannerspline.get_sample_by_interval_times()
 
@@ -156,7 +156,7 @@ class Rf_Move_Rfuniverse():
                                                    joint5pos[i]*180/math.pi,
                                                    joint6pos[i]*180/math.pi,
                                                    joint7pos[i]*180/math.pi])
-    
+        
 
     def detectUnityObject(self):
          #冗余量 防止刮
@@ -244,16 +244,16 @@ class Rf_Move_Rfuniverse():
                        home_rd[5]*math.pi/180,
                        home_rd[6]*math.pi/180]
             print("== Current Joint positions  ==")
-            print(self.Home)
+            print(home_rd)
             self.plannerspline.InitRobotState(np.array(self.Home),"right_arm_group")
 
         self.plannerspline.CreateSplineParameterization(self.setrfuniverPosition(poslist=poslist),"right_arm_group","base_link","right_arm_link7",1,1,1)
         
-        self.plannerspline.sample_by_interval(0.01)
+        self.plannerspline.sample_by_interval(0.02)
         self.ompltimelist_right.clear()
         self.ompltimelist_right=self.plannerspline.get_sample_by_interval_times()
 
-        joint1pos=self.plannerspline.get_ompl_sample('right_arm_joint_1').position
+        joint1pos=self.plannerspline.get_ompl_sample(self.right_arm[0]).position
         joint2pos=self.plannerspline.get_ompl_sample(self.right_arm[1]).position
         joint3pos=self.plannerspline.get_ompl_sample(self.right_arm[2]).position
         joint4pos=self.plannerspline.get_ompl_sample(self.right_arm[3]).position
@@ -272,7 +272,7 @@ class Rf_Move_Rfuniverse():
                                                     joint6pos[i]*180/math.pi,
                                                     joint7pos[i]*180/math.pi])
 
-        print(len(self.time_right_joint_positions))
+        print(self.time_right_joint_positions[0])
         
      # Unity 下的旋转矩阵转欧拉角
     def unityRotationMatrixToEulerAngles(self,R):
@@ -334,6 +334,7 @@ class Rf_Move_Rfuniverse():
     
 if __name__=="__main__":
     move=Rf_Move_Rfuniverse()
+    move.detectUnityObject()
     # 运行仿真器
     # step1:
     plist=[[0.63,0.3,1.0,math.pi/2,0,0],
@@ -344,9 +345,7 @@ if __name__=="__main__":
     move.planner_left(poslist=plist)
     
     move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
-    #get_step_num=lambda x,y:max(x,y)
-    #step_num=get_step_num(move.ompltimelist_left,move.ompltimelist_right)
-    for i in range(len(move.ompltimelist_left)+100):
+    for i in range(len(move.ompltimelist_left)+10):
         move.env._step()
     
     plist=[[0.63,-0.3,1.0,-math.pi/2,0,0],
@@ -356,14 +355,58 @@ if __name__=="__main__":
            [0.6,-0.4,0.9,-math.pi/2,0,0],]
     move.planner_right(poslist=plist)
     move.env.SetRightArmPositionContinue(move.time_right_joint_positions)
-    for i in range(len(move.ompltimelist_right)+100):
+    for i in range(len(move.ompltimelist_right)+10):
         move.env._step()
-
-    p_r=[[0.2,-0.8,0.9,-math.pi/2,0,0],[0.6,-0.4,0.9,-math.pi/2,0,0]]
-    p_l=[[0.2,0.8,0.9,math.pi/2,0,0],[0.6,0.4,0.9,math.pi/2,0,0]]
+    
+    p_r=[[0.5,-0.6,0.9,-math.pi/2,0,0]]
+    p_l=[[0.5,0.6,0.9,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
     move.planner_right(poslist=p_r)
+    move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
+    move.env.SetRightArmPositionContinue(move.time_right_joint_positions)
     get_step_num=lambda x,y:max(x,y)
     step_num=get_step_num(len(move.ompltimelist_left),len(move.ompltimelist_right))
-    for i in range(step_num+100):
+    for i in range(step_num+10):
         move.env._step()
+    
+    p_r=[[0.9,-0.2,0.8,-math.pi/2,0,0]]
+    p_l=[[0.9,0.2,0.8,math.pi/2,0,0]]
+    move.planner_left(poslist=p_l)
+    move.planner_right(poslist=p_r)
+    move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
+    move.env.SetRightArmPositionContinue(move.time_right_joint_positions)
+    get_step_num=lambda x,y:max(x,y)
+    step_num=get_step_num(len(move.ompltimelist_left),len(move.ompltimelist_right))
+    for i in range(step_num+10):
+        move.env._step()
+    print("=================")
+    
+    
+    p_r=[[0.9,-0.2,1.2,-math.pi/2,0,0]]
+    move.planner_right(poslist=p_r)
+    move.env.SetRightArmPositionContinue(move.time_right_joint_positions)
+    for i in range(len(move.ompltimelist_right)+10):
+        move.env._step()
+    
+    
+    p_l=[[0.9,0.2,1.2,math.pi/2,0,0]]
+    move.planner_left(poslist=p_l)
+    move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
+    for i in range(len(move.ompltimelist_left)+10):
+        move.env._step()
+ 
+    
+    p_r=[[0.7,-0.2,1.4,-math.pi/2,0,0]]
+    move.planner_right(poslist=p_r)
+    move.env.SetRightArmPositionContinue(move.time_right_joint_positions)
+    for i in range(len(move.ompltimelist_right)+10):
+        move.env._step()
+
+   
+
+    p_l=[[0.7,0.2,1.4,math.pi/2,0,0]]
+    move.planner_left(poslist=p_l)
+    move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
+    for i in range(len(move.ompltimelist_left)+1000):
+        move.env._step()
+   
