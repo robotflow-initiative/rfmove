@@ -58,7 +58,7 @@ PlannerConfiguration::PlannerConfiguration(const std::string& config_contents) {
                     .group = group_name,
                     .name = group_name,
                     .config = std::map<std::string, std::string> {
-                            {"type", "geometric::BiTRRT"},
+                            {"type", "geometric::RRTConnect"},
                     },
             };
             //} else {

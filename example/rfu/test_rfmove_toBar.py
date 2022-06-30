@@ -134,7 +134,7 @@ class Rf_Move_Rfuniverse():
 
         self.plannerspline.CreateSplineParameterization(self.setrfuniverPosition(poslist=poslist),"left_arm_group","base_link","left_arm_link7",1,1,1)
         
-        self.plannerspline.sample_by_interval(0.02)
+        self.plannerspline.sample_by_interval(0.01)
         self.ompltimelist_left.clear()
         self.ompltimelist_left=self.plannerspline.get_sample_by_interval_times()
 
@@ -160,7 +160,7 @@ class Rf_Move_Rfuniverse():
 
     def detectUnityObject(self):
          #冗余量 防止刮
-        thread=0.02
+        thread=0.01
 
         self.env.asset_channel.GetRFMoveColliders()
         self.env._step()
@@ -249,7 +249,7 @@ class Rf_Move_Rfuniverse():
 
         self.plannerspline.CreateSplineParameterization(self.setrfuniverPosition(poslist=poslist),"right_arm_group","base_link","right_arm_link7",1,1,1)
         
-        self.plannerspline.sample_by_interval(0.02)
+        self.plannerspline.sample_by_interval(0.01)
         self.ompltimelist_right.clear()
         self.ompltimelist_right=self.plannerspline.get_sample_by_interval_times()
 
@@ -347,7 +347,8 @@ if __name__=="__main__":
     move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
     for i in range(len(move.ompltimelist_left)+10):
         move.env._step()
-    
+
+    move.detectUnityObject()
     plist=[[0.63,-0.3,1.0,-math.pi/2,0,0],
            [0.0,-0.7,1.5,0,0,-math.pi/4],
            [0.4,-0.7,0.7,-math.pi/2,0,-math.pi/2],
@@ -358,6 +359,7 @@ if __name__=="__main__":
     for i in range(len(move.ompltimelist_right)+10):
         move.env._step()
     
+    move.detectUnityObject()
     p_r=[[0.5,-0.6,0.9,-math.pi/2,0,0]]
     p_l=[[0.5,0.6,0.9,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
@@ -369,6 +371,7 @@ if __name__=="__main__":
     for i in range(step_num+10):
         move.env._step()
     
+    move.detectUnityObject()
     p_r=[[0.9,-0.2,0.8,-math.pi/2,0,0]]
     p_l=[[0.9,0.2,0.8,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
@@ -381,30 +384,30 @@ if __name__=="__main__":
         move.env._step()
     print("=================")
     
-    
+    move.detectUnityObject()
     p_r=[[0.9,-0.2,1.2,-math.pi/2,0,0]]
     move.planner_right(poslist=p_r)
     move.env.SetRightArmPositionContinue(move.time_right_joint_positions)
     for i in range(len(move.ompltimelist_right)+10):
         move.env._step()
     
-    
+    move.detectUnityObject()
     p_l=[[0.9,0.2,1.2,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
     move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
     for i in range(len(move.ompltimelist_left)+10):
         move.env._step()
  
-    
-    p_r=[[0.7,-0.2,1.4,-math.pi/2,0,0]]
+    move.detectUnityObject()
+    p_r=[[0.6,-0.2,1.5,-math.pi/2,0,0]]
     move.planner_right(poslist=p_r)
     move.env.SetRightArmPositionContinue(move.time_right_joint_positions)
     for i in range(len(move.ompltimelist_right)+10):
         move.env._step()
 
    
-
-    p_l=[[0.7,0.2,1.4,math.pi/2,0,0]]
+    move.detectUnityObject()
+    p_l=[[0.6,0.2,1.5,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
     move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
     for i in range(len(move.ompltimelist_left)+1000):

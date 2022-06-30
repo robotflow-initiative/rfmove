@@ -500,7 +500,7 @@
     <joint name="tobor_grasptarget_hand_left" type="fixed">
         <parent link="left_arm_link7"/>
         <child link="robotiq_arg2f_base_link_left"/>
-        <origin rpy="0 0 0" xyz="0 0 0.0"/>
+        <origin rpy="0 0 0" xyz="0 0 0.05"/>
     </joint>
      <link name="robotiq_arg2f_base_link_left">
         <inertial>
@@ -1145,7 +1145,7 @@
     <joint name="tobor_grasptarget_hand_right" type="fixed">
         <parent link="right_arm_link7"/>
         <child link="robotiq_arg2f_base_link_right"/>
-        <origin rpy="0 0 0" xyz="0 0 0.0"/>
+        <origin rpy="0 0 0" xyz="0 0 0.05"/>
     </joint>
     <link name="robotiq_arg2f_base_link_right">
         <inertial>
@@ -1650,11 +1650,11 @@
         <color rgba="0.8 0.8 0.8 1.0" />
     </material>
     <link name="base_link">
-        <!--<inertial>
+        <inertial>
             <mass value="0.0001" />
             <origin xyz=" 0  0  0" rpy="0 0 0" />
             <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001" />
-        </inertial>-->
+        </inertial>
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0" />
             <geometry>
