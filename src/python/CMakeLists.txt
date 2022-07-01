@@ -6,6 +6,8 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/src/util
         ${PROJECT_SOURCE_DIR}/extern/kdl_kinematics_plugin/include
         ${PROJECT_SOURCE_DIR}/extern/franka_ikfast_plugin/include
+        ${PROJECT_SOURCE_DIR}/extern/tobor_ikfast_plugin
+        ${PROJECT_SOURCE_DIR}/extern/ifast_inlcude
         include_python
         include
         include_python/rfmove_np

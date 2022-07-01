@@ -7,10 +7,12 @@
   <link name="left_arm_base">
     <visual>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/visual/xmate3_base.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/visual/xmate3_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <material name="left_white"/>
+      <material name="left_white">
+                <color rgba="0.69804 0.69804 0.69804 1" />
+      </material>
     </visual>
     <inertial>
       <mass value="5.48267"/>
@@ -19,7 +21,7 @@
     </inertial>
     <collision>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/collision/xmate3_base.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/collision/xmate3_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
     </collision>
@@ -45,7 +47,7 @@
   <link name="left_arm_link1">
     <visual>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/visual/xmate3_link1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/visual/xmate3_link1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="left_white"/>
@@ -57,7 +59,7 @@
     </inertial>
     <collision>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/collision/xmate3_link1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/collision/xmate3_link1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -83,7 +85,7 @@
   <link name="left_arm_link2">
     <visual>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/visual/xmate3_link2.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/visual/xmate3_link2.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0.0"/>
       <material name="left_white"/>
@@ -95,7 +97,7 @@
     </inertial>
     <collision>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/collision/xmate3_link2.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/collision/xmate3_link2.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0.0"/>
     </collision>
@@ -121,7 +123,7 @@
   <link name="left_arm_link3">
     <visual>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/visual/xmate3_link3.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/visual/xmate3_link3.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0.15549959"/>
       <material name="left_white"/>
@@ -133,7 +135,7 @@
     </inertial>
     <collision>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/collision/xmate3_link3.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/collision/xmate3_link3.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0.15549959"/>
     </collision>
@@ -161,7 +163,7 @@
   <link name="left_arm_link4">
     <visual>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/visual/xmate3_link4.stl" scale=".001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/visual/xmate3_link4.stl" scale=".001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <material name="left_white"/>
@@ -173,7 +175,7 @@
     </inertial>
     <collision>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/collision/xmate3_link4.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/collision/xmate3_link4.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
     </collision>
@@ -199,7 +201,7 @@
   <link name="left_arm_link5">
     <visual>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/visual/xmate3_link5.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/visual/xmate3_link5.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0.14512568"/>
       <material name="left_white"/>
@@ -211,7 +213,7 @@
     </inertial>
     <collision>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/collision/xmate3_link5.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/collision/xmate3_link5.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0.14512568"/>
     </collision>
@@ -237,7 +239,7 @@
   <link name="left_arm_link6">
     <visual>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/visual/xmate3_link6.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/visual/xmate3_link6.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <material name="left_white"/>
@@ -249,7 +251,7 @@
     </inertial>
     <collision>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/collision/xmate3_link6.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/collision/xmate3_link6.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
     </collision>
@@ -275,7 +277,7 @@
   <link name="left_arm_link7">
     <visual>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/visual/xmate3_link7.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/visual/xmate3_link7.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="left_white"/>
@@ -287,7 +289,7 @@
     </inertial>
     <collision>
       <geometry>
-        <mesh filename="./meshes/xmate3/meshes/collision/xmate3_link7.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///home/lees/linux_bak/rfmove/resources/tobor/tobor_description/meshes/xmate3/meshes/collision/xmate3_link7.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>

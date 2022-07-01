@@ -1,0 +1,2 @@
+#!/bin/sh
+python `openrave-config --python-dir`/openravepy/_openravepy_/ikfast.py --robot=tobor.dae --iktype=transform6d --baselink=44 --freeindex=14 --eelink=52 --savefile=$(pwd)/ikfast70_right_arm_group.cpp

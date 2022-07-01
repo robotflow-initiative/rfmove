@@ -29,3 +29,5 @@ notebook/.ipynb_checkpoints
 
 # converted urdf
 !resources/*_convert.urdf
+
+
