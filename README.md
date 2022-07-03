@@ -105,7 +105,7 @@ python pybullet_demo.py
 ```
 
 #### Run demo with rfuniverse
-* download [RFUniverse_toBar.tar.xz]()
+* download [RFUniverse_toBar.tar.xz](https://github.com/mvig-robotflow/rfmove/releases/tag/0.1.6)
 ```bash
 tar -jxvf RFUniverse_toBor.tar.xz -C /your/rfu/path # uncompress Rfuniverse to your path
 ```
