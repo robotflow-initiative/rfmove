@@ -87,7 +87,7 @@ class Rf_Move_Rfuniverse():
         print("== Initalize Planner moveit model ==")
         self.plannerspline=PlannerSpline("panda_arm")
         self.plannerspline.init(rfmove_dir+"/resources/franka/urdf/franka_convert.urdf",
-                                rfmove_dir+"/resources/franka/urdf/panda_arm_hand.srdf",
+                                rfmove_dir+"/resources/franka/urdf/panda.srdf",
                                 rfmove_dir+"/resources/franka/config/kinematics.yaml",
                                 rfmove_dir+"/resources/franka/config/ompl_planning.yaml",
                                 rfmove_dir+"/resources/franka/config/joint_limits.yaml")
@@ -552,7 +552,7 @@ if __name__=="__main__":
     #初始化位置
     home=[0.0, -0.785398163397448279, 0.0, -2.356194490192344837, 0.0, 1.570796326794896558, 0.785398163397448279]  #制定启动的home状态，第一次使用必须制定
     
-    poslist= [[0.6,0.0,0.68,0,math.pi/2,0],
+    poslist=[[0.6,0.0,0.68,0,math.pi/2,0],
               [0.0,0.6,0.68,0,math.pi/2,math.pi/2],
               [-0.6,0.0,0.68,0,math.pi/2,math.pi],
               [-0.9,0.0,0.38,0,math.pi/2,math.pi],

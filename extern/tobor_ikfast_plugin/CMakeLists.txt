@@ -6,8 +6,7 @@ include_directories(
 )
 
 
-add_library(tobor_left_kinematics_noros SHARED tobor_left_arm_group_ikfast_moveit_plugin.cpp 
-                                               tobor_left_arm_group_ikfast_solver.cpp)
+add_library(tobor_left_kinematics_noros SHARED src/tobor_left_arm_group_ikfast_moveit_plugin.cpp)
                                           
 
 # set_target_properties(${MOVEIT_LIB_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
@@ -24,3 +23,6 @@ target_link_libraries(tobor_left_kinematics_noros
 
 install(TARGETS tobor_left_kinematics_noros
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+        install(DIRECTORY include/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        FILES_MATCHING PATTERN "tobor_left_arm_group_ikfast_moveit_plugin.h")

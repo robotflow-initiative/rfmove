@@ -5,7 +5,7 @@ include_directories(
 )
 
 add_library(kdl_kinematics_noros SHARED src/kdl_kinematics_plugin.cpp
-  src/chainiksolver_pos_nr_jl_mimic.cpp
+         src/chainiksolver_pos_nr_jl_mimic.cpp
   src/chainiksolver_vel_pinv_mimic.cpp)
 # set_target_properties(${MOVEIT_LIB_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
 

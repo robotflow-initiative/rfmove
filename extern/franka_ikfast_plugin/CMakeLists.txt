@@ -5,10 +5,7 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/extern/ifast_inlcude
 )
 
-
-
-add_library(franka_ik_kinematics_noros SHARED franka_panda_arm_ikfast_moveit_plugin.cpp 
-                                              franka_panda_arm_ikfast_solver.cpp)
+add_library(franka_ik_kinematics_noros SHARED src/franka_panda_arm_ikfast_moveit_plugin.cpp)
                                           
 
 # set_target_properties(${MOVEIT_LIB_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
@@ -25,3 +22,7 @@ target_link_libraries(franka_ik_kinematics_noros
 
 install(TARGETS franka_ik_kinematics_noros
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+install(DIRECTORY include/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        FILES_MATCHING PATTERN "franka_panda_arm_ikfast_moveit_plugin.h")

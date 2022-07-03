@@ -19,6 +19,7 @@ class RFMoveEnv(RFUniverseBaseEnv):
 
     def __init__(self):
         self.id = 9874615
+        #self.id=59039706
         self.left_arm = self.id * 10 + 0
         self.right_arm = self.id * 10 + 1
         self.left_gripper = self.left_arm * 10 + 0
@@ -27,7 +28,7 @@ class RFMoveEnv(RFUniverseBaseEnv):
         super().__init__(
             executable_file='/home/ziye01/RFUniverse_toBor/Player.x86_64',
             scene_file='/home/ziye01/RFUniverse_toBor/Player_Data/StreamingAssets/SceneData/RFMoveToborTest.json',
-            # scene_file='/home/yanbing/Project/rfuniverse-dev/Assets/StreamingAssets/SceneData/RFMoveToborTest.json',
+            #scene_file='/home/ziye01/RFUniverse_toBor/Player_Data/StreamingAssets/SceneData/test_tobor.json',
             assets=['GameObject_Box', 'GameObject_Sphere', "GameObject_Cylinder", "GameObject_Capsule"],
             articulation_channel=True,
             game_object_channel=True
@@ -160,15 +161,17 @@ class Rf_Move_Rfuniverse():
 
     def detectUnityObject(self):
          #冗余量 防止刮
-        thread=0.01
+        thread=0.01 #52
 
         self.env.asset_channel.GetRFMoveColliders()
         self.env._step()
         colliders = self.env.asset_channel.data['colliders']
 
         # 输出unity环境中的碰撞对象
-        for one in colliders:
-            for i in one['collider']:
+        for one in range(len(colliders)):
+            if one==0:
+                continue
+            for i in colliders[one]['collider']:
                 if i['type'] == 'box':
                     # scale=[shape_obj.scale[1],shape_obj.scale[2],shape_obj.scale[0]]
                     moveit_box=moveit.Box(i['size'][2]+thread,
@@ -182,8 +185,10 @@ class Rf_Move_Rfuniverse():
                     box_pose.translation=[i['position'][2],
                                          -i['position'][0],
                                           i['position'][1]]  #长方体在几何中心
-                    
-                    
+                      
+                    print("box=========================")
+                    print(i["size"])
+                   
                     # [u_r[1], -u_r[2], -u_r[0]],
                     # 我们已经不用欧拉角了
                     '''
@@ -194,29 +199,33 @@ class Rf_Move_Rfuniverse():
                     '''
                     # 轴角法，角度是求逆向函数的
                     box_pose.quaternion=[-i['rotation'][2],i['rotation'][0],-i['rotation'][1],i['rotation'][3]]
-                       
+                    print(box_pose.translation)
+                    print(box_pose.quaternion)
                     self.plannerspline.AddCollectionObject("unity_rfmove_"+str(i),moveit_box,box_pose)
-
+                    print("box end==================")
                 elif i['type'] == 'sphere':
                     moveit_Sphere=moveit.Sphere(i['radius']+thread)  #r
                     
                     Shpere_pose=moveit.EigenAffine3d()
                     
-                    
+                    print("sphere ===================")
+                    print(i['radius'])
                     Shpere_pose.translation=[i['position'][2],
                                             -i['position'][0],
                                              i['position'][1]]  #长方体在几何中心
                     # 球形本来就没有角度一说，我们也不用欧拉角
                     Shpere_pose.quaternion=self.eularToQua(0,0,0)
+                    print(Shpere_pose.translation)
+                    print("sphere end ===================")
                     self.plannerspline.AddCollectionObject("unity_rfmove_"+str(i), moveit_Sphere,Shpere_pose)
 
-                elif i['type'] == 'capsule':
-                    print(i)        
+                elif i['type'] == 'capsule':    
                     moveit_Cylinder=moveit.Cylinder(i['radius']+thread,
                                                     i['height']+thread)
         
                     # 在moveit这一侧其实是圆柱体
                     Cylinder_pose=moveit.EigenAffine3d()
+                    print("clindy=========================")
 
                     # [-u_t[1], u_t[2], u_t[0]],
                     # print(i['position'])
@@ -225,7 +234,7 @@ class Rf_Move_Rfuniverse():
                                                i['position'][1]]  #都是在几何中心
                    
                     Cylinder_pose.quaternion=[-i['rotation'][2],i['rotation'][0],-i['rotation'][1],i['rotation'][3]]
-                    print(Cylinder_pose.quaternion)
+          
 
                     self.plannerspline.AddCollectionObject("unity_rfmove_"+str(i),moveit_Cylinder,Cylinder_pose)
 
@@ -337,18 +346,19 @@ if __name__=="__main__":
     move.detectUnityObject()
     # 运行仿真器
     # step1:
-    plist=[[0.63,0.3,1.0,math.pi/2,0,0],
+          
+    plist=[[0.63,0.4,1.0,math.pi/2,0,0],
            [0.0,0.7,1.5,0,0,math.pi/4],
            [0.4,0.7,0.7,math.pi/2,0,math.pi/2],
            [0.6,0.0,0.9,math.pi/2,0,0],
            [0.6,0.4,0.9,math.pi/2,0,0],]
+           
     move.planner_left(poslist=plist)
     
     move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
     for i in range(len(move.ompltimelist_left)+10):
         move.env._step()
 
-    move.detectUnityObject()
     plist=[[0.63,-0.3,1.0,-math.pi/2,0,0],
            [0.0,-0.7,1.5,0,0,-math.pi/4],
            [0.4,-0.7,0.7,-math.pi/2,0,-math.pi/2],
@@ -358,8 +368,7 @@ if __name__=="__main__":
     move.env.SetRightArmPositionContinue(move.time_right_joint_positions)
     for i in range(len(move.ompltimelist_right)+10):
         move.env._step()
-    
-    move.detectUnityObject()
+
     p_r=[[0.5,-0.6,0.9,-math.pi/2,0,0]]
     p_l=[[0.5,0.6,0.9,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
@@ -371,7 +380,6 @@ if __name__=="__main__":
     for i in range(step_num+10):
         move.env._step()
     
-    move.detectUnityObject()
     p_r=[[0.9,-0.2,0.8,-math.pi/2,0,0]]
     p_l=[[0.9,0.2,0.8,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
@@ -382,34 +390,33 @@ if __name__=="__main__":
     step_num=get_step_num(len(move.ompltimelist_left),len(move.ompltimelist_right))
     for i in range(step_num+10):
         move.env._step()
-    print("=================")
     
-    move.detectUnityObject()
+    
+
     p_r=[[0.9,-0.2,1.2,-math.pi/2,0,0]]
     move.planner_right(poslist=p_r)
     move.env.SetRightArmPositionContinue(move.time_right_joint_positions)
     for i in range(len(move.ompltimelist_right)+10):
         move.env._step()
     
-    move.detectUnityObject()
+
     p_l=[[0.9,0.2,1.2,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
     move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
     for i in range(len(move.ompltimelist_left)+10):
         move.env._step()
- 
-    move.detectUnityObject()
+
     p_r=[[0.6,-0.2,1.5,-math.pi/2,0,0]]
     move.planner_right(poslist=p_r)
     move.env.SetRightArmPositionContinue(move.time_right_joint_positions)
     for i in range(len(move.ompltimelist_right)+10):
         move.env._step()
 
-   
-    move.detectUnityObject()
+
     p_l=[[0.6,0.2,1.5,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
     move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
-    for i in range(len(move.ompltimelist_left)+1000):
+    for i in range(len(move.ompltimelist_left)+100):
         move.env._step()
-   
+    print(move.env.GetJointPosition()["left_grasp_point"])
+    print(move.env.GetJointPosition()["right_grasp_point"])

@@ -5,7 +5,9 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/home/lees/linux_bak/rfmove/extern/tobor_ikfast_plugin",
-                "/home/lees/linux_bak/rfmove/extern/ifast_inlcude"
+                "/home/lees/linux_bak/rfmove/extern/ifast_inlcude",
+                "/usr/include/eigen3",
+                "${workspaceFolder}/extern/franka_ikfast_plugin"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

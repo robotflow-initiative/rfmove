@@ -9,8 +9,8 @@
 #include <utility>
 #include "kdl_kinematics_plugin/kdl_kinematics_plugin.h"
 #include <class_loader/class_loader.h>
-//#include "franka_panda_arm_ikfast_moveit_plugin.cpp"
-//#include "tobor_left_arm_group_ikfast_moveit_plugin.cpp"
+#include "franka_panda_arm_ikfast_moveit_plugin.h"
+#include "tobor_left_arm_group_ikfast_moveit_plugin.h"
 
 const std::string KinematicsLoader::default_solver_type = "kdl_kinematics_plugin/KDLKinematicsPlugin"; // NOLINT
 const double KinematicsLoader::default_timeout = 0.5;
@@ -154,7 +154,7 @@ std::string KinematicsLoader::chooseTipFrames(const moveit::core::JointModelGrou
     // Get the last link in the chain
     return jmg->getLinkModels().back()->getName();
 }
-
+/*
 template<class T> std::shared_ptr<T> to_std_ptr(const boost::shared_ptr<T> &p) {
     typedef Holder<std::shared_ptr<T>> H;
     if(H *h = boost::get_deleter<H>(p)) {
@@ -162,26 +162,21 @@ template<class T> std::shared_ptr<T> to_std_ptr(const boost::shared_ptr<T> &p) {
     } else {
         return std::shared_ptr<T>(p.get(), Holder<boost::shared_ptr<T>>(p));
     }
-}
+}*/
 
 kinematics::KinematicsBasePtr KinematicsLoader::createSolver(const std::string& solver_type){
     
-    class_loader::ClassLoader loader("/home/lees/linux_bak/rfmove/install/lib/libtobor_left_kinematics_noros.so");
+   
     if (solver_type=="kdl_kinematics_plugin/KDLKinematicsPlugin") {
         return kinematics::KinematicsBasePtr(new kdl_kinematics_plugin::KDLKinematicsPlugin());
     }
-    std::vector<std::string> classes=loader.getAvailableClasses<kinematics::KinematicsBase>();
     if (solver_type=="franka_ikfast_panda_arm_plugin/IKFastKinematicsPlugin") {
-        kinematics::KinematicsBasePtr ikbase=loader.createInstance<kinematics::KinematicsBase>(classes[0]);
-        return ikbase;
+        return kinematics::KinematicsBasePtr(new franka_panda_arm_ikfast::IKFastKinematicsPlugin());
     }
-    //if (solver_type=="franka_ikfast_panda_arm_plugin/IKFastKinematicsPlugin") {
-    //    return kinematics::KinematicsBasePtr(new franka_panda_arm_ikfast::IKFastKinematicsPlugin());
-    //}
-    //if (solver_type=="tobor_ikfast_left_arm_group_plugin/IKFastKinematicsPlugin"){
-    //    return kinematics::KinematicsBasePtr(new tobor_left_arm_group::IKFastKinematicsPlugin());
-    //
-    //}
+    
+    if (solver_type=="tobor_ikfast_left_arm_group_plugin/IKFastKinematicsPlugin"){
+        return kinematics::KinematicsBasePtr(new tobor_left_arm_group::IKFastKinematicsPlugin());
+    }
     ROS_ERROR_STREAM("Unknown solver type " << solver_type);
     throw UnknownSolver;
 }
@@ -199,20 +194,20 @@ kinematics::KinematicsBasePtr KinematicsLoader::createInitSolver(
         ROS_INFO_STREAM("Initialize kdl for " << group_name << ". From " << base_frame << " To " << tip_frame);
         kdl_plugin ->initialize(rdf_loader_, group_name, base_frame, tip_frame, search_discretization);
         return kinematics::KinematicsBasePtr(kdl_plugin);
-    }// else if(solver_type=="franka_ikfast_panda_arm_plugin/IKFastKinematicsPlugin") 
-    //{
-    //    franka_panda_arm_ikfast::IKFastKinematicsPlugin* franka_ikfast_panda_arm_plugin =new franka_panda_arm_ikfast::IKFastKinematicsPlugin();
-   //     ROS_INFO_STREAM("Initialize ikfast for " << group_name << ". From " << base_frame << " To " << tip_frame);
-   //     franka_ikfast_panda_arm_plugin->initialize(rdf_loader_, group_name, base_frame, tip_frame, search_discretization);
-    //    return kinematics::KinematicsBasePtr(franka_ikfast_panda_arm_plugin);
-   // }
-   /* else if (solver_type=="tobor_ikfast_left_arm_group_plugin/IKFastKinematicsPlugin"){
+    }
+    else if(solver_type=="franka_ikfast_panda_arm_plugin/IKFastKinematicsPlugin") 
+    {
+        franka_panda_arm_ikfast::IKFastKinematicsPlugin* franka_ikfast_panda_arm_plugin =new franka_panda_arm_ikfast::IKFastKinematicsPlugin();
+        ROS_INFO_STREAM("Initialize ikfast for " << group_name << ". From " << base_frame << " To " << tip_frame);
+        franka_ikfast_panda_arm_plugin->initialize(rdf_loader_, group_name, base_frame, tip_frame, search_discretization);
+        return kinematics::KinematicsBasePtr(franka_ikfast_panda_arm_plugin);
+    }
+    else if (solver_type=="tobor_ikfast_left_arm_group_plugin/IKFastKinematicsPlugin"){
         tobor_left_arm_group::IKFastKinematicsPlugin* tobor_ikfast_left_arm_group_plugin =new tobor_left_arm_group::IKFastKinematicsPlugin();
         ROS_INFO_STREAM("Initialize ikfast for " << group_name << ". From " << base_frame << " To " << tip_frame);
         tobor_ikfast_left_arm_group_plugin->initialize(rdf_loader_, group_name, base_frame, tip_frame, search_discretization);
         return kinematics::KinematicsBasePtr(tobor_ikfast_left_arm_group_plugin);
-
-    }*/
+    }
     else {
 
         ROS_ERROR_STREAM("Solver " << solver_type << "not supported yet.");

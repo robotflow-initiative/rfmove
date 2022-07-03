@@ -1,0 +1,4 @@
+#ifndef TOBOR_RIGHT_ARM_PLUGIN_H
+#define TOBOR_RIGHT_ARM_PLUGIN_H
+
+#endif

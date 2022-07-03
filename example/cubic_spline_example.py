@@ -13,17 +13,17 @@ from moveit_noros import rfWaypoint,PlannerSpline
 
 joint_name_list=["panda_joint1","panda_joint2","panda_joint3","panda_joint4","panda_joint5","panda_joint6","panda_joint7"]
 
-waypoint1=rfWaypoint([0.33,0,0.58],[0,math.pi,math.pi/2])
-waypoint2=rfWaypoint([0.33,0.2,0.58],[0,math.pi,math.pi/2])
+waypoint1=rfWaypoint([0.34,0,0.28],[0,math.pi,math.pi/2])
+waypoint2=rfWaypoint([0.33,0.2,0.38],[0,math.pi,math.pi/2])
 #waypoint3=rfWaypoint([0.20,-0.2,0.54],[0,math.pi,math.pi/2])
 
 print("== Initalize Planner moveit model ==")
 plannerspline=PlannerSpline("panda_arm")
-plannerspline.init("../resources/franka_convert.urdf",
-                   "../resources/panda_arm_hand.srdf",
-                   "../resources/kinematics.yaml",
-                   "../resources/ompl_planning.yaml",
-                   "../resources/joint_limits.yaml")
+plannerspline.init("../resources/franka/urdf/franka_convert.urdf",
+                   "../resources/franka/urdf/panda.srdf",
+                   "../resources/franka/config/kinematics.yaml",
+                   "../resources/franka/config/ompl_planning.yaml",
+                   "../resources/franka/config/joint_limits.yaml")
 
 # 长方体添加
 def euler_to_quaternion(roll, pitch, yaw):
@@ -34,7 +34,7 @@ def euler_to_quaternion(roll, pitch, yaw):
 
     return [qx, qy, qz, qw]
 
-
+'''
 r=[math.pi/4,math.pi/4,math.pi/2]
 t=[0.0,0.3,0.2]
 moveit_box=moveit.Box(0.06,0.06,0.4)
@@ -43,7 +43,7 @@ box_pose.translation=t  #都是在几何中心
 box_pose.quaternion=euler_to_quaternion(r[0],r[1],r[2])
 
 plannerspline.AddCollectionObject("box_1",moveit_box,box_pose)
-
+'''
 # 移除长方体
 # plannerspline.RemoveObject("box_1")
 
@@ -103,7 +103,7 @@ physicsClient=p.connect(p.GUI)
 p.setGravity(0,0,-10)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 planeId=p.loadURDF("plane.urdf")
-p.setAdditionalSearchPath("../resources")
+p.setAdditionalSearchPath("../resources/franka/urdf/")
 
 # 设定位置起点
 startPos=[0,0,0]
