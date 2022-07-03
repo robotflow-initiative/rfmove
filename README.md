@@ -105,7 +105,7 @@ python pybullet_demo.py
 ```
 
 #### Run demo with rfuniverse
-* download [RFUniverse_toBar.tar.xz](https://github.com/mvig-robotflow/rfmove/releases/tag/0.1.6)
+* download [RFUniverse_toBor.tar.xz](https://github.com/mvig-robotflow/rfmove/releases/tag/0.1.6)
 ```bash
 tar -jxvf RFUniverse_toBor.tar.xz -C /your/rfu/path # uncompress Rfuniverse to your path
 ```
@@ -129,7 +129,7 @@ self.plannerspline.init(rfmove_dir+"/resources/franka_convert.urdf",
 ```
 
 * make sure your urdf has correct modification
-You can use urdf_converter to modification you urdf file, which introduced in "/notebook/QuickStart.ipynb",Or You can modify and replace urdf manually by "Ctrl+H" in vscode,as follows:
+You can use urdf_converter to modify you urdf file, which introduced in "/notebook/QuickStart.ipynb",Or You can modify and replace urdf manually by "Ctrl+H" in vscode,as follows:
 ```
 <collision>
       <geometry>
@@ -145,15 +145,15 @@ You can use urdf_converter to modification you urdf file, which introduced in "/
 
 * Add you collision object 
 ```bash
-cd  /your/rfu/path
+cd  /your/rfu/path    
 ./Player.x86_64 -edit  # open your rfuniverse env for add collision objects.
 ```
-With the above command, you can add your own collider in the rfuniverse environment，Unfortunately, so far, rfuniverse only supports three types of collision objects, they are circle, box and capsule。
+With the above command, you can add your own collider in the rfuniverse environment，Unfortunately, so far, rfuniverse only supports three types of collision objects, they are circle, box and capsule.     
 
-* run demo files
-You can find demo about in "example/rfu"
+* run demo files    
+You can find demo about in "example/rfu"   
 1. test_rfmove_franka.py:run franka in rfuniverse
-2. test_rfmove_toBar.py:run toBar in rfuniverse
+2. test_rfmove_toBar.py:run tobor in rfuniverse
 
 
 
@@ -189,7 +189,6 @@ We recommend installation through `apt install` directly.
 - **resources/**: Resource file copyed from `panda_moveit_config` package.
 
 ## TODO
-- [x] Support Motion Plan.
-- [x] Support IK-Fast kinematics solver.
+- [ ] Support IK-Fast kinematics solver for tobor.
 - [ ] Make it pip installable.
-- [x] Support ros controller.
+- [ ] Support ros controller.
