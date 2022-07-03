@@ -343,10 +343,11 @@ class Rf_Move_Rfuniverse():
     
 if __name__=="__main__":
     move=Rf_Move_Rfuniverse()
+    # 检查环境中可碰撞对象，为了进行规避障碍物的路径规划
     move.detectUnityObject()
-    # 运行仿真器
+    
     # step1:
-          
+    # 左臂运动，waypoint
     plist=[[0.63,0.4,1.0,math.pi/2,0,0],
            [0.0,0.7,1.5,0,0,math.pi/4],
            [0.4,0.7,0.7,math.pi/2,0,math.pi/2],
@@ -355,10 +356,13 @@ if __name__=="__main__":
            
     move.planner_left(poslist=plist)
     
+    # 设定左臂的运动路径
     move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
+    # 开始启动仿真器，开始运行
     for i in range(len(move.ompltimelist_left)+10):
         move.env._step()
 
+    # 同上，这里是右臂的运行
     plist=[[0.63,-0.3,1.0,-math.pi/2,0,0],
            [0.0,-0.7,1.5,0,0,-math.pi/4],
            [0.4,-0.7,0.7,-math.pi/2,0,-math.pi/2],
@@ -369,6 +373,7 @@ if __name__=="__main__":
     for i in range(len(move.ompltimelist_right)+10):
         move.env._step()
 
+    # 左臂和右臂同时运行1
     p_r=[[0.5,-0.6,0.9,-math.pi/2,0,0]]
     p_l=[[0.5,0.6,0.9,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
@@ -380,6 +385,7 @@ if __name__=="__main__":
     for i in range(step_num+10):
         move.env._step()
     
+    # 左臂和右臂同时运行2
     p_r=[[0.9,-0.2,0.8,-math.pi/2,0,0]]
     p_l=[[0.9,0.2,0.8,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
@@ -392,27 +398,28 @@ if __name__=="__main__":
         move.env._step()
     
     
-
+    # 右臂运行
     p_r=[[0.9,-0.2,1.2,-math.pi/2,0,0]]
     move.planner_right(poslist=p_r)
     move.env.SetRightArmPositionContinue(move.time_right_joint_positions)
     for i in range(len(move.ompltimelist_right)+10):
         move.env._step()
     
-
+    # 左臂运行
     p_l=[[0.9,0.2,1.2,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
     move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)
     for i in range(len(move.ompltimelist_left)+10):
         move.env._step()
 
+    # 右臂再运行
     p_r=[[0.6,-0.2,1.5,-math.pi/2,0,0]]
     move.planner_right(poslist=p_r)
     move.env.SetRightArmPositionContinue(move.time_right_joint_positions)
     for i in range(len(move.ompltimelist_right)+10):
         move.env._step()
 
-
+    # 左臂再运行
     p_l=[[0.6,0.2,1.5,math.pi/2,0,0]]
     move.planner_left(poslist=p_l)
     move.env.SetLeftArmPositionContinue(move.time_left_joint_positions)

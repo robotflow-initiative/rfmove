@@ -1,14 +1,12 @@
 # RFMove
 
 # THIS LIBRARY IS STILL UNDER DEVELOPMENT
-The first usable version is going to be released later in June 2021.
+The first usable version is going to be released later in July 2022.
 
 **Attention:** This repo use submodules. You can use `git clone --recurse-submodules <repo url>` to initialize submodules
 automatically. If you download source code from releases, you need to fetch pybind11 manually from [pybind11 GitHub](https://github.com/pybind/pybind11)
 and put it into `/extern/pybind11`.
 
-## Install Binary
-Follow introduction in `<release>/install.md`.
 
 ## Build with Standalone Libraries
 This library use and wrap the shared libraries from ROS and MoveIt.
@@ -34,18 +32,7 @@ sudo apt install libboost-all-dev
 However, ros kinetic use boost 1.58.0 which is no longer available in some new system version.
 In that case, we packed all boost 1.58.0 libraries standalone.
 
-<!--
-Install urdfdom headers. 
-Download it from [urdfdom_headers github](https://github.com/ros/urdfdom_headers/tree/master).
-Note that moveit-kinetic use urdfdom version 0.4. 
-```bash
-cd urdfdom_headers-1.0.5
-mkdir build
-cd build
-cmake ..
-sudo make install
-```
--->
+
 
 Install [TinyXML](http://www.grinninglizard.com/tinyxml/) which is the xml parser used by ros.
 However, there is a new TinyXML-2 available but ros still use TinyXML.
@@ -67,8 +54,7 @@ not support SSLv3.
 ```bash
 dpkg --list | grep curl
 sudo apt --purge remove libcurl4
-sudo add-apt-repository ppa:xapienz/curl34
-(sudo add-apt-repository ppa:savoury1/curl34)  //if you can also use this repository at ubuntu20.04 
+sudo add-apt-repository ppa:savoury1/curl34
 sudo apt-get update
 sudo apt-get install curl
 
@@ -76,26 +62,27 @@ sudo apt-get install curl
 sudo apt-get install cmake
 ```
 
-Install pybullet (with python 2.7). Note that conda can not install pybullet for python2.7.
+Install pybullet (with python 3+). Note that you can  install pybullet in conda.
 ```bash
 pip install pybullet
 ```
-(Maybe it's time for us to use python3)
 
-### Download Libraries and Includes
-Put directory `include` and `lib` into `extern`.
 
-Make soft links for libraries:
+### Make soft links for libraries:
 ```bash
 # start from repo root directory.
-cd extern/lib
+cd extern/lib  #All soft links can be removed
+./rmlink
 ./mklink
 ```
-All soft links can be removed by `./rmlink`.
+
 
 ### Make and Install
-Source environment variables
+Source environment variables,if you want to use conda env,you need activate conda env at first.
 ```bash
+# activate conda env
+conda activate your_conda_env 
+
 source set_env.bash
 ```
 That would set the header files and libraries search path.
@@ -111,11 +98,64 @@ make install
 All shared libraries, public header files, and executable file would be installed into `install` folder (so that
 we do not need administrator privilege).
 
-### Run demo
+### Run demo 
 ```bash
 cd src
 python pybullet_demo.py
 ```
+
+#### Run demo with rfuniverse
+* download [RFUniverse_toBar.tar.xz]()
+```bash
+tar -jxvf RFUniverse_toBor.tar.xz -C /your/rfu/path # uncompress Rfuniverse to your path
+```
+
+* modify your demo file
+  You can find demo file about rfuniverse in "example/rfu".To run demo,you need modify your demo file as follows:   
+```python
+executable_file='/your/rfu/path/Player.x86_64'
+scene_file='/your/rfu/path/Player_Data/StreamingAssets/SceneData/RFMoveTest.json'
+
+# about rfmove 
+rfmove_dir="/your/rfmove/path"
+
+print("== Initalize Planner moveit model ==")
+self.plannerspline=PlannerSpline("panda_arm")
+self.plannerspline.init(rfmove_dir+"/resources/franka_convert.urdf",
+                        rfmove_dir+"/resources/panda_arm_hand.srdf",
+                        rfmove_dir+"/resources/kinematics.yaml",
+                        rfmove_dir+"/resources/ompl_planning.yaml",
+                        rfmove_dir+"/resources/joint_limits.yaml")
+```
+
+* make sure your urdf has correct modification
+You can use urdf_converter to modification you urdf file, which introduced in "/notebook/QuickStart.ipynb",Or You can modify and replace urdf manually by "Ctrl+H" in vscode,as follows:
+```
+<collision>
+      <geometry>
+        <mesh filename="file:///home/ziye01/rfmove/resources/franka_description/meshes/collision/link0.stl"/>
+      </geometry>
+</collision>
+
+####  from
+<mesh filename="file:///home/ziye01/rfmove/resources/franka_description/meshes/collision/link0.stl"/>
+####  to
+<mesh filename="file://yourpath/your_robot_description/meshes/collision/link0.stl"/>
+```
+
+* Add you collision object 
+```bash
+cd  /your/rfu/path
+./Player.x86_64 -edit  # open your rfuniverse env for add collision objects.
+```
+With the above command, you can add your own collider in the rfuniverse environment，Unfortunately, so far, rfuniverse only supports three types of collision objects, they are circle, box and capsule。
+
+* run demo files
+You can find demo about in "example/rfu"
+1. test_rfmove_franka.py:run franka in rfuniverse
+2. test_rfmove_toBar.py:run toBar in rfuniverse
+
+
 
 ## Build From Source With ROS-Kinetic and MoveIt-Kinetic
 
@@ -125,39 +165,6 @@ python pybullet_demo.py
 
 We recommend installation through `apt install` directly.
 
-### Build and Make
-```bash
-mkdir install
-mkdir build
-cd build
-cmake ..
-make install
-```
-
-All libraries, resources, bindings, and includes should be built and installed in `install`.
-
-### Run demo
-Source the environment of ros kinetic through its `setup.bash` file so that we can find its shared libraries.
-```bash
-source /opt/ros/kinetic/setup.bash
-```
-
-Append installed lib path to `LD_LIBRARY_PATH` so that we can find the shared library we built.
-```bash
-export LD_LIBRARY_PATH=${THIS_REPO_PATH}/install/lib
-```
-
-Pybullet demo (Need pybullet)
-```bash
-# Python2 Only For Now!
-python demo.py
-```
-
-executable demo
-```bash
-cd install bin
-LD_LIBRARY_PATH=<repo>/install/lib:$LD_LIBRARY_PATH ./moveit_not_ros_demo
-```
 
 ## Source Tree
 - **CMakeLists.txt**: Top level build script. Declare all dependencies and targets.
