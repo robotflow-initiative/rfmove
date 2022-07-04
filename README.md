@@ -72,8 +72,8 @@ pip install pybullet
 ```bash
 # start from repo root directory.
 cd extern/lib  #All soft links can be removed
-./rmlink
-./mklink
+./rmlink       #remove all old soft links
+./mklink       #make new soft links
 ```
 
 
@@ -82,6 +82,8 @@ Source environment variables,if you want to use conda env,you need activate cond
 ```bash
 # activate conda env
 conda activate your_conda_env 
+# activate rfuniverse env
+conda activate rfuniverse_env
 
 source set_env.bash
 ```
@@ -117,9 +119,10 @@ Please,refer to the repo [pyrfuniverse](https://github.com/mvig-robotflow/pyrfun
 tar -jxvf RFUniverse_toBor.tar.xz -C /your/rfu/path # uncompress Rfuniverse to your path
 ```
 
-* modify your demo file
+* modify your demo file  
   You can find demo file about rfuniverse in "example/rfu".To run demo,you need modify your demo file as follows:   
 ```python
+# your RFUniverse_toBar path(Absolute Path)
 executable_file='/your/rfu/path/Player.x86_64'
 scene_file='/your/rfu/path/Player_Data/StreamingAssets/SceneData/RFMoveTest.json'
 
@@ -135,7 +138,7 @@ self.plannerspline.init(rfmove_dir+"/resources/franka_convert.urdf",
                         rfmove_dir+"/resources/joint_limits.yaml")
 ```
 
-* make sure your urdf has correct modification
+* make sure your urdf has correct modification   
 You can use urdf_converter to modify you urdf file, which introduced in "/notebook/QuickStart.ipynb",Or You can modify and replace urdf manually by "Ctrl+H" in vscode,as follows:
 ```
 <collision>
@@ -197,5 +200,5 @@ We recommend installation through `apt install` directly.
 
 ## TODO
 - [ ] Support IK-Fast kinematics solver for tobor.
-- [ ] Make it pip installable.
 - [ ] Support ros controller.
+- [ ] Support moveit group interface
