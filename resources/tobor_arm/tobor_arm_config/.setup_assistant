@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: tobor_arm_description
+    relative_path: urdf/tobor_arm.urdf
+    xacro_args: ""
+  SRDF:
+    relative_path: config/r300.srdf
+  CONFIG:
+    author_name: lees
+    author_email: 1186055265@qq.com
+    generated_timestamp: 1656924164
