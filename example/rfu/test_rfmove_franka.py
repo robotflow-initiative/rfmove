@@ -7,7 +7,7 @@ import numpy as np
 import time
 import math
 # rfmove_dir 根目录
-rfmove_dir="/home/ziye01/rfmove"
+rfmove_dir="/home/lees/linux_bak/rfmove"
 sys.path.append(rfmove_dir+"/install/lib")
 
 
@@ -24,8 +24,8 @@ class RFMoveEnv(RFUniverseBaseEnv):
         self.gripper_id = self.id * 10
         self.interval = 20
         super().__init__(
-            executable_file='/home/ziye01/Player/RFUniverse/Player.x86_64',
-            scene_file='/home/ziye01/Player/RFUniverse/Player_Data/StreamingAssets/SceneData/RFMoveTest2.json',
+            executable_file='/home/lees/linux_bak/RFUniverse_toBor/Player.x86_64',
+            scene_file='/home/lees/linux_bak/RFUniverse_toBor/Player_Data/StreamingAssets/SceneData/RFMoveTest2.json',
             assets=['GameObject_Box','GameObject_Sphere',"GameObject_Capsule"],
             articulation_channel=True,
             game_object_channel=True
@@ -561,7 +561,7 @@ if __name__=="__main__":
              
     # 检测环境中的碰撞对象，然后加入到规划中
     # 注销这一行就会碰撞
-    move2.detectUnityObject();
+    move2.detectUnityObject()
     move2.planner(home=home,poslist=poslist)
     
     move2.run(100)

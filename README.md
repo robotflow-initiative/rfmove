@@ -105,6 +105,13 @@ python pybullet_demo.py
 ```
 
 #### Run demo with rfuniverse
+* download rfuniverse and install
+```bash
+git clone git@github.com:mvig-robotflow/pyrfuniverse.git
+git checkout dev
+```
+Please,refer to the repo [pyrfuniverse](https://github.com/mvig-robotflow/pyrfuniverse) for a full installation.     
+  
 * download [RFUniverse_toBor.tar.xz](https://github.com/mvig-robotflow/rfmove/releases/tag/0.1.6)
 ```bash
 tar -jxvf RFUniverse_toBor.tar.xz -C /your/rfu/path # uncompress Rfuniverse to your path

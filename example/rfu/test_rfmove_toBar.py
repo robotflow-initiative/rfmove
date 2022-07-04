@@ -12,9 +12,6 @@ from moveit_noros import rfWaypoint,PlannerSpline
 import threading
 from pyrfuniverse.envs import RFUniverseBaseEnv
 
-
-from pyrfuniverse.envs import RFUniverseBaseEnv
-
 class RFMoveEnv(RFUniverseBaseEnv):
 
     def __init__(self):
@@ -26,8 +23,9 @@ class RFMoveEnv(RFUniverseBaseEnv):
         self.right_gripper = self.right_arm * 10 + 0
         self.interval = 20
         super().__init__(
-            executable_file='/home/ziye01/RFUniverse_toBor/Player.x86_64',
-            scene_file='/home/ziye01/RFUniverse_toBor/Player_Data/StreamingAssets/SceneData/RFMoveToborTest.json',
+            executable_file='/home/lees/linux_bak/RFUniverse_toBor/Player.x86_64',
+            scene_file='/home/lees/linux_bak/RFUniverse_toBor/Player_Data/StreamingAssets/SceneData/RFMoveToborTest.json',
+            
             #scene_file='/home/ziye01/RFUniverse_toBor/Player_Data/StreamingAssets/SceneData/test_tobor.json',
             assets=['GameObject_Box', 'GameObject_Sphere', "GameObject_Cylinder", "GameObject_Capsule"],
             articulation_channel=True,
@@ -75,7 +73,7 @@ class Rf_Move_Rfuniverse():
         self.left_arm=["left_arm_joint_1","left_arm_joint_2","left_arm_joint_3","left_arm_joint_4","left_arm_joint_5","left_arm_joint_6","left_arm_joint_7"]
         self.right_arm=["right_arm_joint_1","right_arm_joint_2","right_arm_joint_3","right_arm_joint_4","right_arm_joint_5","right_arm_joint_6","right_arm_joint_7"]
         
-        rfmove_dir="/home/ziye01/rfmove"
+        rfmove_dir="/home/lees/linux_bak/rfmove"
         print("== Initalize Planner moveit model ==")
         self.plannerspline=PlannerSpline("left_arm_group")
         self.plannerspline.init(rfmove_dir+"/resources/tobor/tobor_description/tobor.urdf",

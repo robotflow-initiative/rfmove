@@ -26,3 +26,9 @@ install(TARGETS tobor_left_kinematics_noros
         install(DIRECTORY include/
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
         FILES_MATCHING PATTERN "tobor_left_arm_group_ikfast_moveit_plugin.h")
+
+install(TARGETS tobor_left_kinematics_noros
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+        install(DIRECTORY include/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        FILES_MATCHING PATTERN "ikfast70_tobor_arm_group.cpp")

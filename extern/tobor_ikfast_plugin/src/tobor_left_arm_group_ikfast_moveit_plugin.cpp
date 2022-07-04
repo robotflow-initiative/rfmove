@@ -1,5 +1,5 @@
 #include "tobor_left_arm_group_ikfast_moveit_plugin.h"
-#include "tobor_left_arm_group_ikfast_solver.cpp"
+#include "ikfast70_tobor_arm_group.cpp"
 
 namespace tobor_left_arm_group
 {

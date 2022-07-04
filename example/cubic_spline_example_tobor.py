@@ -91,10 +91,11 @@ def createClindyerpyBullet(radius,height,basePosition,baseOrientation):
 
 createClindyerpyBullet(0.05,0.4,[1.,1.,0.30000001],[ -0.337559, -0.435233, 0.18028, 0.814939])
 
+'''
 for i in range(250000000000000000000):
     p.stepSimulation()
     time.sleep(1./100.)
-
+'''
 
 
 
