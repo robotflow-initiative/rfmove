@@ -17,7 +17,7 @@
 #include "moveit/kinematic_constraints/utils.h"
 #include "yaml-cpp/yaml.h"
 #include "moveit/kinematics_plugin_loader/kinematics_plugin_loader.h" // for kinematic solver plugin loader
-#include "robot_model_loader_noros/RobotModelLoader.h"
+#include "robot_model/RobotModelLoader.h"
 
 std::string fileToString(std::ifstream& inStream) {
     std::ostringstream sstr;
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
     //std::string srdfContains = fileToString(inStreamSrdf);
     //ROS_INFO_STREAM("SRDF Contents in demo\n" << srdfContains);
 
-    robot_model_loader_noros::RobotModelLoaderPtr robotModelLoaderNoros(new robot_model_loader_noros::RobotModelLoader(inStreamUrdf, inStreamSrdf));
+    RobotModelLoaderPtr robotModelLoaderNoros(new RobotModelLoader(inStreamUrdf, inStreamSrdf));
 
     inStreamUrdf.close();
     inStreamSrdf.close();

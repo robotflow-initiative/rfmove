@@ -4,10 +4,11 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/lees/linux_bak/rfmove/extern/tobor_ikfast_plugin",
-                "/home/lees/linux_bak/rfmove/extern/ifast_inlcude",
+                "/home/ziye01/rfmove/extern/tobor_ikfast_plugin",
+                "/home/ziye01/rfmove/extern/ifast_inlcude",
                 "/usr/include/eigen3",
-                "${workspaceFolder}/extern/franka_ikfast_plugin"
+                "${workspaceFolder}/extern/franka_ikfast_plugin",
+                "/home/ziye01/rfmove/"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

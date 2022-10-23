@@ -236,10 +236,9 @@ int PlannerSpline::sample_by_interval(double timeinterval)
     for (auto &jointname : name_idx)
     {
         sample_count=0;
- 
-  
         double target_time=0;
         const std::string joint_name=jointname.first;
+        std::cout<<joint_name<<std::endl;
         if(joint_name.compare("panda_joint8")!=0)
             sample_by_interval_times.clear();
         trajectory_interface::PosVelAccState<double> Sample= trajectory_interface::PosVelAccState<double>();
